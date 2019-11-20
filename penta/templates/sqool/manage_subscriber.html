@@ -1,0 +1,115 @@
+{% csrf_token %}
+<style>
+    label {
+        /* Other styling.. */
+        clear: both;
+        float:right;
+        margin-left:15px;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    function sameOrigin(url) {
+        // test that a given url is a same-origin URL
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                // Send the token to same-origin, relative URLs only.
+                // Send the token only if the method warrants CSRF protection
+                // Using the CSRFToken value acquired earlier
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    function saveSubscribe(user_id , channel_id , permission){
+        jQuery.ajax({
+                url: '/sqool/save_subscribe/',
+                type: 'POST',
+                data: "user_id="+user_id+"&channel_id="+channel_id+"&permission="+permission,
+                success: function(result) {
+                    //alert('success');
+                    jQuery('Label').html('');
+                    jQuery('#msg'+user_id+"_"+channel_id).html('success');
+                },
+                error: function (request, status, error) {
+                    jQuery('#msg'+user_id+"_"+channel_id).html('error');
+                }
+        });
+    }
+</script>
+
+
+<b>Manage {{group}} group</b>
+<br>
+<br>
+
+
+{% for key,value in result.items %}
+
+    <p>Channel: {{ key }}</p>
+    <table border=1 width="75%">
+        <tr>
+            <th width='35%'>User</th>
+            <th width='10%'>Firstname</th>
+            <th width='10%'>Lastname</th>
+            <th width='10%'>Email</th>
+            <th width='10%'>Role</th>
+            <th width='15%'>Action</th>
+        </tr>
+
+        {% for v in value %}
+            <tr>
+                <td>{{v.user.username}}</td>
+                <td>{{v.user.first_name}}</td>
+                <td>{{v.user.last_name}}</td>
+                <td>{{v.user.email}}</td>
+                <td>
+                    <select id='permission{{v.user.id}}_{{v.channel.id}}'>
+                        <option name='---' value='---'>Unjoin</option>
+                        <option name='true' value='true' {% ifequal 'true' v.permission %} selected {% endifequal %}>Writeable</option>
+                        <option name='false' value='false' {% ifequal 'false' v.permission %} selected {% endifequal %}>Readonly</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <input type='submit' value='save'  onclick="saveSubscribe( {{v.user.id}} , {{v.channel.id}} , document.getElementById('permission{{v.user.id}}_{{v.channel.id}}').value)"  ></input> 
+                        <font color='red'><label id='msg{{v.user.id}}_{{v.channel.id}}'></label></font>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endfor %}

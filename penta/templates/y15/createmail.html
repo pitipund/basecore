@@ -1,0 +1,347 @@
+{% extends "y15/base.html" %}
+{% load static %}
+
+{% block mainpane %}
+{% include 'y15/components/playlist_selector.html'%}
+<style type="text/css">
+	.fileUpload {
+	    position: relative;
+	    overflow: hidden;
+	    margin: 10px;
+	}
+	.fileUpload input.upload {
+	    position: absolute;
+	    top: 0;
+	    right: 0;
+	    margin: 0;
+	    padding: 0;
+	    font-size: 20px;
+	    cursor: pointer;
+	    opacity: 0;
+	    filter: alpha(opacity=0);
+	}
+
+	span.input-group-addon {
+		height: 30px;
+		text-align: center;
+	}
+
+	.mail-form-body {
+		margin-top: 15px;
+	}
+
+	textarea {
+		resize: none;
+	}
+</style>
+
+<div class="col-md-8 col-md-offset-2">
+
+<h4>Create Mail {{c.follower.count}}</h4>
+
+{% if c.followers.count < 1 %}
+	<div class="alert alert-danger alert-dismissible fade in" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+      <h4 id="oh-snap!-you-got-an-error!">ท่านจะไม่สามารถส่งอีเมลได้ !<span class="anchorjs-icon"></span></h4>
+      <p>ยังไม่มีผู้ใช้ติดตามรายการ "{{ c.name }}" ของท่าน</p>
+    </div>
+{% endif %}
+
+<form id="mailForm">
+	<div class="input-group input-group-md mail-form-subject">
+		<span class="input-group-addon" id="addon-subject">หัวข้อ</span>
+		<input type="text" name="subject" class="form-control" aria-describedby="addon-subject" placeholder="พิมพ์หัวข้อที่นี่" value="{% if mail.subject %}{{mail.subject}}{% endif %}">
+		<input name="playlist" {% if mail.playlist %}value="{{mail.playlist.id}}"{% endif %} hidden/>
+		<input name="video_position" {% if mail.video_position %}value="{{ mail.video_position }}"{% else %}value="1"{% endif %} hidden/>
+	</div>
+
+	<div class="panel panel-default mail-form-body">
+		<!-- Default panel contents -->
+		<div class="panel-heading">ข้อความ</div>
+		<div class="panel-body">
+			<textarea class="form-control" rows="10" id="message" name="message" placeholder="พิมพ์ข้อความที่นี่">{% if mail.message %}{{mail.message}}{% endif %}</textarea>
+        </div>
+    </div>
+</form>
+        <form id="uploadImageForm">
+			<div class="input-group input-group-md" style="padding-top:10px;">
+				<input id="uploadFile" class="form-control" placeholder="กรุณาเลือกรูป"
+                       value="{% if images.0.image %}{% static '{{images.0.image}}{% endif %}' %}"
+                       onfocus="$('#uploadBtn').click(); return false;" readonly/>
+				<div class="fileUpload btn  input-group-addon btn-primary">
+			    	<span>Upload</span>
+			    	<input id="uploadBtn" name="image" type="file" class="upload" onchange="readURL(this)" />
+				</div>
+			</div>
+        </form>
+        <div>
+			<div class="input-group input-group-md" style="padding-top:10px;">
+				<input id="selectedVideo" class="form-control" placeholder="กรุณาเลือกวิดีโอ"
+                       value="{% if mail.playlist.name %}{% static '{{mail.playlist.name}}{% endif %}' %}" readonly/>
+				<span class="input-group-btn">
+				<button id="playlistSelectorButton" type="button" class="btn btn-default pull-right"
+                        data-toggle="modal" data-target="#playlistSelector" >Select Video</button>
+				</span>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input id="check-video-first" type="checkbox" value="3"> ให้วิดีโออยู่ด้านบน
+				</label>
+			</div>
+		</div>
+		<div class="pull-right" style="margin-bottom: 10px">
+            <button type="button" data-loading-text="<span class='glyphicon glyphicon-adjust'></span> Saving.."
+                    class="btn btn-primary btn-save-mail">
+                <span class="glyphicon glyphicon-ok"></span>
+                Save draft
+            </button>
+            <div class="btn btn-send-mail btn-success" data-loading-text="Sending...">Send</div>
+        </div>
+	</div>
+
+<style type="text/css">
+/*	#mailPreview {
+		border: solid 1px #06b1e3;
+		width: 750px;
+	}
+	.mail-header, .mail-channel-icon {
+		height: 40px;
+	}
+
+	.mail-header {
+		width: 100%;
+		background: #06b1e3;
+		font-size: 15;
+		color: white;
+	}
+
+	.mail-channel-icon {
+		max-width: 70px;
+		padding: 3px;
+	}
+
+	#pentachannelLogo {
+		float: right;
+		margin-top: 6px;
+	}
+
+	.mail-media {
+		clear:both;
+	}
+
+	.mail-preview-image, .mail-preview-video{
+		width: 100%;
+		height: 300px;
+	    margin-left: auto;
+	    margin-right: auto;
+	}
+
+	.mail-preview-video {
+		width: 600px;
+		height: 400px;
+	}
+
+	.mail-subject {
+		font-size: 2em;
+		margin-top: 30px;
+		margin-right:10px;
+		margin-left:10px;
+		margin-bottom:20px;
+	}
+	.mail-message {
+		font-size: 16;
+		text-indent: 50px;
+		margin: 0px 15px;
+		margin-bottom: 20px;
+		word-wrap: break-word;
+	}
+
+	.video-play-btn {
+	    background: url('{% static 'images/a-media-play-btn.png') center center no-repeat;
+	    margin: -400px 10px 0 0;
+	    height: 400px;
+	    position: relative;
+	    z-index: 10;
+	    opacity: 1.0;
+	    cursor: pointer;
+	}*/
+</style>
+
+<div class=' %}"col-md-8 col-md-offset-2">
+<h4>Preview</h4>
+</div>
+<table style="border: solid 1px #06b1e3; width: 750px; border-spacing: 0; color:#333; padding: 0; font-family:Helvetica, Arial, sans-serif; table-layout:fixed;" align="center"
+       border="0" cellspacing="0">
+    <tr bgcolor="#06B1E3">
+        <td>
+            <table style="border: 0;width: 100%; border-spacing: 0; padding: 0" border="0" cellspacing="0">
+                <tr>
+                    <td style="height: 46px;width: 46px">
+                        <a href="//penta.center/th/channel/{{ c.id }}">
+                        <img height="40px" width="40px" style="padding: 3px;" src="{{c.real_icon}}" alt=""/>
+                        </a>
+                    </td>
+                    <td style="vertical-align: middle; font-size: 1.4em">
+                        <a href="//penta.center/th/channel/{{ c.id }}" style="color:#333; text-decoration: none">
+                        {{ c.name }}
+                        </a>
+                    </td>
+                    <td align="right">
+                        <a href="https://penta.center/">
+                            <img src="{% static 'images/pentachannel-row.png' %}" alt="Penta Channel">
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding:0;">
+            <img class="mail-preview-image" height="300px" width="750px" src="{% get_media_prefix %}{{images.0.image}}" {% if not images %}hidden{% endif %}/>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="font-size:2em;padding: 30px 20px;" class="mail-subject">{% if mail.subject %}{{mail.subject}}{% else %}หัวข้อตัวอย่าง{% endif %}</td>
+    </tr>
+
+    <tr>
+        <td style="white-space:pre;"><p style="font-size:16px;text-indent: 30px;padding: 0 30px 30px; word-wrap: break-word; " class="mail-message">{% if mail.message %}{{mail.message}}{% else %}ข้อความตัวอย่าง{% endif %}</p></td>
+    </tr>
+
+    <tr>
+        <td style="padding: 0 0 10px 0;" align="center">
+            <a href="/th/channelplay/{{c.id}}/{{mail.playlist.id}}/" target="_blank">
+            <img class="mail-preview-video" height="300px" width="750px" src="{{ mail.playlist.link.real_thumbnail }}" {% if not mail.playlist %}hidden{% endif %}/>
+            </a>
+        </td>
+    </tr>
+</table>
+
+<div class="clearfix" style="margin-bottom: 60px"></div>
+
+<script type="text/javascript">
+
+	function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            $("#uploadFile").val(input.value);
+            reader.onload = function (e) {
+	            	var image = new Image();
+	            	image.src = e.target.result;
+
+	            	image.onload = function() {
+	            		$('.mail-preview-image')
+	                    .attr('src', this.src)
+	                    .show();
+	            	}
+
+	            };
+    	        reader.readAsDataURL(input.files[0]);
+	        }
+
+	        $("#uploadImageForm").ajaxSubmit({
+                url: "{% url 'api_v2_email_upload_image' mail.id %}",
+                type: 'POST',
+                success: function(result){console.log(result)}
+                // error: onFail
+            });
+    }
+
+    function saveMail(success, fail){
+    	$("#mailForm").ajaxSubmit({
+		    url: "/api/v2/email/{{mail.id}}/",
+            type: 'POST',
+            success: success
+            // error: fail
+    	})
+    }
+
+    $(".btn-save-mail").click(function(){
+    	var save_btn = $(this);
+    	save_btn.button("loading");
+
+    	saveMail(function(result){ console.log('save success'); console.log(result); setTimeout(function(){ save_btn.button("reset") }, 700)});
+    	return false;
+    });
+
+    $("input[name=subject]").on("keyup",function(){
+    	var text = $(this).val();
+    	if (text.length<=0) {
+    		text = "หัวข้อตัวอย่าง"
+    	}
+    	$(".mail-subject").text(text);
+    });
+
+    $("textarea[name=message]").on("keyup",function(){
+    	var text = $(this).val();
+    	if (text.length<=0) {
+    		text = "ข้อความตัวอย่าง"
+    	}
+    	$(".mail-message").text(text);
+    });
+
+    $(".btn-send-mail").click(function(){
+    	var mail_button = $(this);
+    	mail_button.button("loading");
+    	saveMail(
+	    	function(){
+		    	$.post("/api/v2/email/{{mail.id}}/send/", function(){
+		    		alert("ส่งเมลเรียบร้อย");
+		    		mail_button.button("reset");
+		    	}).fail(function(result){
+		    		console.log(result);
+		    		mail_button.button("reset");
+		    		if(result.status==400) {
+		    			if (result.responseJSON.detail=="No recipient") {
+		    				alert("ไม่สามารถส่งอีเมลได้ เนื่องจากไม่มีผู้ใช้ท่านอื่นติดตามรายการของท่าน")
+		    			} else {
+		    				alert(result.responseJSON.detail);
+		    			}
+
+		    		} else {
+	    				alert("ไม่สามารถส่งเมลได้ในขณะนี้");
+		    		}
+		    	})
+    	});
+
+    	return false;
+    });
+
+    $("#check-video-first").click(function(){
+    	if($(this).is(':checked')) {
+    		$("input[name=video_position]").val(0);
+    	} else {
+    		$("input[name=video_position]").val(1);
+    	}
+    	swapPostition();
+    });
+
+    {% if mail.playlist %}
+	    {% if mail.video_position == 0 %}
+	    	$("#check-video-first").click();
+	    {% endif %}
+    {% endif %}
+
+    function swapPostition(){
+    	swapElements($(".mail-preview-video").parent().parent()[0], $(".mail-preview-image").parent()[0]);
+    }
+
+    function swapElements(elm1, elm2) {
+	    var parent1, next1,
+	        parent2, next2;
+
+	    parent1 = elm1.parentNode;
+	    next1   = elm1.nextSibling;
+	    parent2 = elm2.parentNode;
+	    next2   = elm2.nextSibling;
+
+	    parent1.insertBefore(elm2, next1);
+	    parent2.insertBefore(elm1, next2);
+	}
+
+</script>
+
+
+{% endblock %}

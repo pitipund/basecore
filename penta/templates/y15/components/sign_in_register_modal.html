@@ -1,0 +1,105 @@
+{% load static %}
+{% load i18n %}
+
+<div class="modal fade" id="guestModal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background-color: #EDEFF1;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title">Login เข้าสู่ Penta Channel</h3>
+        </div>
+        <div style="display:none">
+          <input type="hidden" id="text_email_used" value="{% trans 'Email already used' %}"/>
+          <input type="hidden" id="text_unknown_error" value="{% trans 'Unknown Error' %}"/>
+          <input type="hidden" id="text_missing_require_field" value="{% trans 'Missing required fields' %}"/>
+          <input type="hidden" id="text_invalid_email_or_password" value="{% trans 'Invalid email or password' %}"/>
+        </div>
+          <div class="modal-body col-sm-4 col-xs-12 pull-right" style="background-color: #EDEFF1; border-left: 1px solid #e5e5e5;">
+              <h4 style="margin-top:3px; color: #666;">ด้วย Email</h4>
+              <form id="signin-form" style="margin-bottom:4px;">
+                  <div class="form-group">
+                    <label class="sr-only" for="signin-email">Email address</label>
+                    <input type="email" class="form-control" id="signin-email" name="email" placeholder="Email">
+                  </div>
+                  <div class="form-group" style="margin-bottom:4px;">
+                    <label class="sr-only" for="signin-password">Password</label>
+                    <input type="password" class="form-control" id="signin-password" name="password" placeholder="Password">
+                  </div>
+                  <input type="hidden" id="login_url" name="login_url" value="//{{ request.get_host }}/accounts/login/?next={{ request.get_full_path }}"/>
+              </form>
+              <a class="btn btn-xs" href="https://accounts.thevcgroup.com/accounts/password/reset/">จำรหัสผ่านไม่ได้?</a>
+              <a id="formSignInSubmit" class="btn-login btn btn-success col-xs-12" href="#" data-loading-text="กำลัง Login...." style="margin-top:10px;">Login</a>
+          </div>
+          <div class="modal-body col-sm-8 col-xs-12 pull-left">
+              <h4 style="margin-top:3px; color: #666;">ด้วย Facebook ง่ายๆคลิกเดียว</h4>
+              <div class="text-center" style="margin-top:30px">
+                <a class="btn-login btn btn-primary"
+                   href="https://accounts.thevcgroup.com/login/facebook/?next=//{{request.get_host}}/accounts/login/?next={{ request.get_full_path }}"
+                   data-loading-text="กำลัง Login...."
+                   style="background-color:#3b5998;">
+                  <image src="{% static 'images/facebook.png' %}" style="margin-top:-6px;padding-right:5px;width:24px;"/>
+                    Login with Facebook
+                </a>
+              </div>
+          </div>
+          <div style="clear: both;"></div>
+          <div class="modal-footer" style="padding:3px;; border:none; color:#888;">
+          ยังไม่มีบัญชี?<a class="btn-register btn btn-md" style="padding-left:0px; margin-left:0px;">สมัครที่นี่</a></div>
+        
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<style> 
+    .regis-form-group {
+        padding-left: 0;
+        padding-right: 0;
+    }
+</style>
+<div class="modal fade" id="guestModalRegister">
+  <div class="modal-dialog" style="width: 400px">
+    <div class="modal-content" style="color:#CAE1F4; background-color: #EDEFF1;">
+          <div class="modal-body col-xs-12" style="padding:20px 30px 25px 30px">
+              <h3 style="margin-bottom:34px; color: #355368;">สมัครสมาชิก</h3>
+              <form id="register-form">
+                <div class="form-group col-xs-6 regis-form-group has-feedback" style="">
+                  <label class="sr-only" for="register-first_name">First Name</label>
+                  <input type="text" class="form-control" id="register-first_name" name="first_name" placeholder="ชื่อ" data-alert-text="กรุณากรอกชื่อของคุณ">
+                  <span class="glyphicon glyphicon-asterisk form-control-feedback" aria-hidden="true"></span>
+                </div>
+                <div class="form-group col-xs-6 regis-form-group has-feedback" style="padding-left: 10px;">
+                  <label class="sr-only" for="register-last_name">Last Name</label>
+                  <input type="text" class="form-control" id="register-last_name" name="last_name" placeholder="นามสกุล" data-alert-text="กรุณากรอกนามสกุลของคุณ">
+                  <span class="glyphicon glyphicon-asterisk form-control-feedback" aria-hidden="true"></span>
+                </div>
+                <div class="form-group col-xs-12 regis-form-group has-feedback">
+                  <label class="sr-only" for="register-email">Email address</label>
+                  <input type="email" class="form-control" id="register-email" name="email" placeholder="Email" data-alert-text="กรุณาตรวจสอบความถูกต้องของอีเมล">
+                  <span class="glyphicon glyphicon-asterisk form-control-feedback" aria-hidden="true"></span>
+                </div>
+                <div class="form-group col-xs-12 regis-form-group has-feedback">
+                  <label class="sr-only" for="register-password">Password</label>
+                  <input type="password" class="form-control" id="register-password" name="password" placeholder="Password" data-alert-text="กรุณาตรวจสอบความถูกต้องของรหัสผ่าน">
+                  <span class="glyphicon glyphicon-asterisk form-control-feedback" aria-hidden="true"></span>
+                </div>
+                <div class="form-group col-xs-12 regis-form-group has-feedback">
+                  <label class="sr-only" for="register-password">Verify Password</label>
+                  <input type="password" class="form-control" id="verify-password" placeholder="Verify Password" data-alert-text="กรุณาตรวจสอบความถูกต้องของรหัสผ่าน">
+                  <span class="glyphicon glyphicon-asterisk form-control-feedback" aria-hidden="true"></span>
+                </div>
+
+                <div class="form-group col-xs-12 regis-form-group">
+                  <a id="formRegisterSubmit" class="btn btn-primary col-xs-12" style="margin-top:10px" data-loading-text="กำลังสมัครสมาชิก...">สมัครสมาชิก</a>
+                </div>
+              </form>
+          </div>
+          <div class="modal-footer" style="padding:3px;; border:none; color: #888;">เป็นสมาชิกอยู่แล้ว?<a class="btn-to-login btn btn-md" style="padding-left:0px; margin-left:0px;">Loginที่นี่</a></div>
+        <div style="clear: both;"></div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% if not optimize %}
+<script type="text/javascript" src="{% static 'feed/js/sign_in_register_modal.js' %}"></script>
+{% endif %}

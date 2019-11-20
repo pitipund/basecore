@@ -1,0 +1,160 @@
+{% extends "y15/base_browse.html" %}
+
+
+{% block header %}
+<title>{{ c.name }} - Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+{% endblock %}
+
+{% block middlepane %}
+
+<style type="text/css">
+	.nomail-container {
+		width: 100%;
+		height: 300px;
+		text-align: center;
+		color: #999;
+		display: table; 
+	}
+	.nomail-text {
+		display: table-cell;
+		vertical-align: middle;
+	}
+
+	.nomail-container{
+		background-color: #dedede;
+	}
+
+	.mail-container {
+		padding: 10px;	
+		padding-left: 40px;
+		border-bottom: 1px solid #dedede;
+		background-color: #fefefe;
+		cursor: pointer;
+	}
+
+	.mail-subject {
+		font-size: 16;
+		color:#666;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding-bottom: 5px; 
+	}
+
+	.mail-create-at, .mail-status{
+		font-size: 14;
+		color:#999;
+	}
+</style>
+
+<h3>All mail - {{ c.name }} <span id="mailCount"></span>
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-sm btn-info" data-loading-text="Refreshing..." id="refreshButton"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+<button type="button" class="btn btn-sm btn-primary" id="createMailButton"><span class="glyphicon glyphicon-plus"></span> New Mail</button>
+</div>
+<hr/>
+</h3>
+
+
+<div class="mails-container">
+	<div class="nomail-container">
+		<h4 class="nomail-text">Loading....</h4>
+	</div>
+
+	<!-- <div class="mail-container">
+		<div class="mail-subject">Subject here</div>
+		<div class="mail-create-at">เมื่อ: 12 May 2015</div>
+	</div> -->
+</div>
+
+
+{% endblock %}
+
+
+{% block footer %}
+<script type="text/javascript">
+(function () {
+    var refreshButton = $("#refreshButton");
+
+	refreshButton.click(function(){
+		var refreshButton = $(this),
+            index;
+		refreshButton.button("loading");
+		$.get("/api/v2/email/channel/{{c.id}}/", function(mails){
+			if (mails.length>0) {
+				$("#mailCount").text("("+mails.length+")");
+				$(".mails-container").empty();
+			} else {
+				$(".nomail-text").text('ไม่มีmailสำหรับแชนแนลนี้')
+			}
+			mails.reverse();
+			console.log("get mail list success");
+			console.log(mails);
+			for(index in mails){
+				var mail = mails[index],
+				    mailSubject = mail.subject,
+                    mailDom;
+				if(mailSubject=="" || mailSubject==null)
+					mailSubject = "ไม่มีหัวข้อ";
+				mailDom  = 	'<div class="mail-container" data-mailid="'+mail.id+'" data-state="'+mail.state+'">'+
+                                '<div class="mail-subject">หัวข้อ: '+mailSubject+'</div>'+
+                                '<div class="mail-status">สถานะ: '+mail.state+'</div>'+
+                                '<div class="mail-create-at">เมื่อ: '+momentizeString(mail.create_at)+'</div>'+
+                            '</div>';
+				$(".mails-container").append(mailDom);
+			}
+		}).fail( function(){
+			alert("Can't get mail list now. Please try again later.")
+		});
+		setTimeout(function(){
+			refreshButton.button("reset")
+		},2000)
+	});
+	
+	refreshButton.click();
+
+
+	$(".mail-container").on("click",".btn-delete-mail", function(event){
+		console.log('delete mail click');
+		// event.stopPropagation(); <button class="btn btn-sm btn-danger btn-delete-mail pull-right"><span class="glyphicon glyphicon-trash"></span></buton>
+	});
+	$(".mails-container").on("click",".mail-container", function(event){
+		// console.log('mail item click');
+		// var mail = $(this);
+		// var mail_id = mail.data("mailid")
+		// console.log(event.target);
+		// if(event.target.className.indexOf("btn-delete-mail")!=-1){
+		// 	console.log('boo');
+		// 	if(confirm("ท่านต้องการลบmailฉบับนี้ใช่หรือไม่?")){
+		// 		$.ajax({
+		// 		    url: '/api/v2/email/'+mail_id+'/',
+		// 		    type: 'DELETE',
+		// 		    success: function(result) {
+		// 		        mail.remove();
+		// 		    },
+		// 		    error: function(respond) {
+		// 		    	alert("ไม่สามารถลบmailได้ในขณะนี้กรุณาทดลองใหม่ภายหลัง")
+		// 		    }
+		// 		});
+		// 	}
+
+		// } else {
+		// 	console.log('here');
+			window.location = "/th/createmail/{{c.id}}/"+$(this).data("mailid")+"/"	
+		//}
+		
+	});
+
+
+	$("#createMailButton").click(function(){
+	    $.post("{% url 'api_v2_email_channel_view' c.id %}", function(mail){
+	        console.log(mail);
+	        window.location.href = "{% url 'create_mail_view' c.id %}"+mail.id+"/"
+
+	    }).fail(function(){
+	        alert("ไม่สามารถส่งเมลล์ได้ในเวลานี้ กรุณาลองอีกครั้งในภายหลัง")
+	    })
+	});
+})();
+</script>
+{% endblock %}

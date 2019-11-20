@@ -1,0 +1,962 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-22 12:09+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: channel/utils.py:208
+msgid "Digital TV"
+msgstr "ดิจิตอลทีวี"
+
+#: channel/utils.py:369
+msgid "success"
+msgstr "สำเร็จ"
+
+#: channel/utils.py:373
+msgid "Support only Youtube Dailymotion and RTMP"
+msgstr "รองรับเฉพาะ Youtube Dailymotion และ RTMP"
+
+#: channel/utils.py:375 channel/views.py:253 curator/views.py:527
+#: curator/views.py:620 curator/views.py:669 curator/views.py:778
+#: templates/curator/curator_feed.html:58
+#: templates/curator/curator_notification_link.html:88
+#: templates/curator/curator_playlist_create.html:90
+msgid "Support only Youtube and Dailymotion"
+msgstr "รองรับเฉพาะ Youtube และ Dailymotion"
+
+#: channel/utils.py:377 channel/utils.py:402 curator/views.py:107
+#: curator/views.py:578 curator/views.py:733
+msgid "Permission denied."
+msgstr "ไม่มีสิทธิ์เข้าถึง"
+
+#: channel/utils.py:401
+msgid "Deleted."
+msgstr "ลบแล้ว"
+
+#: channel/utils.py:404
+msgid "Can not find video."
+msgstr "ไม่พบวีดีโอ"
+
+#: channel/views.py:50 channel/views.py:145
+msgid "Can not find Channel"
+msgstr "ไม่พบช่อง"
+
+#: channel/views.py:210
+msgid "Page not found."
+msgstr "ไม่พบช่องที่ค้นหา"
+
+#: channel/views.py:255 channel/views.py:262 feed/views.py:77
+#: templates/channel/include/header.html:157
+msgid "Please login."
+msgstr "กรุณาลงชื่อเข้าใช้"
+
+#: curator/forms.py:21
+msgid "not allow "
+msgstr "ไม่อนุญาต"
+
+#: curator/forms.py:23
+msgid "Can not use"
+msgstr "ไม่อนุญาตให้ใช้"
+
+#: curator/forms.py:43
+msgid "duplicate name "
+msgstr "ชื่อซ้ำ"
+
+#: curator/models.py:37 django_cas/models.py:26
+msgid "username"
+msgstr "ชื่อผู้ใช้"
+
+#: curator/models.py:38
+msgid ""
+"Required. 50 characters or fewer. Letters, numbers and @/./+/-/_ characters"
+msgstr "ตัวอักษรไม่เกิน 50 ตัวอักษร, ประกอบด้วย ตัวอักษร ตัวเลข และ @ . + - _"
+
+#: curator/models.py:41
+msgid "Enter a valid username."
+msgstr "ชื่อผู้ใช้ไม่ถูกต้อง"
+
+#: curator/models.py:43
+msgid "first name"
+msgstr "ชื่อจริง"
+
+#: curator/models.py:44
+msgid "last name"
+msgstr "นามสกุล"
+
+#: curator/models.py:45
+msgid "email address"
+msgstr "อีเมล์"
+
+#: curator/models.py:46
+msgid "staff status"
+msgstr ""
+
+#: curator/models.py:47
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: curator/models.py:49
+msgid "active"
+msgstr ""
+
+#: curator/models.py:50
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: curator/models.py:52
+msgid "date joined"
+msgstr "วันที่ลงทะเบียน"
+
+#: curator/utils.py:76
+msgid "Can not find user."
+msgstr "ไม่พบผู้ใช้"
+
+#: curator/utils.py:223 curator/utils.py:248
+msgid "Invalid url: "
+msgstr "url ไม่ถูกต้อง: "
+
+#: curator/utils.py:238 curator/utils.py:259 curator/utils.py:367
+msgid "Can not get data from "
+msgstr "ไม่สามารถดึงข้อมูลจาก "
+
+#: curator/utils.py:238 curator/utils.py:259
+msgid " please try again"
+msgstr " กรุณาลองอีกครั้ง"
+
+#: curator/utils.py:278 curator/utils.py:301 curator/views.py:394
+msgid "Can not find action, Please try again later."
+msgstr "ไม่สามารถทำคำสั่งได้ กรุณาลองอีกครั้งในภายหลัง"
+
+#: curator/utils.py:331
+msgid "Link field is required."
+msgstr "กรุณาเพิ่มลิงค์"
+
+#: curator/views.py:115
+msgid "Profile url: Can not use "
+msgstr "Profile url: ไม่อนุญาตให้ใช้ "
+
+#: curator/views.py:119
+msgid "Profile url: Can not use numbers only, must have at least one character"
+msgstr ""
+"ไม่สามารถตั้ง profile url ด้วยตัวเลขเท่านั้น จะต้องประกอบด้วยตัวอักษรอย่างน้อย 1 ตัวอักษร"
+
+#: curator/views.py:140
+msgid "Profile Url with this Url name already exists."
+msgstr "ชื่อ profile url นี้มีในระบบแล้ว"
+
+#: curator/views.py:144 curator/views.py:160
+msgid "Profile Url field not allow "
+msgstr "profile url ไม่อนุญาตให้ใช้ "
+
+#: curator/views.py:155
+msgid "image field is required."
+msgstr "กรุณาเพิ่มรูปภาพ"
+
+#: curator/views.py:187 curator/views.py:299
+msgid "Duplicate channel name "
+msgstr "ชื่อช่องซ้ำ"
+
+#: curator/views.py:202 curator/views.py:320
+msgid "Please add at least one icon"
+msgstr "กรุณาเพิ่มไอคอนอย่างน้อย 1 รูป"
+
+#: curator/views.py:392
+msgid "Can not find channel, Please try again later."
+msgstr "ไม่พบช่องดังกล่าว กรุณาลองอีกครั้งในภายหลัง"
+
+#: curator/views.py:396
+msgid "Can not find user, Please login."
+msgstr "กรุณาลงชื่อเข้าใช้"
+
+#: curator/views.py:445
+msgid ""
+"Are you sure to change channel setting to Live, your playlist must be "
+"deleted?"
+msgstr "หากเปลี่ยนให้เป็นช่องสด เพลย์ลิสต์ทั้งหมดของคุณจะถูกลบ คุณต้องการลบ?"
+
+#: curator/views.py:582 curator/views.py:752
+msgid "Can not find playlist."
+msgstr "ไม่พบเพลย์ลิสต์"
+
+#: curator/views.py:682
+msgid "Incomplete information."
+msgstr "ข้อมูลไม่ถูกต้อง"
+
+#: django_cas/models.py:27 django_cas/models.py:31 django_cas/models.py:73
+msgid "ticket granting ticket"
+msgstr ""
+
+#: django_cas/models.py:32
+msgid "ticket granting tickets"
+msgstr ""
+
+#: django_cas/models.py:72 django_cas/models.py:78
+msgid "proxy ticket IOU"
+msgstr ""
+
+#: django_cas/models.py:79
+msgid "proxy ticket IOUs"
+msgstr ""
+
+#: django_cas/models.py:87
+msgid "service ticket"
+msgstr ""
+
+#: django_cas/models.py:88
+msgid "session key"
+msgstr ""
+
+#: django_cas/models.py:93
+msgid "session service ticket"
+msgstr ""
+
+#: django_cas/models.py:94
+msgid "session service tickets"
+msgstr ""
+
+#: feed/views.py:85
+msgid "Can not get data from link, Please try again."
+msgstr "ไม่สามารถดึงข้อมูลจากลิงค์ กรุณาลองอีกครั้ง"
+
+#: feed/views.py:88
+msgid "Support only Youtube and Dailymotion."
+msgstr "รองรับเฉพาะ Youtube และ Dailymotion"
+
+#: feed/views.py:99 feed/views.py:123
+msgid "Can not find Channel or this channel may be deleted."
+msgstr "ไม่พบฃ่อง หรือช่องถูกลบแล้ว"
+
+#: feed/views.py:104
+msgid "Can not find Playlist or this Playlist may be deleted."
+msgstr "ไม่พบเพลย์ลิสต์ หรือเพลย์ลิสต์ถูกลบแล้ว"
+
+#: feed/views.py:135
+msgid "Not support."
+msgstr "ไม่รองรับ"
+
+#: feed/views.py:144
+msgid "Can not save this playlist to channel."
+msgstr "ไม่สามารถบันทึกเพลย์ลิสต์นี้ไปยังช่องได้"
+
+#: templates/channel/browse.html:15
+msgid "Select Category"
+msgstr "เลือกหมวดหมู่"
+
+#: templates/channel/browse.html:35 templates/channel/browse.html.py:42
+msgid "Next"
+msgstr "ถัดไป"
+
+#: templates/channel/browse.html:39
+#: templates/curator/curator_admin_main.html:13
+#: templates/curator/curator_admin_updatetag.html:54
+#: templates/curator/curator_notification_playlist.html:56
+msgid "Back"
+msgstr "ย้อนกลับ"
+
+#: templates/channel/browse.html:49 templates/channel/channel.html:34
+#: templates/channel/home.html:34 templates/channel/home.html.py:37
+#: templates/channel/search.html:24 templates/channel/search_guest.html:24
+#: templates/channel/video_manager.html:107
+#: templates/channel/video_manager.html:110
+#: templates/curator/curator_channel_create.html:172
+#: templates/curator/curator_notification_playlist.html:41
+#: templates/curator/curator_profile.html:86
+msgid "Live"
+msgstr "สด"
+
+#: templates/channel/browse.html:57
+msgid "Please follow interested channel below."
+msgstr "กรุณา เลือกติดตามรายการที่ท่านสนใจ ด้านล่าง"
+
+#: templates/channel/browse.html:58
+msgid "You can follow more or proceed to Next."
+msgstr "ท่านสามารถเลือกติดตามรายการเพิ่มเติมได้ หรือไปยังส่วน ถัดไป"
+
+#: templates/channel/channel.html:37 templates/channel/live.html:31
+#: templates/curator/curator_profile.html:94
+msgid "Follows"
+msgstr "จำนวนการติดตาม"
+
+#: templates/channel/channel.html:38 templates/channel/live.html:32
+msgid "By"
+msgstr "โดย"
+
+#: templates/channel/channel.html:51 templates/channel/channel.html.py:104
+#: templates/channel/home.html:55 templates/channel/live.html:45
+#: templates/channel/live.html.py:70
+#: templates/channel/include/channel_gridview.html:37
+#: templates/channel/include/channel_gridview_guest.html:125
+msgid "Unfollow"
+msgstr "เลิกติดตาม"
+
+#: templates/channel/channel.html:53 templates/channel/channel.html.py:56
+#: templates/channel/channel.html:103 templates/channel/live.html:47
+#: templates/channel/live.html.py:50 templates/channel/live.html:69
+#: templates/channel/include/channel_gridview.html:36
+#: templates/channel/include/channel_gridview_guest.html:124
+msgid "Follow"
+msgstr "ติดตาม"
+
+#: templates/channel/channel.html:66 templates/channel/home.html:58
+#: templates/channel/live.html:60
+msgid "Share"
+msgstr "แบ่งปัน"
+
+#: templates/channel/channel.html:69 templates/channel/home.html:61
+msgid "Add to Penta"
+msgstr "เพิ่มบนเพนต้า"
+
+#: templates/channel/channel.html:73 templates/channel/home.html:39
+#: templates/channel/video_manager.html:112
+msgid "Edit"
+msgstr "แก้ไข"
+
+#: templates/channel/channel.html:76 templates/channel/home.html:40
+#: templates/channel/video_manager.html:113
+#: templates/channel/video_manager.html:144
+#: templates/channel/videoplayer_bottomplaylist.html:82
+#: templates/channel/include/header.html:209
+#: templates/curator/include/header.html:172
+msgid "Add"
+msgstr "เพิ่ม"
+
+#: templates/channel/channel.html:85 templates/channel/home.html:73
+#: templates/curator/curator_profile.html:89
+msgid "Edit channel"
+msgstr "แก้ไขช่อง"
+
+#: templates/channel/channel.html:88 templates/channel/home.html:76
+#: templates/channel/home.html.py:90
+msgid "Are you sure you want to delete channel?"
+msgstr "คุณต้องการลบช่อง?"
+
+#: templates/channel/channel.html:88 templates/channel/home.html:76
+#: templates/curator/curator_profile.html:90
+msgid "Delete channel"
+msgstr "ลบช่อง"
+
+#: templates/channel/home.html:32 templates/channel/video_manager.html:105
+msgid "My Channel"
+msgstr "ช่องของฉัน"
+
+#: templates/channel/home.html:44
+#: templates/curator/curator_channel_create.html:12
+msgid "Create Channel"
+msgstr "สร้างช่อง"
+
+#: templates/channel/home.html:70 templates/curator/include/header.html:64
+msgid "Add playlist"
+msgstr "เพิ่มเพลย์ลิสต์"
+
+#: templates/channel/index.html:129
+msgid "Welcome to Penta CHANNEL"
+msgstr "ยินดีต้อนรับสู่ Penta CHANNEL"
+
+#: templates/channel/index.html:130
+msgid "Follow your favorite channel, Just one click"
+msgstr "ติดตามรับชมรายการโปรดของคุณง่ายๆ แค่คลิกเดียว "
+
+#: templates/channel/index.html:141 templates/channel/include/header.html:99
+#: templates/channel/include/header.html:107
+#: templates/channel/include/header.html:167
+#: templates/channel/include/loginbar.html:11
+#: templates/curator/include/header.html:95
+msgid "Or"
+msgstr "หรือ"
+
+#: templates/channel/index.html:146 templates/channel/include/header.html:103
+#: templates/channel/include/header.html:170
+#: templates/channel/include/loginbar.html:14
+#: templates/curator/include/header.html:97
+msgid "Penta Account"
+msgstr "Penta Account"
+
+#: templates/channel/search.html:7 templates/channel/search_guest.html:7
+msgid "Search"
+msgstr "ค้นหา"
+
+#: templates/channel/search.html:10 templates/channel/search_guest.html:10
+msgid "Search all"
+msgstr "ค้นหาทั้งหมด"
+
+#: templates/channel/search.html:15 templates/channel/search_guest.html:15
+msgid "Search by category"
+msgstr "ค้นหาด้วยหมวดหมู่"
+
+#: templates/channel/search.html:22 templates/channel/search_guest.html:22
+msgid "Channel not found"
+msgstr "ไม่พบช่องที่ค้นหา"
+
+#: templates/channel/video_manager.html:135
+#: templates/channel/videoplayer_bottomplaylist.html:73
+#: templates/channel/include/header.html:197
+#: templates/curator/curator_playlist_create.html:43
+#: templates/curator/include/header.html:160
+msgid "Link"
+msgstr "ลิงค์"
+
+#: templates/channel/video_manager.html:152
+#: templates/channel/videoplayer_bottomplaylist.html:90
+msgid "Pin this"
+msgstr "ปักหมุดวีดีโอนี้"
+
+#: templates/channel/video_manager.html:159
+#: templates/channel/videoplayer_bottomplaylist.html:97
+msgid "OK"
+msgstr "ตกลง"
+
+#: templates/channel/video_manager.html:162
+#: templates/channel/videoplayer_bottomplaylist.html:100
+#: templates/channel/include/header.html:145
+#: templates/channel/include/header.html:176
+#: templates/channel/include/header.html:209
+#: templates/curator/curator_channel_create.html:208
+#: templates/curator/curator_notification_link.html:81
+#: templates/curator/curator_playlist_create.html:83
+#: templates/curator/curator_profile_update.html:98
+#: templates/curator/include/header.html:141
+#: templates/curator/include/header.html:172
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#: templates/channel/video_manager.html:203
+#: templates/channel/videoplayer_bottomplaylist.html:122
+msgid "Are you sure you want to delete video?"
+msgstr "คุณต้องการลบวีดีโอ?"
+
+#: templates/channel/videoplayer_bottomplaylist.html:48
+msgid "Video not found on this channel."
+msgstr "ไม่พบวีดีโอในช่อง"
+
+#: templates/channel/videoplayer_bottomplaylist.html:50
+#: templates/channel/videoplayer_bottomplaylist.html:121
+msgid "Create video"
+msgstr "เพิ่มวีดีโอ"
+
+#: templates/channel/videoplayer_bottomplaylist.html:119
+msgid "by"
+msgstr "โดย"
+
+#: templates/channel/videoplayer_bottomplaylist.html:120
+msgid "Create video for channel"
+msgstr "เพิ่มวีดีโอสำหรับช่อง"
+
+#: templates/channel/include/header.html:21
+#: templates/curator/include/header.html:7
+msgid "Home"
+msgstr "หน้าแรก"
+
+#: templates/channel/include/header.html:55
+#: templates/curator/include/header.html:56
+msgid "Notifications"
+msgstr "แจ้งเตือน"
+
+#: templates/channel/include/header.html:59
+#: templates/curator/include/header.html:60
+msgid "Profile"
+msgstr "โปรไฟล์"
+
+#: templates/channel/include/header.html:69
+#: templates/channel/include/header.html:114
+#: templates/channel/include/header.html:130
+#: templates/curator/include/header.html:68
+#: templates/curator/include/header.html:89
+#: templates/curator/include/header.html:134
+msgid "Change Language"
+msgstr "เปลี่ยนภาษา"
+
+#: templates/channel/include/header.html:72
+#: templates/curator/include/header.html:71
+msgid "User Manual"
+msgstr "คู่มือการใช้งาน"
+
+#: templates/channel/include/header.html:76
+#: templates/curator/include/header.html:75
+msgid "Admin tools"
+msgstr "เครื่องมือแอดมิน"
+
+#: templates/channel/include/header.html:80
+#: templates/curator/include/header.html:79
+msgid "Logout"
+msgstr "ลงชื่อออก"
+
+#: templates/channel/include/header.html:95
+#: templates/curator/include/header.html:93
+msgid "Facebook"
+msgstr ""
+
+#: templates/channel/include/header.html:109
+msgid "Sign up"
+msgstr "ลงทะเบียน"
+
+#: templates/channel/include/header.html:164
+msgid "Connect with Facebook"
+msgstr "เชื่อมต่อด้วย Facebook"
+
+#: templates/channel/include/header.html:191
+#: templates/curator/include/header.html:154
+msgid "Add Playlist"
+msgstr "เพิ่มเพลย์ลิสต์"
+
+#: templates/channel/include/header.html:195
+#: templates/curator/curator_playlist_create.html:32
+#: templates/curator/include/header.html:158
+msgid "Name"
+msgstr "ชื่อ"
+
+#: templates/channel/include/header.html:199
+#: templates/curator/curator_notification_link.html:26
+#: templates/curator/curator_playlist_create.html:23
+#: templates/curator/include/header.html:162
+msgid "Channel"
+msgstr "ฃ่อง"
+
+#: templates/curator/curator_admin_updatetag.html:11
+msgid "Admin Tools"
+msgstr "เครื่องมือแอดมิน"
+
+#: templates/curator/curator_admin_updatetag.html:24
+msgid ""
+"Select Tags to show in List page, drag each Tag up/down to arrange order"
+msgstr "เลือกแท็กที่จะแสดงในหน้าลิสต์ โดยการลากขึ้นลง"
+
+#: templates/curator/curator_admin_updatetag.html:50
+msgid "Save"
+msgstr "บันทึก"
+
+#: templates/curator/curator_channel_create.html:13
+msgid "Update Channel"
+msgstr "แก้ไขช่อง"
+
+#: templates/curator/curator_channel_create.html:33
+msgid "1.Add Channel Name"
+msgstr "1.กรอกชื่อช่อง"
+
+#: templates/curator/curator_channel_create.html:34
+msgid "Channel Name"
+msgstr "ชื่อช่อง"
+
+#: templates/curator/curator_channel_create.html:45
+msgid ""
+"2.Choose to upload channel's icon or enter image URL of your icon(need to "
+"select one of them)"
+msgstr "2.เลือกรูป หรือ ใส่ url ของรูป"
+
+#: templates/curator/curator_channel_create.html:46
+msgid "Icon"
+msgstr "ไอคอน"
+
+#: templates/curator/curator_channel_create.html:57
+msgid "or Icon URL"
+msgstr "หรือ url ของไอคอน"
+
+#: templates/curator/curator_channel_create.html:67
+msgid "Sample image"
+msgstr "รูปตัวอย่าง"
+
+#: templates/curator/curator_channel_create.html:87
+msgid "3.Add detail for your channel."
+msgstr "3.กรอกคำอธิบายสำหรับช่อง"
+
+#: templates/curator/curator_channel_create.html:88
+#: templates/curator/curator_playlist_create.html:58
+msgid "Detail"
+msgstr "คำอธิบาย"
+
+#: templates/curator/curator_channel_create.html:99
+msgid "4.Add tags for your channel."
+msgstr "4.เพิ่มแท็กสำหรับช่อง"
+
+#: templates/curator/curator_channel_create.html:100
+#: templates/curator/curator_playlist_create.html:69
+msgid "Tag"
+msgstr "แท็ก"
+
+#: templates/curator/curator_channel_create.html:106
+msgid "Type new tag or select from below."
+msgstr "พิมพ์แท็กที่ต้องการหรือเลือกจากด้านล่าง"
+
+#: templates/curator/curator_channel_create.html:110
+msgid "Creating..."
+msgstr "กำลังสร้าง..."
+
+#: templates/curator/curator_channel_create.html:111
+msgid "Create Tag"
+msgstr "สร้างแท็ก"
+
+#: templates/curator/curator_channel_create.html:117
+#: templates/curator/curator_feed.html:31
+#: templates/curator/curator_playlist_create.html:51
+#: templates/curator/curator_playlist_create.html:75
+msgid "Example"
+msgstr "ตัวอย่าง"
+
+#: templates/curator/curator_channel_create.html:117
+#: templates/curator/curator_playlist_create.html:75
+msgid "Movie"
+msgstr "ละคร"
+
+#: templates/curator/curator_channel_create.html:122
+msgid "5.Arrange your playlist (By drag&drop) and select playlist for pin"
+msgstr "5.จัดเพลย์ลิสต์(โดยการลากและวาง) และปักหมุดเพลย์ลิสต์"
+
+#: templates/curator/curator_channel_create.html:123
+msgid "Playlists"
+msgstr "เพลย์ลิสต์"
+
+#: templates/curator/curator_channel_create.html:150
+msgid "Advance"
+msgstr "ขั้นสูง"
+
+#: templates/curator/curator_channel_create.html:163
+msgid "Link keys"
+msgstr "ลิงค์คีย์"
+
+#: templates/curator/curator_channel_create.html:166
+msgid "Add New Key"
+msgstr "เพิ่มคีย์"
+
+#: templates/curator/curator_channel_create.html:176
+msgid "Don't show in search result."
+msgstr "ไม่แสดงในผลการค้นหา"
+
+#: templates/curator/curator_channel_create.html:185
+msgid ""
+"7.Enter URL of your channel to show your channel to other people easier."
+msgstr "7.กรอก url เพื่อให้บุคคลอื่นเข้าถึงได้ง่ายขึ้น"
+
+#: templates/curator/curator_channel_create.html:189
+msgid "Channel Url"
+msgstr "url ของช่อง"
+
+#: templates/curator/curator_channel_create.html:193
+#: templates/curator/curator_profile_update.html:79
+msgid "Allow only"
+msgstr "อนุญาตเฉพาะ"
+
+#: templates/curator/curator_channel_create.html:207
+#: templates/curator/curator_notification_link.html:80
+#: templates/curator/curator_playlist_create.html:82
+#: templates/curator/curator_profile_update.html:97
+msgid "Submit"
+msgstr "ตกลง"
+
+#: templates/curator/curator_channel_create.html:215
+#: templates/curator/curator_playlist_create.html:91
+msgid "Remove"
+msgstr "ลบ"
+
+#: templates/curator/curator_channel_create.html:289
+msgid "Failed to create empty tag."
+msgstr "ไม่สามารถสร้างแท็กว่างได้"
+
+#: templates/curator/curator_feed.html:19
+msgid "Feeds"
+msgstr "ฟีด"
+
+#: templates/curator/curator_feed.html:31
+msgid "Enter youtube or dailymotion link and use # for insert tag"
+msgstr "เพิ่มลิงค์ Youtube หรือ Dailymotion และใช้ # สำหรับเพิ่มแท็ก"
+
+#: templates/curator/curator_feed.html:32
+msgid "Post"
+msgstr "โพส"
+
+#: templates/curator/curator_feed.html:43
+msgid "Loading"
+msgstr "กำลังโหลด"
+
+#: templates/curator/curator_feed.html:46
+msgid "No more data"
+msgstr "ไม่มีข้อมูล"
+
+#: templates/curator/curator_feed.html:59
+msgid "Post field must have at least one link"
+msgstr "ต้องมีลิงอย่างน้อย 1 ลิงค์"
+
+#: templates/curator/curator_feed.html:60
+msgid "Save to"
+msgstr "บันทึกไปยัง"
+
+#: templates/curator/curator_notification_link.html:10
+msgid "Update links"
+msgstr "แก้ไขลิงค์"
+
+#: templates/curator/curator_notification_link.html:32
+msgid "Playlist"
+msgstr "เพลย์ลิสต์"
+
+#: templates/curator/curator_notification_link.html:41
+msgid "Link name"
+msgstr "ชื่อลิงค์"
+
+#: templates/curator/curator_notification_link.html:66
+msgid "Delete Link"
+msgstr "ลบลิงค์"
+
+#: templates/curator/curator_notification_link.html:89
+#: templates/curator/curator_playlist_create.html:92
+msgid "Can not get information from link"
+msgstr "ไม่สามารถดึงข้อมูลจากลิงค์"
+
+#: templates/curator/curator_notification_playlist.html:10
+msgid "Playlist not available"
+msgstr "เพลย์ลิสต์ที่ไม่สามารถเล่นได้"
+
+#: templates/curator/curator_notification_playlist.html:16
+msgid "Not found Channel"
+msgstr "ไม่พบช่อง"
+
+#: templates/curator/curator_notification_playlist.html:30
+msgid "Edit Playlist"
+msgstr "แก้ไขเพลย์ลิสต์"
+
+#: templates/curator/curator_notification_playlist.html:47
+msgid "Delete Playlist"
+msgstr "ลบเพลย์ลิสต์"
+
+#: templates/curator/curator_notification_playlist.html:57
+#: templates/curator/curator_profile.html:101
+msgid "Back to top"
+msgstr "กลับด้านบน"
+
+#: templates/curator/curator_playlist_create.html:11
+msgid "Create Playlist"
+msgstr "สร้างเพลย์ลิสต์"
+
+#: templates/curator/curator_playlist_create.html:12
+msgid "Update Playlist"
+msgstr "แก้ไขเพลย์ลิสต์"
+
+#: templates/curator/curator_playlist_create.html:45
+msgid "Arrange your link (By drag&drop)"
+msgstr "จัดลิงค์(โดยลากและวาง)"
+
+#: templates/curator/curator_playlist_create.html:49
+msgid "Add more link"
+msgstr "เพิ่มลิงค์"
+
+#: templates/curator/curator_playlist_create.html:72
+msgid "Add New Tag"
+msgstr "เพิ่มแท็ก"
+
+#: templates/curator/curator_playlist_create.html:93
+msgid "Please insert url or title."
+msgstr "กรุณาใส่ url หรือ ชื่อ"
+
+#: templates/curator/curator_profile.html:50
+#: templates/curator/curator_profile_update.html:41
+msgid "Firstname"
+msgstr "ชื่อจริง"
+
+#: templates/curator/curator_profile.html:53
+#: templates/curator/curator_profile_update.html:52
+msgid "Lastname"
+msgstr "นามสกุล"
+
+#: templates/curator/curator_profile.html:60
+#: templates/curator/curator_profile_update.html:63
+msgid "Email"
+msgstr "อีเมลล์"
+
+#: templates/curator/curator_profile.html:66
+msgid "Edit Profile"
+msgstr "แก้ไขโปรไฟล์"
+
+#: templates/curator/curator_profile.html:67
+msgid "Add Channel"
+msgstr "เพิ่มช่อง"
+
+#: templates/curator/curator_profile_update.html:11
+msgid "Update Profile"
+msgstr "แก้ไขโปรไฟล์"
+
+#: templates/curator/curator_profile_update.html:24
+msgid "Date joined"
+msgstr "วันที่ลงทะเบียน"
+
+#: templates/curator/curator_profile_update.html:27
+msgid "Last login"
+msgstr "ลงชื่อเข้าใช้ล่าสุด"
+
+#: templates/curator/curator_profile_update.html:35
+msgid "Username"
+msgstr "ชื่อผู้ใช้"
+
+#: templates/curator/curator_profile_update.html:67
+msgid "show email on Profile"
+msgstr "แสดงอีเมลล์ในหน้าโปรไฟล์"
+
+#: templates/curator/curator_profile_update.html:76
+msgid "Profile Url"
+msgstr "Profile url"
+
+#: templates/curator/curator_profile_update.html:84
+msgid "Profile image"
+msgstr "รูปโปรไฟล์"
+
+#: templates/curator/curator_profile_update.html:105
+msgid "Currently"
+msgstr "ปัจจุบัน"
+
+#: templates/curator/curator_profile_update.html:106
+msgid "Change"
+msgstr "เปลี่ยน"
+
+#: templates/curator/curator_profile_update.html:107
+msgid "Profile url: Can not use admin."
+msgstr "ไม่สามารถตั้ง profile url ด้วยคำว่า admin"
+
+#: templates/curator/include/config_style.html:210
+msgid "Please Log in"
+msgstr "กรุณาลงชื่อเข้าใช้"
+
+#: templates/curator/include/config_style.html:211
+msgid "Can not"
+msgstr "ไม่สามารถ"
+
+#: templates/curator/include/config_style.html:212
+msgid " play on Penta"
+msgstr " เล่นบนเพนต้า"
+
+#: templates/curator/include/config_style.html:213
+msgid " add to queue"
+msgstr " เพิ่มในคิว"
+
+#: templates/curator/include/header.html:40
+#: templates/curator/include/header.html:113
+msgid "All Favorites"
+msgstr "ช่องที่ติดตามทั้งหมด"
+
+#: templates/curator/include/header.html:87
+#: templates/curator/include/header.html:91
+msgid "Log in"
+msgstr "ลงชื่อเข้าใช้"
+
+#: templates/curator/include/header.html:100
+msgid "or Sign up"
+msgstr "หรือลงทะเบียน"
+
+#: templates/help/manual/how_to_add_channel_to_penta.html:9
+msgid "How to add channel to "
+msgstr "ขั้นตอนการเพิ่มช่องบน"
+
+#: templates/help/manual/how_to_add_channel_to_penta.html:9
+msgid "PentaTV"
+msgstr "เพนต้าทีวี"
+
+#: templates/help/manual/how_to_add_channel_to_penta.html:10
+msgid "This feature require Penta extension."
+msgstr "คุณสมบัตินี้ต้องการ Penta extension ในการใช้งาน"
+
+#: templates/help/manual/how_to_add_channel_to_penta.html:11
+msgid " Click here to install."
+msgstr "คลิกที่นี่เพื่อติดตั้ง"
+
+#: templates/help/manual/how_to_add_channel_to_penta.html:16
+msgid ""
+"Click on Penta extension icon, type your PentaTV ip address and click Add."
+msgstr "คลิกที่ Penta extension icon จากนั้นพิมพ์ ip address ของเพนต้าทีวีและคลิก เพิ่ม"
+
+#: templates/help/manual/how_to_add_channel_to_penta.html:33
+msgid ""
+"Click on your PentaTV ip address. if connect success, Connected sign will "
+"show."
+msgstr "คลิกที่เพนต้าทีวี ip address ของคุณ ถ้าเชื่อมต่อสำเร็จ จะปรากฏสัญลักษณ์ดังภาพ"
+
+#: templates/help/manual/how_to_add_channel_to_penta.html:50
+#, python-brace-format
+msgid ""
+"Go to pentachannel.com/home/ or pentachannel.com/channel/{channel} and click "
+"Add to PentaTV."
+msgstr ""
+"ไปที่ pentachannel.com/home/ หรือ pentachannel.com/channel/{channel} จากนั้นคลิก "
+"เพิ่มบนเพนต้าทีวี"
+
+#: templates/help/manual/how_to_add_channel_to_penta.html:67
+msgid "Channel will add to your PentaTV."
+msgstr "ช่องจะถูกเพิ่มขึ้นไปบนเพนต้าทีวี"
+
+#~ msgid " ago"
+#~ msgstr "ก่อน"
+
+#~ msgid "years"
+#~ msgstr "ปี"
+
+#~ msgid "months"
+#~ msgstr "เดือน"
+
+#~ msgid "days"
+#~ msgstr "วัน"
+
+#~ msgid "hours"
+#~ msgstr "ชั่วโมง"
+
+#~ msgid "minutes"
+#~ msgstr "นาที"
+
+#~ msgid "seconds"
+#~ msgstr "วินาที"
+
+#~ msgid "year"
+#~ msgstr "ปี"
+
+#~ msgid "month"
+#~ msgstr "เดือน"
+
+#~ msgid "day"
+#~ msgstr "วัน"
+
+#~ msgid "hour"
+#~ msgstr "ชั่วโมง"
+
+#~ msgid "minute"
+#~ msgstr "นาที"
+
+#~ msgid "second"
+#~ msgstr "วินาที"
+
+#~ msgid "Can not find channel."
+#~ msgstr "ไม่พบช่อง"
+
+#~ msgid "Following Channel"
+#~ msgstr "ช่องที่กำลังติดตาม"
+
+#~ msgid "Add more"
+#~ msgstr "ติดตามเพิ่มเติม"
+
+#~ msgid "Live Channel"
+#~ msgstr "ช่องสด"
+
+#~ msgid "Please follow channel by click"
+#~ msgstr "ติดตามช่อง โดยการคลิก"
+
+#~ msgid "Most Followed Channel"
+#~ msgstr "ช่องที่ถูกติดตามมากที่สุด"
+
+#~ msgid "Top Channel"
+#~ msgstr "รายการยอดนิยม"
+
+#~ msgid "Recent Channel"
+#~ msgstr "รายการล่าสุด"
+
+#~ msgid "1.Add name"
+#~ msgstr "1.กรอกชื่อ"
+
+#~ msgid "ago"
+#~ msgstr "ก่อน"

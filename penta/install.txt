@@ -1,0 +1,109 @@
+***Deprecated***
+
+set up email
+https://sites.google.com/a/whitehallcoplay.org/techcoach/gmail-security/manage-connected-apps-and-sites
+or
+http://webapps.stackexchange.com/questions/28089/understanding-authorized-access-to-your-google-account
+
+---------------------------------------------------------------
+set up admin user
+web application: login
+command promp: 
+python manage.py shell
+from django.contrib.auth.models import *
+User.objects.all()
+u = User.objects.get(id=2)
+u.is_superuser = True
+u.is_staff = True
+u.is_active = True
+u.save()
+
+---------------------------------------------------------------
+sudo apt-get -y install python-pip
+
+install DJango 1.4.5:
+sudo wget https://www.djangoproject.com/m/releases/1.4/Django-1.4.5.tar.gz
+sudo tar xzvf Django-1.4.5.tar.gz 
+cd Django-1.4.5
+sudo python setup.py install
+
+sudo pip install south
+sudo apt-get -y install python-MySQLdb
+sudo apt-get install mysql-client-core-5.5
+sudo apt-get install mysql-server
+sudo pip install validate_email
+sudo aptitude install python-pycurl
+sudo easy_install --upgrade pytz
+sudo easy_install apscheduler
+sudo apt-get install python-dateutil
+sudo apt-get install python-imaging
+sudo pip install python-crontab 
+sudo apt-get install libav-tools
+sudo apt-get install gettext
+sudo apt-get install python-numpy
+sudo apt-get install pillow
+
+install wsgi:
+sudo aptitude install apache2 apache2.2-common apache2-mpm-prefork apache2-utils libexpat1 ssl-cert
+sudo aptitude install libapache2-mod-wsgi
+sudo service apache2 restart
+mkdir ~/sources
+cd ~/sources
+wget http://modwsgi.googlecode.com/files/mod_wsgi-3.3.tar.gz 
+tar xvfz mod_wsgi-3.3.tar.gz
+sudo aptitude install python-dev apache2-prefork-dev
+cd mod_wsgi-3.3
+sudo ./configure
+sudo make
+sudo make install
+sudo pip install isodate
+
+config wsgi:
+/etc/apache2/ports.conf
+>> Listen 80
+/etc/apache2/sites-available/default
+>> <VirtualHost *:80>
+        WSGIScriptAlias / /home/localadmin/showtime/showtime/wsgi.py
+   </VirtualHost>
+showtime/showtime/wsgi.py
+>> import os, sys
+   sys.path.append('/home/localadmin/showtime/')
+   os.environ["DJANGO_SETTINGS_MODULE"] = "showtime.settings"
+   import django.core.handlers.wsgi
+   application = django.core.handlers.wsgi.WSGIHandler()
+
+sudo /etc/init.d/apache2 reload
+---------------------------------------------------------------
+set permission
+sudo vim /etc/apache2/apache2.conf
+User localadmin
+Group localadmin
+
+---------------------------------------------------------------
+sudo apt-get install sshfs
+sshfs phanapoch@192.168.6.127:/home/phanapoch/ling /home/ling/workplaces/bootstrap/showtime/media/uploaded/content/ice
+
+sshfs servadmin@192.168.5.121:/home/livetv /home/ling/workplaces/bootstrap/showtime/media/uploaded/content/Van1
+
+fusermount -u /home/ling/workplaces/bootstrap/showtime/media/uploaded/content/ice
+
+---------------------------------------------------------------
+chmod 777 run.sh
+
+--------------------i18n-------------------------------------------
+./manage.py makemessages -l th
+./manage.py compilemessages
+
+sudo pip install couchdb
+
+sudo easy_install --upgrade google-api-python-client
+
+--------------------Celery---------------------------------------
+sudo pip install Celery==3.1.8
+sudo apt-get install rabbitmq-server
+
+#when start server, run this command after "manage.py runserver"
+celery -A showtime worker -B --loglevel=INFO
+---------------------Logger--------------------------------------
+sudo mkdir /var/log/pentachannel
+sudo chown showtime:www-data /var/log/pentachannel

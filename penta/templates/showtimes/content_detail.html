@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Power-All Showtime</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% include "showtimes/include/config_style.html" %}
+    </head>
+    <body>
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% include "showtimes/include/header.html" %} 
+                    <div style="padding:0px 20px 0px 20px;">
+                        <br/>
+                        <div class="page">
+                            <div class="tape"></div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <h3 class="page_text" style="text-align:center">{{object.name}}</h3>
+                                </div>
+                                <div class="span7 pagination-right">
+                                    <image src="{{MEDIA_URL}}{{object.file_image}}" width="80%"/>
+                                </div>
+                                <div class="span4">
+                                    <h5 class="page_text" style="font-style:italic;float:right">Update at : {{object.update_at}}
+                                    <br/>Duration : {{object.duration_h}}hr {{object.duration_m}}min {{object.duration_s}}sec</h5>
+                                </div>
+                            </div>
+                            <br/><br/><br/>
+                            <p class="page_text" style="padding:0 100px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{object.explain}}</p>
+                            <p><a class="btn btn-warning" onclick="window.history.back();" style="margin-left:100px;"><i class="icon-arrow-left icon-white"></i> Back</a></p>
+                        </div>
+                        <br/><br/>
+                    </div>
+                </div>
+            </div>     
+        </div><!--end container -->
+        {% include "showtimes/include/footer.html" %}
+    </body>
+</html>

@@ -1,0 +1,39 @@
+{% if type %}
+    <!-- for searching -->
+    <div align="center">
+        <ul class="pagination pagination-sm">
+            {% if prev_page < 1 %}<li class="disabled"><a href="javascript:void(0)">&laquo;</a></li>
+            {% else %}            <li><a href="?page={{prev_page}}&q={{word}}">&laquo;</a></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page == i %}
+                    <li class="disabled"><a href="javascript:void(0)">{{i}}</a></li>
+                {% else %}
+                    <li><a href="?page={{i}}&q={{word}}">{{i}}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if next_page > paginator.page_range|length %}<li class="disabled"><a href="javascript:void(0)">&raquo;</a></li>
+            {% else %}                                      <li><a href="?page={{next_page}}&q={{word}}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </div>
+<!-- other pages -->
+{% else %}
+    <div align="center">
+        <ul class="pagination pagination-sm">
+            {% if prev_page < 1 %}<li class="disabled"><a href="javascript:void(0)">&laquo;</a></li>
+            {% else %}            <li><a href="?page={{prev_page}}{% if channelTag %}&channelTag={{channelTag}}{% endif %}">&laquo;</a></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page == i %}
+                    <li class="disabled"><a href="javascript:void(0)">{{i}}</a></li>
+                {% else %}
+                    <li><a href="?page={{i}}{% if channelTag %}&channelTag={{channelTag}}{% endif %}">{{i}}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if next_page > paginator.page_range|length %}<li class="disabled"><a href="javascript:void(0)">&raquo;</a></li>
+            {% else %}                                      <li><a href="?page={{next_page}}{% if channelTag %}&channelTag={{channelTag}}{% endif %}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </div>
+{% endif %}

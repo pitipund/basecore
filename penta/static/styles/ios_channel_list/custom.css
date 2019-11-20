@@ -1,0 +1,80 @@
+body {
+	margin: 0px;
+	font-family: arial;
+}
+
+.channelHeader {
+	width: 100%;
+	height: 40px;	
+	font-weight: bold;
+	line-height: 40px;
+	font-size: 1.3em;
+	text-align: center;
+	background-color: #333;
+	color: white;
+	position: fixed;
+	top: 0px;
+}
+
+.channelDiv {
+	width: 100pt;
+	height: 100pt;
+	margin: 10px;
+	margin-bottom: 20px;
+	display: inline-block;
+}
+
+.channelDiv.touched{
+	opacity:0.4;
+}
+
+@media (min-width: 768px) {
+	.channelDiv {
+		width: 150pt;
+		height: 150pt;
+	}
+}
+
+.channelIcon {
+	text-align: center;
+	width: 100%;
+	max-width: 200px;
+	background-color: gray;
+	vertical-align: middle;
+}
+
+.channelTitle {
+	background-color: black;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	max-width: 200px;
+	color: white;
+}
+
+.channelFrame {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+}
+
+.loading {
+    position: fixed;
+    width: 100px;
+    height: 70px;
+    margin-left: auto;
+    background-color: rgba(0, 0, 0, 0.81);
+    z-index: 999;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    color: white;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 70px;
+}

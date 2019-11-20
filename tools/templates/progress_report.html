@@ -1,0 +1,83 @@
+{% block title %} Progress Report{% endblock %}
+{% block extrahead %}
+<style>
+    a:link { text-decoration: none; color: blue; }
+    a:visited { color: blue; }
+    table {
+        border-collapse: collapse;
+    }
+    thead, tfoot {
+        background-color: #E1E1E1;
+    }
+    td, th {
+        padding: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<br>
+<h3>Consignment Deliver(Category)</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <td>Flow Code</td>
+        <td>Usecase amount</td>
+        <td>Usecase list</td>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for c in cat_consigns %}
+    {% if c.usecase_amount == ''%}
+    <tr style="background-color:#FDFAE0">
+    {% else %}
+    <tr>
+    {% endif %}
+        <td>
+            {{c.flow}}</td>
+        <td align='right'>{{c.usecase_amount}}</td>
+        <td>
+        {% for u in c.usecase_list %}
+        {{u}}<br>
+        {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+<br>
+
+
+
+<!--<h3>Book Progress</h3>-->
+<!--<table border="1">-->
+    <!--<thead>-->
+    <!--<tr>-->
+        <!--<td>No.</td>-->
+        <!--<td>Book Code</td>-->
+        <!--<td>Book Name</td>-->
+        <!--<td>% Progress(Phase 1)</td>-->
+        <!--<td>% Progress(Phase 2)</td>-->
+        <!--<td>Consignment date</td>-->
+    <!--</tr>-->
+    <!--</thead>-->
+
+    <!--<tbody>-->
+    <!--{% for book in books %}-->
+    <!--<tr>-->
+        <!--<td>{{forloop.counter}}</td>-->
+        <!--<td>{{book.code}}</td>-->
+        <!--<td>{{book.fullname}}</td>-->
+        <!--<td align='right'>{{book.progress_phase1}} %</td>-->
+        <!--<td align='right'>{{book.progress_phase2}} %</td>-->
+        <!--<td>{{book.consignment_date}} </td>-->
+    <!--</tr>-->
+    <!--{% endfor %}-->
+
+    <!--</tbody>-->
+<!--</table>-->
+
+<!--{% endblock content %}-->

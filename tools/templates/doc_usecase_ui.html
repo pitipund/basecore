@@ -1,0 +1,8 @@
+{% for usecase in usecases %}
+{% if usecase.book %}
+<h1>{{ usecase.book }}</h1>
+{% endif %}
+    <h2>Usecase {{ usecase.code }} {{ usecase.name }}</h2>
+    {% include "doc_screen_table.html" %}
+
+{% endfor %}

@@ -1,0 +1,36 @@
+{% load i18n %}
+<html>
+<head>
+  {% include "curator/include/config_style.html" %}
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'channel name');
+        data.addColumn('number', 'active(times)');
+        data.addColumn('string', 'stream url');
+        
+        {% for item in channels %}
+	    data.addRows([
+	          ['<img src="/media/{{ item.icon }}" width=20 height=20>{{ item.name }}',{v: {{ item.count }}, f: '{{ item.count }}'},'{{ item.url }}']
+	    ]);
+        {% endfor %}
+
+      var table = new google.visualization.Table(document.getElementById('most_recent_table'));
+      table.draw(data, {showRowNumber: true, allowHtml: true});
+
+    }
+  </script>
+</head>
+
+<body>
+  <div>
+  <div id="most_div">
+  	<h1>Stat for cpu id : {{ cpu_id }}</h1>
+  	<div id='most_recent_table'></div>
+  </div>
+</body>
+
+</html>

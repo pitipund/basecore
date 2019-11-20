@@ -1,0 +1,228 @@
+{% load i18n static %}
+<meta charset="utf-8">
+<title>{{titlehead}}| Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="1UjZyCm_oIfVTiUDJeQ6VNakNrb3G_yK-UpliEokkVk" />
+<meta property="og:title" content="{{ogtitle}} | Penta Channel รายการดีๆ ที่ไม่ต้องตามหา" >
+<meta property="og:type" content="video.movie">
+<meta property="og:url" content="https://penta.center{{ogpath}}">
+<meta property="og:image" content="{{ogimage}}">
+<meta property="og:site_name" content="{{ogsitename}}">
+<meta property="og:description" content="{{ogdescription}}Penta Channel ช่วยให้คุณติดตามรายการทีวีสุดโปรดได้ง่ายๆ เราแยกแต่ละรายการให้คุณสามารถเลือกติดตามเฉพาะรายการที่คุณชื่นชอบ กดคลิกเดียวก็ได้ดูตอนล่าสุด ไม่ต้องเสิร์ชให้ยุ่งยาก ไม่ต้องไล่ดูทีละคลิปให้เมื่อยมือ">
+<link rel="apple-touch-icon" href="{% static 'images/pentachannel-logo.png' %}">
+<link href="{% static 'styles/libs/bootstrap.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'styles/custom_styles/mystyle.css' %}" rel="Stylesheet">
+<link href="{% static 'styles/custom_styles/curatorStyle.css' %}" rel="Stylesheet">
+<link rel="shortcut icon" href="{% static 'images/pentachannel-logo.png' %}">
+<link rel="stylesheet" href="{% static 'owl-carousel/owl.carousel.css' %}">
+<link rel="stylesheet" href="{% static 'owl-carousel/owl.theme.css' %}">
+<script src="{% static 'scripts/libs/bootstrap_js/jquery.js' %}"></script>
+<link rel="stylesheet" href="{% static 'styles/libs/jquery-ui.css' %}"/>
+<script src="{% static 'scripts/libs/jquery-ui.js' %}"></script>
+<script src="{% static 'scripts/libs/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+<script src="{% static 'owl-carousel/owl.carousel.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'styles/libs/jquery.mCustomScrollbar.css' %}" />
+<script src="{% static 'scripts/libs/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+<script src="{% static 'scripts/libs/jquery.visible.min.js' %}"></script>
+
+
+<style>
+    body {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .container {
+        background-color: #ffffff;
+        word-wrap:break-word;
+    }
+    /*For Images in Index page*/
+    @media screen and (min-width: 200px) {
+        .image_index {
+            height: 90px;
+        }
+    }
+    @media screen and (min-width: 400px) {
+        .image_index {
+            height: 110px;
+        }
+    }
+    @media screen and (min-width: 700px) {
+        .image_index {
+            height: 130px;
+        }
+    }
+    @media screen and (min-width: 900px) {
+        .image_index {
+            height: 140px;
+        }
+    }
+    @media screen and (min-width: 1000px) {
+        .image_index {
+            height: 150px;
+        }
+    }
+    @media screen and (min-width: 1280px) {
+        .image_index {
+            height: 160px;
+        }
+    }
+    /*For avoid text flow*/
+    .avoid_overflow {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .instruction_text {
+        margin-top:15px;
+        margin-bottom:15px;
+        margin-left:10px;
+    }
+    .show_pointer {
+        cursor:pointer;
+    }
+    #post_box_frame {
+        background: #EEE;
+        -webkit-border-radius: 7px;
+        -moz-border-radius: 7px;
+        border-radius: 5px;
+        border:1px solid #d7e0e3;
+        -webkit-box-shadow: 7px 7px 10px 0px rgba(223, 223, 223, 1);
+        -moz-box-shadow:    7px 7px 10px 0px rgba(223, 223, 223, 1);
+        box-shadow:         7px 7px 10px 0px rgba(223, 223, 223, 1);
+    }
+    /*
+     *  STYLE 2
+     */
+    ::-webkit-scrollbar-track{
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+
+        background-color: #aaa;
+    }
+    ::-webkit-scrollbar{
+        width: 5px;
+        height: 10px;
+        background-color: #333;
+    }
+    ::-webkit-scrollbar-thumb{
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #06b1e3;
+    }
+    ::-webkit-scrollbar-horizontal{
+        height: 5px;
+    }
+
+    a.nodeco {
+        color:white;
+        text-decoration: none;
+    }
+
+    a.nodeco :hover {
+        color: white;
+        text-decoration: none;
+    }
+
+    .img_text_button label{
+        height:40px;
+        padding-top:9px;
+    }
+
+    .facebook_blue{
+        background-color:#3b5998;
+    }
+
+    .facebook_blue:hover{
+        background-color:#2a4887;
+    }
+
+    .penta_blue{
+        background-color:#16c1f3;
+    }
+
+    .penta_blue:hover{
+        background-color:#05b0e2;
+    }
+
+    #loginbar {
+        color: white;
+        background-color: rgba(10, 92, 155, 0.3);
+        position: fixed; padding:5px; right:5px; top: 60px; z-index:1060;
+    }
+
+    .padding-side-0{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .margin-side-0{
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    #videoplayer_title
+    {
+        color: #333;
+    }
+
+@media screen and (max-width: 480px) {
+    span.hidebtntext{
+        display: none;
+        width: 0px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    #ch_icon, #chdetail, .sideBarText, .sideBarThumbnail{
+            max-width: 300px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    #ch_icon, #chdetail, .sideBarText, .sideBarThumbnail{
+        max-width: 300px;
+    }
+}
+
+/* iPhone 5*/
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+ /* STYLES GO HERE */
+    #ch_icon, #chdetail, .sideBarText, .sideBarThumbnail{
+        max-width: 150px;
+    }
+}
+
+/*iPhone 2-4*/
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+/* STYLES GO HERE */
+    #ch_icon, #chdetail, .sideBarText, .sideBarThumbnail{
+        max-width: 150px;
+    }
+}
+
+</style>
+
+<script>
+    var login_text = "{% trans 'Please Log in' %}";
+    var cant_text  = "{% trans 'Can not' %}";
+    var play_text  = "{% trans ' play on Penta' %}";
+    var queue_text = "{% trans ' add to queue' %}";
+
+
+    $(document).ready(function(){
+            $(".sidebar").mCustomScrollbar({
+                autoHideScrollbar:true,
+                scrollInertia: 700,
+                theme: "minimal"
+            });
+    });
+
+</script>
+
+</script>
+
+

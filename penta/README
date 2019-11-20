@@ -1,0 +1,139 @@
+try to look into test_script.sh
+
+manually setup environment for new local server
+*use virtualenv if you don't want to mess with your current python library
+
+    Require
+    1. clean VM with Ubuntu server 14.04 64 bit
+    2. cloned project folder from git@192.168.10.21:pentatv/showtime.git
+
+    Environment
+    user: powerall
+    project path: /home/powerall/showtime
+
+    Setup
+    0. change update server to mirror1.ku.ac.th 
+        sudo vi /etc/apt/sources.list
+        %s/us.archive.ubuntu.com/mirror1.ku.ac.th/g
+        save and exit
+        sudo apt-get update
+
+    1. install require libraries
+        sudo apt-get install mysql-server libmysqlclient-dev python-dev python-pip libtiff4-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.5-dev tk8.5-dev python-tk
+
+    2. at path /home/powerall/showtime  
+        sudo pip install -r requirements.txt
+
+    3. fix google lib
+        sudo pip install -I google-api-python-client
+
+    4. install image lib (install separately due to lib problem on another version)
+        sudo pip install image
+
+    5. create folder /var/log/pentachannel and change access
+        sudo mkdir -p /var/log/pentachannel
+        sudo chown powerall:powerall /var/log/pentachannel
+
+    6. create database
+        mysql -u root -p
+        powerall
+        CREATE DATABASE showtime CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+    6. sync db
+        python manage.py syncdb
+
+    7. migrate db
+        python manage.py migrate
+
+    8. run server
+        python manage runserver 0.0.0.0:8000
+
+    9. go to http://IP:8000/admin/
+
+    10. login with email account
+
+    11. edit user permission to access admin page by go to /home/powerall/showtime then call
+        python manage.py shell
+
+        from curator.models import User
+        me = User.objects.first() # assume first account is yours
+        me.is_staff = True
+        me.is_superuser = True
+        me.save()
+
+    12. now you should able to access http://IP:8000/admin/
+
+    13. Initial GeoLite data
+       
+        ./manage.py import_geo_country
+        ./manage.py import_geo_network
+
+    14. change contraint of table auth_user_groups
+
+	mysql -u root -p
+	use showtime;
+	show create table auth_user_groups;
+	ALTER TABLE auth_user_groups DROP FOREIGN KEY [user_id constraint name];
+	ALTER TABLE auth_user_groups ADD CONSTRAINT fk_user_id FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+
+for production server you need to setup about
+    - rabbitmq
+    - celery
+    - uwsgi
+    - nginx
+    - phantomjs
+    - etc
+    - grunt
+*** look into script/fabfile.py
+
+set timezone
+    sudo dpkg-reconfigure tzdata
+    select Asia > Bangkok
+
+python library
+    image and cjson have problem when install with sudo
+    try to install by pip install image python-cjson
+
+beware permisson of /var/log/pentachannel, /var/log/pentachannel/access.log and /home/showtime/beta_showtime/media/uploaded
+should set to 777
+
+Install Grunt
+sudo apt-get install npm nodejs-legacy
+sudo npm install -g grunt grunt-cli
+then call grunt in root project directory
+
+# Note
+
+## Note for MySQL 5.7.5+
+
+If you got following errors:
+
+```
+OperationalError: (1055, "Expression #1 of ORDER BY clause is not in GROUP BY 
+clause and contains nonaggregated column 
+'showtime.curator_curatorplaylist.create_at' which is not
+ functionally dependent on columns in GROUP BY clause;
+  this is incompatible with sql_mode=only_full_group_by")
+```
+
+For Ubuntu 16.04:
+
+1.  sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
+2. Under `[mysqld]`
+
+    ```
+    sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION to the bottom of the file
+    ```    
+
+3. Restart MySQL
+
+```
+    sudo service mysql restart
+```
+
+4. Some data dump contain invalid date, we should change it to null
+
+```
+update curator_curatorlink set last_playlist_create_at=NULL where cast(last_playlist_create_at AS CHAR(20)) = '0000-00-00 00:00:00';
+```

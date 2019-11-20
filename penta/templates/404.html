@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>404 Not found | Penta Channel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="1UjZyCm_oIfVTiUDJeQ6VNakNrb3G_yK-UpliEokkVk" />
+<link rel="apple-touch-icon" href="{% static 'images/pentachannel-logo.png' %}">
+<link href="{% static 'styles/libs/bootstrap.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'styles/custom_styles/mystyle.css' %}" rel="Stylesheet">
+<link href="{% static 'styles/custom_styles/curatorStyle.css' %}" rel="Stylesheet">
+<link rel="shortcut icon" href="{% static 'images/pentachannel-logo.png' %}">
+<link rel="stylesheet" href="{% static 'owl-carousel/owl.carousel.css' %}">
+<link rel="stylesheet" href="{% static 'owl-carousel/owl.theme.css' %}">
+<script src="{% static 'scripts/libs/bootstrap_js/jquery.js' %}"></script>
+<link rel="stylesheet" href="{% static 'styles/libs/jquery-ui.css' %}"/>
+<script src="{% static 'scripts/libs/jquery-ui.js' %}"></script>
+<script src="{% static 'scripts/libs/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+<script src="{% static 'owl-carousel/owl.carousel.js' %}"></script>
+
+<style>
+    body {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .container {
+        background-color: #ffffff;
+        word-wrap:break-word;
+    }
+    /*For Images in Index page*/
+    @media screen and (min-width: 200px) {
+        .image_index {
+            height: 90px;
+        }
+    }
+    @media screen and (min-width: 400px) {
+        .image_index {
+            height: 110px;
+        }
+    }
+    @media screen and (min-width: 700px) {
+        .image_index {
+            height: 130px;
+        }
+    }
+    @media screen and (min-width: 900px) {
+        .image_index {
+            height: 140px;
+        }
+    }
+    @media screen and (min-width: 1000px) {
+        .image_index {
+            height: 150px;
+        }
+    }
+    @media screen and (min-width: 1280px) {
+        .image_index {
+            height: 160px;
+        }
+    }
+    /*For avoid text flow*/
+    .avoid_overflow {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .instruction_text {
+        margin-top:15px;
+        margin-bottom:15px;
+        margin-left:10px;
+    }
+    .show_pointer {
+        cursor:pointer;
+    }
+    #post_box_frame {
+        background: #EEE;
+        -webkit-border-radius: 7px;
+        -moz-border-radius: 7px;
+        border-radius: 5px;
+        border:1px solid #d7e0e3;
+        -webkit-box-shadow: 7px 7px 10px 0px rgba(223, 223, 223, 1);
+        -moz-box-shadow:    7px 7px 10px 0px rgba(223, 223, 223, 1);
+        box-shadow:         7px 7px 10px 0px rgba(223, 223, 223, 1);
+    }
+    /*
+     *  STYLE 2
+     */
+    ::-webkit-scrollbar-track{
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        background-color: #333  ;
+    }
+    ::-webkit-scrollbar{
+        width: 12px;
+        height: 12px;
+        background-color: #333;
+    }
+    ::-webkit-scrollbar-thumb{
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #666;
+    }
+    ::-webkit-scrollbar-horizontal{
+        height: 10px;
+    }
+
+    a.nodeco {
+        color:white;
+        text-decoration: none;
+    }
+
+    a.nodeco :hover {
+        color: white;
+        text-decoration: none;
+    }
+
+    .img_text_button label{
+        height:40px;
+        padding-top:9px;
+    }
+
+    .facebook_blue{
+        background-color:#3b5998;
+    }
+
+    .facebook_blue:hover{
+        background-color:#2a4887;
+    }
+
+    .penta_blue{
+        background-color:#16c1f3;
+    }
+
+    .penta_blue:hover{
+        background-color:#05b0e2;
+    }
+
+    #loginbar {
+        color: white;
+        background-color: rgba(10, 92, 155, 0.3);
+        position: fixed; padding:5px; right:5px; top: 60px; z-index:1060;
+    }
+
+</style>
+    </head>
+    <body style="padding-top: 70px;">
+
+    <div id="nav_master" class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid" style="background-color: #16c1f3;">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand" title="Home" style="color: white;"><img src="{% static 'images/pentachannel-row.png' %}" style=""></a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+    </div>
+</div><!-- end navbar -->
+
+    <div class="row" style="padding-bottom:20px;">
+        <div class="visible-lg visible-md" style="height:150px;"></div>
+        <div class="visible-sm" style="height:120px;"></div>
+        <div class="visible-xs" style="height:40px;"></div>
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 text-center">
+            <img src="{% static 'images/errorlogo.png' %}" alt="Error 500">
+            <div class="lead text-center"><span style="margin-top:20px; font-size:1.6em;">
+            {% if message404 %}
+                {{ message404 }}<br>
+                {% if url == True %}
+                    <h3><a href="javascript:history.back(-1);"><span class='glyphicon glyphicon-hand-right'></span> try again, click here</a></h3>
+                {% else %}
+                    <h3><a href="{{ url }}"><span class='glyphicon glyphicon-hand-right'></span> try again, click here</a></h3>
+                {% endif %}
+            {% else %}
+                Sorry! The page you were looking for could not be found.
+            {% endif %}
+            </span><br><span style="margin-top:20px; font-size:0.6em; color:#bbb">Error 404</span></div>
+        </div>
+    </div>
+    {% include "curator/include/analytics.html" %}
+    </body>
+</html>

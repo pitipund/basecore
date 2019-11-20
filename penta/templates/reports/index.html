@@ -1,0 +1,54 @@
+{% load static %}
+<html>
+{% block header %}
+    <meta charset="UTF-8">
+    <title>Penta Channel Reports</title>
+    <base href="/curator/admin/reports/" />
+
+    <link  href="{%  static 'reports/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <link  href="{%  static 'reports/css/angular-chart.css' %}" rel="stylesheet" type="text/css" />
+    <script src="{%  static 'reports/js/jquery-2.1.4.min.js' %}"></script>
+{#    <link href="{% static 'reports/css/styles.css' %}" rel="stylesheet" type="text/css" />#}
+{% endblock %}
+
+<body ng-app="reports">
+
+<div class="container-fluid">
+    <div class="row clearfix" style="margin-bottom: 50px">
+        {% include "channel/include/header2.html" %}
+        <script src="{% static 'scripts/feed/tag_editor.js' %}"></script>
+    </div>
+    <div class="container">
+        <ul class="nav nav-tabs">
+          <li role="presentation"><a ng-href="#new_user">New Users</a></li>
+          <li role="presentation"><a ng-href="#access">User Access</a></li>
+{#          <li role="presentation"><a ng-href="#playlist">Playlist</a></li>#}
+        </ul>
+        <div class="row clearfix" style="margin-bottom:80px">
+            <div ng-view></div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'reports/js/bootstrap.js' %}"></script>
+<script src="{% static 'reports/js/Chart.js' %}"></script>
+<script src="{% static 'reports/js/angular.js' %}"></script>
+<script src="{% static 'reports/js/angular-cookies.js' %}"></script>
+<script src="{% static 'reports/js/angular-route.js' %}"></script>
+<script src="{% static 'reports/js/angular-chart.js' %}"></script>
+<script src="{% static 'reports/app/reports.js' %}"></script>
+<script src="{% static 'reports/app/reports.routes.js' %}"></script>
+<script src="{% static 'reports/app/reports.config.js' %}"></script>
+<script src="{% static 'reports/app/layout/layout.module.js' %}"></script>
+<script src="{% static 'reports/app/layout/controllers/index.controller.js' %}"></script>
+<script src="{% static 'reports/app/curator/curator.module.js' %}"></script>
+<script src="{% static 'reports/app/curator/services/curator.service.js' %}"></script>
+<script src="{% static 'reports/app/user/user.module.js' %}"></script>
+<script src="{% static 'reports/app/user/controllers/user.controller.js' %}"></script>
+<script src="{% static 'reports/app/user/services/user.service.js' %}"></script>
+<script src="{% static 'reports/app/channel/channel.module.js' %}"></script>
+<script src="{% static 'reports/app/channel/controllers/channel.controller.js' %}"></script>
+<script src="{% static 'reports/app/channel/services/channel.service.js' %}"></script>
+<script src="{% static 'scripts/libs/bootstrap3-typeahead-mod.js' %}"></script>
+</body>
+</html>

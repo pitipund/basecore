@@ -1,0 +1,43 @@
+<html>
+<head>
+<!--Load the AJAX API-->
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Hour', 'Rate'],
+          {% for row in myjson %}
+          ['{{row.hour}}.{{row.timing}}',  {{row.count}} ],
+          {% endfor %}
+        ]);
+
+        var options = {
+          title: '{{myjson.0.name}} : {{myjson.0.date}}'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+}
+ 
+</script>
+</head>
+
+<body>
+	<h1><img src="/media/{{ myjson.0.icon }}" width=40 height=40> {{ myjson.0.name }}({{ myjson.0.id }})</h1>
+	 <div id="chart_div" style="width: 1000px; height: 300px;"></div>
+	<select>
+	{% for row in dates %}
+		<option value="">{{row.date}}</option>
+	{% endfor %}
+	</select> <br/>
+
+	{% for item in myjson %}
+	 	{{forloop.counter}}. > Start: {{ item.start_at }} ====> {{ item.episode }}
+		<br/>
+	{% endfor %}
+
+</body>
+</html>

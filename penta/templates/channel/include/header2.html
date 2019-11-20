@@ -1,0 +1,437 @@
+{% load static %}
+{% load i18n %}
+
+<!-- WARNING: this page use ng-src for async load profile image test with "http://deelay.me/5000/http://deelay.me/img/5000ms.gif" -->
+
+<meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" />
+
+<style type="text/css">
+
+#navSearchInput {
+    margin-left: 10px;
+}
+
+.navbar-text a, .navbar-text {
+    color: white;
+    text-decoration: none;
+}
+
+.user-nav-image {
+    margin-right: 5px;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px
+}
+
+.icon-toolbar{
+    min-height: 50px;
+    border-right: 1px solid #16B8E9;
+}
+
+.icon-toolbar > a > span.glyphicon {
+    font-size: 1.3em;
+}
+
+.icon-toolbar:hover{
+    color: #fff;
+    background: #16AAE9;
+}
+
+.navbar .navbar-toggle:hover {
+    color: #fff;
+    background: #16AAE9;
+}
+
+.sideBarToggle {
+    visibility: hidden;
+}
+
+.caret {
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #000000;
+}
+
+.navbar .navbar-nav>li>a {
+    color: white;
+}
+
+.navbar .navbar-nav>li>a:hover, .navbar .navbar-nav>li>a:focus {
+    background-color: #337ab7;
+}
+
+#nav_master {
+    background-color: #16c1f3;
+    border-color: transparent;
+}
+
+#nav_master .container-fluid {
+    background-color: #16c1f3;
+}
+
+.navbar .nav > li.dropdown.open > .dropdown-toggle,
+.navbar .nav > li.dropdown.active > .dropdown-toggle,
+.navbar .nav > li.dropdown.open.active > .dropdown-toggle{
+    color: red;
+    background: #16c1f3;
+}
+
+.typeahead_photo { float: left; max-width: 80px; max-height: 60px; margin-right: 5px; }
+.typeahead_top {
+    white-space: nowrap;
+    font-weight: bold;
+    vertical-align: bottom;
+}
+.typeahead_bottom {
+    white-space: nowrap;
+    font-size: .9em;
+}
+.typeahead_highlight_top {
+    color: red;
+}
+
+.typeahead_highlight_bottom {
+    color: red;
+}
+
+#unreadquestion .dropdown-toggle {
+    color: white !important;
+}
+
+#answerquestion .dropdown-toggle {
+    color: white !important;
+}
+
+#unreadquestion .dropdown-menu > li {
+    padding: 0 !important;
+}
+
+.navbar-brand {
+    max-width: 230px;
+}
+
+.tooltip-inner {
+    white-space: nowrap;
+    padding: 8px;
+    font-size: 14px;
+}
+
+@media screen and (max-width: 450px){
+    .sideBarToggle {
+        visibility: visible;
+    }
+}
+
+@media screen and (max-width: 768px){
+    .navbar-item-text {
+        display: inline-block;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #navSearchInput {
+        margin-left: 70px;
+    }
+    #search-parent {
+        width: auto;
+        min-width: 200px;
+        max-width: 300px;
+    }
+
+    #navSearchInput {
+        vertical-align:middle;
+    }
+
+    .navbar-item-text {
+        display: none;
+    }
+}
+
+
+@media screen and (min-width: 991px) {
+    #search-parent {
+        width: 300px;
+    }
+
+    #navSearchInput {
+        vertical-align:middle;
+    }
+
+    .navbar-item-text {
+        display: none;
+    }
+}
+
+</style>
+
+<header id="nav_master" class="navbar navbar-fixed-top" role="navigation">
+    <div class="container-fluid" >
+        <div class="navbar-header">
+            {%  if user.id %}
+                <button class="navbar-toggle" type="button"  data-toggle="collapse" data-target="#profile_master" aria-controls="profile_master" aria-expanded="false" style="border: 0; margin-right: 0px;">
+                    <img style="width:25px; height:25px;" src="{{ user.userprofile.real_image }}">
+                    <span class="caret" style="font-size:2em;" aria-hidden="true"></span>&nbsp;
+                </button>
+            {% else %}
+                <a class="navbar-toggle" data-toggle="modal" href="#guestModal" style="margin-right: 0px;"><strong class="navbar-text">Login</strong></a>
+            {% endif %}
+
+            {% if not playitem %}
+            <button type="button" class="navbar-toggle sideBarToggle" style="border: 0; height:43px;">
+                <span class="icon-bar" style="background-color:#fff;"></span>
+                <span class="icon-bar" style="background-color:#fff;"></span>
+                <span class="icon-bar" style="background-color:#fff;"></span>
+                <span class="icon-bar" style="background-color:#fff;"></span>
+            </button>
+            {% endif %}
+
+            <a href="/th/" class="navbar-brand" title="{% trans "Home" %}" style="color: white;">
+                <img src="{% static 'images/pentachannel-row.png' %}" alt="Penta Channel รายการดีๆ ที่ไม่ต้องตามหา" style="">
+            </a>
+        </div>
+
+        <nav id="profile_master" class="collapse navbar-collapse">
+
+            {% if True %}
+            <!-- <div id="profile_dropdown" class="navbar-collapse collapse"> -->
+
+                <ul class="nav navbar-nav navbar-right">
+                    {%  if user.id %}
+                    <li class="icon-toolbar">
+                        <a style="padding-bottom: 9px;padding-top:9px" id="navbarShareChannelButton" href="/th/channel/{{user.userdetail.get_share_channel.id}}"
+                            data-toggle="tooltip"
+                            data-placement="bottom"
+                            title="{% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}{{user.username}}{% endif %}">
+                            <img class="user-nav-image" src="{{ user.userprofile.real_image }}">
+                            {% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %}
+                        </a>
+                    </li>
+                    {% if user.is_staff %}
+                    <li id="unreadquestion" class="dropdown icon-toolbar" data-toggle="tooltip"
+                            data-placement="bottom"
+                            title="ความคิดเห็นถึงวิดีโอของคุณ" data-delay='{"show":"2000"}'>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="padding: 12px; margin: 0;"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span>{% if nav_values.question_unread > 0 %}
+                                <span style="vertical-align: top">({{nav_values.question_unread}})</span>
+                            {% endif %}</a>
+                        <ul class="dropdown-menu" style="height: auto; max-height: 400px; overflow-y:scroll; overflow-x:hidden; width: 480px;">
+                            {% for field in nav_values.question_list %}
+                                <li>
+                                <a href="{{field.link}}" target="_self" style="padding:4px; border-bottom: 1px dashed #BBB;">
+                                <table style="background: {% if field.new %}#ddf0f0{% else %}default{% endif %}">
+                                <tr style="vertical-align: top;">
+                                <td>
+                                    <img src="{{field.thumb}}" width="90px" height="60px">
+                                </td>
+                                <td style="width:100%;">
+                                    <div style="margin-left: 8px;">
+                                        <div>
+                                        {{field.msg}}
+                                        </div>
+                                        <div style="color: #999; font-size: small;">
+                                        ความคิดเห็นใหม่จากผู้ชมวิดีโอ {{field.video_name}}
+                                        <br>
+                                        เมื่อ {{field.when}}
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                </table>
+                                </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li id="answerquestion" class="dropdown icon-toolbar" data-toggle="tooltip"
+                            data-placement="bottom"
+                            title="วิดีโอจากความคิดเห็น" data-delay='{"show":"2000"}'>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="padding: 12px; margin: 0;"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>{% if nav_values.suggest_video_from_question > 0 %}
+                                <span style="vertical-align: top">({{nav_values.suggest_video_from_question}})</span>
+                            {% endif %}</a>
+                        <ul class="dropdown-menu" style="height: auto; max-height: 400px; overflow-y:scroll; overflow-x:hidden; width: 480px;">
+                            {% for field in nav_values.suggest_video_from_question_list %}
+                                <li><a href="{{field.link}}" target="_self" style="padding:8px; border-bottom: 1px dashed #BBB;">
+                                <img src="{{field.thumb}}" width="90px" height="60px">
+                                <div style="width: 360px; display: inline-block; vertical-align: top;">
+                                    <div style="white-space: pre-wrap;">{{field.msg}}</div>
+                                    <div style="white-space: pre-wrap;color:#BBB;font-size:13px;">{{field.ref}}</div>
+                                </div>
+                                </a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endif %}
+                    <li class="icon-toolbar">
+                        <a id="navbarSavedVideoButton" href="/th/channelplay/saved/"
+                            data-toggle="tooltip"
+                            data-placement="bottom"
+                            target="_self"
+                            title="วิดีโอที่คุณเก็บไว้" style="padding: 13px 14px 16px 14px; margin: 0;">
+                            <span class="glyphicon glyphicon-bookmark" style="vertical-align:middle" aria-hidden="true"></span>
+                            {% if nav_values.saved_unwatched > 0 %}
+                                ({{nav_values.saved_unwatched}})
+                            {% endif %}
+                            <span class="navbar-item-text">วิดิโอที่เก็บไว้ดู</span>
+                        </a>
+                    </li>
+                    <li id="dropdown_islogin" class="dropdown icon-toolbar">
+                        <a id="navbarDropdown" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">&nbsp;<span class="caret" style="font-size:2em;" aria-hidden="true"></span>&nbsp;</a>
+                        <ul class="dropdown-menu">
+                            {% if nav_values.notification > 0 %}
+                                <li>
+                                    <a href="{% url 'curator:site_notification_playlist' user.id %}"><span class="badge pull-right" style="background-color:#d9534f;">{{nav_values.notification}}</span> {% trans "Notifications" %}</a>
+                                </li>
+                            {% endif %}
+                        {% comment %}
+                            <li>
+                                <a href="{% url 'site_profile' nav_values.user_url %}"><span class="glyphicon glyphicon-user"></span> {% trans "Profile" %}</a>
+                            </li>
+                        {% endcomment %}
+{% comment %}
+                            {% if not nav_values.avoidaddplaylist %}
+                                <li>
+                                    <a data-toggle="modal" href="#addPlaylistModal"><span class="glyphicon glyphicon-plus-sign"></span> {% trans "Add playlist" %}</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a data-toggle="modal" href="#languageModal"><span class="glyphicon glyphicon-globe"></span> {% trans "Change Language" %}</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'site_manual' %}"><span class="glyphicon glyphicon-book"></span> {% trans "User Manual" %}</a>
+                            </li>
+{% endcomment %}
+                            {% if user.is_staff %}
+                                <li>
+                                    <a href="{% url 'curator:site_admin' %}"><span class="glyphicon glyphicon-cog"></span> {% trans "Admin tools" %}</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a href="{% url 'site_logout' %}"><span class="glyphicon glyphicon-log-out"></span> {% trans "Logout" %}</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <p class="navbar-text">
+                        <a data-toggle="modal" href="#guestModal"><strong>Login</strong></a>
+                    </p>
+                    {% endif %}
+                </ul><!--end dropdown, login-->
+                <form class="navbar-form navbar-left center" id="searchForm" role="search" method="get" action="/th/search/" style="padding-left:0px;">
+                    <!--{% csrf_token %}-->
+                    <input type="hidden" name="mode" value="channels" />
+                    <div id="search-parent" class="input-group">
+                      <input id="navSearchInput" type="text" name="q" data-provide="typeahead" class="form-control" placeholder="ระบุวิดีโอ หรือแชนแนลที่ต้องการ" autocomplete="off" value="{{ nav_values.q }}">
+                      <span class="input-group-btn">
+                      <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>&nbsp;
+                      </button>
+                      </span>
+                    </div>
+                </form>
+
+                {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li style="padding-right:5px;"><a data-toggle="modal" href="#languageModal"><img id="currentLangImage" src="" style="max-height:25px;"/><span id="currentLang"></span></a></li>
+                    <li id="dropdown_unlogin" class="dropdown">
+                        <ul class="dropdown-menu" style="padding:15px 22px 15px 15px; top:50px;">
+                            {% if nav_values.page_header != "" %}
+                                <li>
+                                    <div align="center" style="padding-bottom:10px;">
+                                        <a href="https://accounts.thevcgroup.com/login/facebook/?next=https://{{request.get_host}}/accounts/login/?next=%2F">
+                                            <label style="background-color:#3b5998; height:40px; color:white; padding-top:9px;" class="show_pointer">
+                                                <image src="{% static 'images/facebook.png' %}" style="padding-right:5px; margin-top:-4px;"/>{% trans "Facebook" %}&nbsp;&nbsp;
+                                            </label>
+                                        </a>
+                                    </div>
+                                    <div align="center">{% trans "Or" %}</div>
+                                    <div align="center" style="padding:10px 0px;">
+                                        <a href="{% url 'site_login' %}">
+                                            <label style="background-color:#16c1f3; height:40px; color:white; padding:10px 0px 0px 10px;" class="show_pointer">
+                                                <image src="{% static 'images/pentachannel-logo_white.png' %}" style="padding-right:5px; width:25px;"/> {% trans "Penta Account" %}&nbsp;&nbsp;
+                                            </label>
+                                        </a>
+                                    </div>
+                                    <div align="center">{% trans "Or" %}</div>
+                                    <div align="center" style="padding-top:10px;">
+                                        <a href="https://accounts.thevcgroup.com/accounts/register/?site=penta"><label class="show_pointer">{% trans "Sign up" %}&nbsp;&nbsp;</label></a>
+                                    </div>
+                                </li>
+                                <hr style="margin:10px 0px;">
+                            {% endif %}
+                            <li><a data-toggle="modal" href="#languageModal"><span class="glyphicon glyphicon-globe"></span> {% trans "Change Language" %}</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                {% endif %}<!--end dropdown, unlogin-->
+            <!-- </div> -->
+        </nav>
+    </div>
+</header><!-- end navbar -->
+
+<!-- Language Modal -->
+<div class="modal" id="languageModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{% trans "Change Language" %}</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <a class="btn btn-default btn-lg btn-block" href="{% url 'curator:curator_set_language' 'th' %}">
+                        <img src="{% static 'images/lang-th.png' %}" style="max-width:28px; max-height:28px;"> ไทย
+                    </a>
+                </p>
+                <p>
+                    <a class="btn btn-default btn-lg btn-block" href="{% url 'curator:curator_set_language' 'en' %}">
+                        <img src="{% static 'images/lang-en.png' %}" style="max-width:28px; max-height:28px;"> English
+                    </a>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+@media screen and (min-width: 768px) {
+    .sidebar{
+        visibility: visible;
+    }
+}
+</style>
+
+<script>
+    var channel_search = '{{nav_values.channel_search}}';
+    {% if user.id %}
+    var url = "{% url 'channel:channel_search' %}";
+    {% else %}
+    codeToLanguage();
+    {% endif %}
+
+    function codeToLanguage(){
+        code = '{{LANGUAGE_CODE}}';
+        var lang;
+        var img;
+        if(code=="th")
+        {
+            lang = "ไทย";
+            img = "lang-th";
+        }
+        else
+        {
+            lang = "English";
+            img = "lang-en";
+        }
+        if(document.getElementById("currentLang")) {
+            document.getElementById("currentLang").innerHTML = ' '+lang;
+            document.getElementById("currentLangImage").src = "{{MEDIA_URL}}images/"+img+".png"
+        }
+    }
+</script>
+
+{% if not optimize %}
+<script src="https://cdn.drjaysayhi.com/showtime/scripts/libs/bootstrap3-typeahead-mod.js"></script>
+<script src="{% static 'feed/js/search_typeahead.js' %}"></script>
+{% endif %}

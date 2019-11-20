@@ -1,0 +1,137 @@
+{% extends "y15/base_browse.html" %}
+{% load thumbnail %}
+
+{% block header %}
+
+<title>{{ t.name }} - Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+<meta property="og:title" content="{% if request.path != '/th/room/' %}{{ t.name }} - {% endif %}Penta Channel รายการดีๆ ที่ไม่ต้องตามหา" />
+<meta property="og:url" content="https://{{ request.get_host }}{{ request.path }}" />
+<meta property="og:image" content="https://{{ request.get_host }}/media/images/room-thumbnail.png" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="720" />
+<meta property="og:site_name" content="Penta Channel" />
+<meta property="og:description" content="ดูละคร ซี่รี่ ทีวีย้อนหลัง หรือฟังเพลง ได้เลยที่นี่ www.pentachannel.com เราจัดสรรแชนแนลไว้ให้คุณพร้อมสรรพ ติดตามได้ง่ายๆ ไม่พลาดตอนสำคัญ ดูได้ฟรีๆ รายการอีกมากมายรอให้คุณมารับชม สมัครเลย ง่ายๆที่ www.pentachannel.com" />
+{% endblock %}
+
+{% block middlepane %}
+
+<!-- Room Selection -->
+<style>
+    .room-list{
+        padding-top: 5px;
+        padding-bottom: 5px;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px!important;
+    }
+
+    span.active, span.active > a{
+        background-color: #666;
+        color: #eee;
+    }
+</style>
+
+<div class="list-group clearfix">
+    {% for r in R %}
+    <a href="/th/room/{{ r.id }}/" class="col-md-3 room-list list-group-item {{ r.active|yesno:'active,' }}">{{ r.name }}</a>
+    {% endfor %}
+    <a href="#" class="col-md-3 room-list list-group-item disabled">อื่น ๆ</a>
+</div>
+
+{% if request.user.is_authenticated %}
+    {% include "y15/postbox.html"%}
+    <script type="text/javascript">
+        showChannelSelection(true);
+    </script>
+{% endif %}
+<script type="text/javascript"> setShareButtonText("แชร์ในห้องนี้") </script>
+
+{% include "y15/components/playlist_script_template.html" %}
+
+{% for p in P %}
+    {% include "y15/components/room_playlist_template.html"%}
+{% endfor %}
+
+
+<nav>
+  <ul class="pagination">
+    {% if P.has_previous %}
+    <li><a href="?page={{ P.previous_page_number }}" aria-label="Previous">
+    {% else %}
+    <li class="disabled"><a aria-label="Previous">
+    {% endif %}
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    {% for page in page_nums %}
+      {% if page == current_page %}
+        <li class="active">
+      {% else %}
+        <li>
+      {% endif %}
+          <a href="?page={{ page }}">{{ page }}</a>
+        </li>
+    {% endfor %}
+
+    {% if P.has_next %}
+    <li><a href="?page={{ P.next_page_number }}" aria-label="Next">
+    {% else %}
+    <li class="disabled"><a aria-label="Next">
+    {% endif %}
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+  </ul>
+</nav>
+
+{% endblock %}
+
+{% block footer %}
+
+<script>
+
+    $( ".savebutton" ).click(function() {
+        var currentlink = $(this);
+        $.post("/th/channeladd/1051/", { link: $(this).attr("name"), tag: {{ t.id }}}, function( data ) {
+            var savecount = $.parseJSON(data);
+            currentlink.html("Saved");
+            currentlink.css("background-color", "cyan");
+            currentlink.attr("disabled", "disabled");        
+            $( "#savecount" ).html(savecount.toString());
+        });
+    });
+
+    $( "#sharevideo" ).click(function() {
+
+        var link = $("#link").val(),
+            detail = $("#sharedesc").val(),
+            room_id = {{ rid }},
+            channel_id = $("#postbox_channel_id").val();
+        $.post("/th/room/" + room_id + "/", { link: link, detail: detail, channel: channel_id})
+        .done(onDone)
+        .fail(onFail);
+
+        function onDone (result) {
+            console.log("post done");
+            cleanPostbox();
+            location.reload();
+        }
+
+        function onFail (result){
+            console.log("post fail:"+result);
+            clearPostboxState();
+            alert("มีข้อผิดพลาดบางอย่าง ")
+        }
+
+    });
+
+    function fb_share(url, title, detail, imgsrc){
+        imgsrc = "https://img.youtube.com/vi/"+imgsrc+"/0.jpg"
+
+        fb_publish(title, detail, document.URL , imgsrc)
+    }
+
+</script>
+
+{% endblock %}

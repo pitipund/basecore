@@ -1,0 +1,141 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include "curator/include/config_style.html" %}
+        <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    {% include "channel/include/header.html" %}
+                    {% if user.is_anonymous %}
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="guestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Login</h4>
+                          </div>
+                          <div class="modal-body">
+                            <p style="text-align: center">
+                                <a class="btn btn-primary" href="https://accounts.thevcgroup.com/login/facebook/?feedscope=true&next=https://www.pentachannel.com/accounts/login/?next=/feed/">Login with Facebook</a>
+                            </p>
+                          </div>
+                          <div class="clearfix"></div>
+                        </div>
+                      </div>
+                    </div><!-- Modal -->
+
+                    {%  endif %}
+                    <div class="container" style="margin:0px -15px;">
+                        <div class="row" style="padding-bottom:20px;">
+                            <div class="col-xs-12 col-sm-12 col-md-12" style="padding-top:15px;">
+                                <ol class="breadcrumb">
+                                    <li class="active">
+                                        {% trans "Feeds" %}
+                                    </li>
+                                </ol>
+                            </div>
+                            {% if user.id %}
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <div class="row" id="post_box_frame">
+                                        <div class="col-xs-2 col-sm-2 col-md-2" style="margin:5px 0px;">
+                                            <image src="{{userImg}}" class="img-responsive img-circle" />
+                                        </div>
+                                        <div class="col-xs-10 col-sm-10 col-md-10" style="margin:5px 0px;">
+                                            <form id="post_playlist_form" class="form-horizontal" method="post" enctype="multipart/form-data" action="{% url 'feed:site_post_playlist' %}">{% csrf_token %}
+                                                <textarea id="post_text" class="form-control" rows="3" placeholder="{% trans 'Enter youtube or dailymotion link and use # for insert tag'%} {% trans 'Example' %}: https://www.youtube.com/watch?v=i-xUUcpvNdg #Larva 2013 HD - Season 2 -Ep 33: Red Wild & Rough and tough world"></textarea>
+                                                <a id="post_playlistBtn" onclick="post_playlist();" class="btn btn-primary pull-right" style="margin:5px 0px;"><span class="glyphicon glyphicon-share-alt"></span> {% trans "Post" %}</a>
+                                                <input type="hidden" id="link_hidden" name="link_hidden"/>
+                                                <input type="hidden" id="detail_hidden" name="detail_hidden"/>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div id="spinnerbar" align="center"></div>
+                            <div id="container"></div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" id="loadingmsg" style="display:none;">
+                                    <h3>{% trans "Loading" %}...</h3>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center curator_nodata" id="nomoremsg" style="display:none;">
+                                    <h3>{% trans "No more data" %}</h3>
+                                </div>
+                            </div><!-- end col-xs-12 col-sm-12 col-md-12 -->
+                        </div><!-- end row -->
+                    </div><!--end container -->
+                </div><!-- end col-xs-12 col-sm-12 col-md-12 -->
+            </div><!-- end row -->
+        </div><!--end container -->
+        {% include "curator/include/analytics.html" %}
+
+    <script>
+        var warning_text = '{% trans "Support only Youtube and Dailymotion" %}';
+        var nolink_text = '{% trans "Post field must have at least one link" %}';
+        var save_channel_text = '{% trans "Save to" %}';
+
+        var getIndex_url = '{% url "feed:site_feed_rest" %}';
+        var owner_url = '{% url "curator:site_profile" "ownerUrl" %}';
+        var favorite_url = '{% url "curator:site_profile" "favoriteUrl" %}';
+        var saveChannel_url = '{% url "feed:site_save_channel" "channelid" "playlistid" %}';
+        var saveFacebook_url = '{% url "feed:site_save_facebook" "channelid" %}';
+
+        var next_page = '{{pagenumber}}';
+        var max_page = '{{max_page}}';
+    </script>
+    <script type="text/javascript" src="//www.youtube.com/player_api"></script>
+    <script type="text/javascript" src="{% static 'scripts/curator/curator_feed.js' %}"></script>
+
+    </body>
+</html>
+
+<!--
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '581817781912558',
+    status     : true, // check login status
+    cookie     : true, // enable cookies to allow the server to access the session
+    xfbml      : true  // parse XFBML
+  });
+
+  FB.login(function(response){
+    console.log(response);
+  }, {scope: 'read_stream,user_videos,user_actions.video,friends_videos,friends_actions.video'});
+  FB.Event.subscribe('auth.authResponseChange', function(response) {
+    // Here we specify what we do with the response anytime this event occurs.
+    if (response.status === 'connected') {
+      testAPI();
+    } else if (response.status === 'not_authorized') {
+      FB.login();
+    } else {
+      FB.login();
+    }
+
+  });
+  };
+
+  // Load the SDK asynchronously
+  (function(d){
+   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement('script'); js.id = id; js.async = true;
+   js.src = "//connect.facebook.net/en_US/all.js";
+   ref.parentNode.insertBefore(js, ref);
+  }(document));
+
+  function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Good to see you, ' + response.name + '.');
+    });
+  }
+</script>
+-->

@@ -1,0 +1,126 @@
+{% load i18n %}
+{% load static %}
+
+<script src="{% static 'scripts/libs/mustache.min.js' %}"></script>
+<style type="text/css">
+    .image{
+        position: relative;
+        margin: 0 auto;
+        display: table;
+    }
+    .image-button{
+      position: absolute;      
+      bottom: 5px;
+      right: 5px;
+    }
+    .channel_title{
+        position:absolute;
+        right:0px;
+        bottom:0px;
+        left:0px;
+        padding:5px;
+        background:none repeat scroll 0% 0% rgba(0, 0, 0, 0.75);
+        color:#ffffff;
+        margin-left:5px;
+        margin-right:5px;
+        margin-bottom:10px;
+    }
+</style>
+
+<div id="channelList" style="margin:15px -20px;"></div>
+
+<script type="text/javascript">
+function ChannelList(domElement){
+    var object = this;
+    var initOpacity = 0.0;
+    this.domElement = domElement;
+    this.selectedTag;
+    this.channels;
+    this.favorite_channels;
+
+
+    $(this.domElement).on("click", "button#btnFollow", function() {
+         $("#loginModal").modal('show');
+    });
+
+    this.getChannels = function(){
+        return object.channels;
+    }
+
+    this.setSelectedTag = function (selectedTag){
+        if(this.selectedTag==selectedTag)
+            initOpacity = 1.0;
+        else 
+            initOpacity = 0.0;    
+        this.selectedTag = selectedTag;
+        var url = GET_CHANNELS_URL.replace("TAG_ID",selectedTag.tag_id);
+        $.get(url, function(result){
+            object.channels = result.channel;
+            object._render(result.channel);
+        });
+    }
+
+    this.setSelectedSearch = function (selectedSearch){
+        this.selectedSearch = selectedSearch;
+        if(selectedSearch==''){
+            selectedSearch = 'all';
+        }
+        //convert html speacial charactor to normal string eg. &#39; => '
+        var span = document.createElement('span');
+        span.innerHTML = selectedSearch;
+        selectedSearch =  span.innerHTML;
+        //////////////////////////////////////////////////////////////////
+        var url = GET_SEARCH_URL.replace("WORD", selectedSearch);
+        $.get(url, function(result){
+            object.channels = result.channel;
+            object._render(result.channel);
+            $(object.domElement).trigger("searchCompleted", [result.channel]);
+        });
+    }
+
+    this._render = function(channels){
+        var template = '[[#channels]]\
+                            <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3 channelView" style="opacity:'+initOpacity+'; padding:0px 5px 10px;">\
+                                <a class="thumbnail" href="[[url]]" style="margin-bottom:0px;" >\
+                                    <img src="[[image]]" class="image_index" style="height:200px;">\
+                                </a>\
+                                <div class="channel_title">\
+                                    [[name]]<span id="isLive_span[[id]]"></span>\
+                                    <button id="btnFollow" type="button" class="btn btn-success pull-right">'+followText+'</button>\
+                                </div>\
+                            </div>\
+                        [[/channels]]';
+
+        var context = {channels: channels};
+        Mustache.tags = ['[[', ']]'];
+        var html = Mustache.render(template, context);
+        Mustache.tags = ['{{', '}}'];
+        $(this.domElement).html(html);
+
+        if(initOpacity==0.0){
+            $('.channelView').animate({
+                opacity: 1.0
+            }, 700, function(){
+                // Animation complete.
+            });
+            initOpacity=1;
+        }
+
+        $("div.channelView").children("div").each(function(index) {
+            var buttonFollow = $(this).children("button#btnFollow")[0];
+            var channel = object.channels[index];
+            if(channel.isLive == "True"){
+                document.getElementById('isLive_span'+channel.id).innerHTML = '<font style="color:red;">('+LIVE_TEXT+')</font>';
+            }
+            $(buttonFollow).data("channel", channel);
+        });
+    }
+}
+</script>
+
+<script type="text/javascript">
+    var SUBSCRIBE_CHANNEL = "{% url 'curator:site_curator_subscribe_channel' %}";
+    var channelList = new ChannelList(document.getElementById("channelList"));
+    var followText = "{% trans 'Follow' %}";
+    var unfollowText = "{% trans 'Unfollow' %}";
+</script>

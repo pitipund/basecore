@@ -1,0 +1,9 @@
+{% extends "admin/import_export/change_list_import_export.html" %}
+{% block object-tools-items %}
+    <li>
+      <a href="/manage/users/role/refresh_permission/">
+        Refresh Permissions
+      </a>
+    </li>
+    {{ block.super }}
+{% endblock %}

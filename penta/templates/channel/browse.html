@@ -1,0 +1,170 @@
+{% extends "channel/base_with_sidebar.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+    <style type="text/css">
+        .nav-sidebar > li > a > span{
+            padding-left: 20px;
+        }
+
+        .sidebar {
+            background-color: white;
+        }
+
+        .nav-sidebar > li > a.listheader {
+            background-color: #777;
+            color: #fff;
+        }
+
+        .nav-sidebar > .active > a{
+            background-color: #ddd;
+            color: #555;
+        }
+
+        .nav-sidebar > .active > a:hover, .nav-sidebar > li > a:hover {
+            background-color: #888;
+        }
+    </style>
+{% endblock %}
+
+{% block sidebar %}
+    <ul class="nav nav-sidebar">
+        <li><a class="listheader">{% trans "Select Category" %}</a></li>
+    </ul>
+    <ul id="tagList" class="nav nav-sidebar"></ul>
+{% endblock %}
+
+{% block content %}
+    <style type="text/css">
+        .center-y{
+            vertical-align:middle;
+        }
+    </style>
+
+    <div id="alertGuide" class="row alert alert-info" style="position:fixed; width:72%; height:160px; z-index:1000;">
+        <h3 style="color:green;"> 
+            <span id="progressHintIcon"class="glyphicon glyphicon-exclamation-sign"></span>
+            <span id="progressHintText"></span>
+        </h3>
+        <div class="progress">
+            <div id="channelFollowProgress" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+        </div>
+        <button id="btnNext" type="button" class="btn btn-primary pull-right">{% trans "Next" %}</button>
+        <div class="clearfix"></div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12" style="padding:10px 0px; margin:0px -15px;">
+        <a class="btn btn-warning btn-sm" href="{% url 'feed:feed_home' %}"><span class="glyphicon glyphicon-chevron-left"></span> {% trans "Back" %}</a>
+    </div>
+    {% include "channel/include/channel_gridview.html" %}
+    <button id="btnNext" type="button" class="btn btn-primary pull-right" style="margin-bottom:40px;margin-top:30px;">{% trans "Next" %}</button>
+
+    <!-- include classes and libs-->
+    <script src="{% static 'scripts/libs/mustache.min.js' %}"></script>
+    <script src="{% static 'scripts/browse/classes.js?version=1' %}"></script>
+    <!-- Application code -->
+    <script type="text/javascript">
+        var LIVE_TEXT = "{% trans 'Live' %}";
+        var GET_TAGS_URL = "{% url 'channel:channel_apis_tags' %}";
+        var GET_CHANNELS_URL = "{% url 'channel:channel_apis_browse' 'TAG_ID' %}";
+        var GET_FOLLOWED_CHANNELS_URL = "{% url 'channel:channel_apis_followed_channel' %}";
+        var tagModel = new TagModel(GET_TAGS_URL);
+        var tagList = new TagList(document.getElementById("tagList"));
+        var browseController = new BrowseController(tagModel, tagList);
+        var page_header = '{{nav_values.page_header}}';
+        var noselectText = '{% trans "Please follow interested channel below." %}';
+        var selectedText = '{% trans "You can follow more or proceed to Next." %}';
+        $("#tagList").on("select", function(event,tag){
+            channelList.setSelectedTag(tag);
+        });
+
+        function showAlertGuide(show){ // boolean
+            if(show){
+                $("button#btnNext").show();
+                $("div#alertGuide").show();
+                $("button#btnNext").prop('disabled', true);
+                $("#channelList").css("padding-top","160px");
+                updateUIWhenHaveFollow(false);
+            }
+            else{
+                $("button#btnNext").hide();
+                $("div#alertGuide").hide();
+                $("#channelList").css("padding-top","0px");
+            }
+        }
+
+        function updateUIWhenHaveFollow(have){
+            if(have){
+                if($("#progressHintText").is(":visible")){
+                    $("#progressHintText").text(selectedText);
+                    $("#progressHintIcon").removeClass("glyphicon glyphicon-exclamation-sign").addClass("glyphicon glyphicon-ok-sign");
+                    $("#progressHintText").css( "color", "#285e8e" );
+                }
+            }
+            else{
+                $("#progressHintText").text(noselectText);
+                $("#progressHintIcon").removeClass("glyphicon glyphicon-ok-sign").addClass("glyphicon glyphicon-exclamation-sign");
+                $("#progressHintText").css( "color","green");
+            }
+        }
+
+        function checkHaveFollow(){
+            $.get(GET_FOLLOWED_CHANNELS_URL,function(result){
+                if(result.length >=5){
+                    showAlertGuide(false);
+                }
+                else{
+                    showAlertGuide(true);
+                }
+            });
+        }
+
+        {% if request.user.is_authenticated %}
+
+            $( document ).ready(function(){
+                checkHaveFollow();    
+            });
+
+            $("button#btnNext").on("click",function(result){
+                $.get(GET_FOLLOWED_CHANNELS_URL,function(result){
+                    if(result.length>0){
+                        location.href = "{% url 'feed:feed_home' %}";
+                    }
+                    else{
+                        alert("Please follow at least 1 channel to continue.");
+                    }
+                });
+            });
+
+            $("#channelList").on("followChanged",function(event,result){
+                $.get(GET_FOLLOWED_CHANNELS_URL,function(result){
+                    var percent = result.length*20;
+                    if(percent>=100){
+                        percent = 100;
+                    }
+                    $("#channelFollowProgress").css("width",percent+"%");
+                    if(result.length>0){
+                        updateUIWhenHaveFollow(true);
+                        $("button#btnNext").prop('disabled', false);
+                    }
+                    else{
+                        $("button#btnNext").prop('disabled', true);
+                    }
+                    if(result.length<5){
+                        showAlertGuide(true);
+                    }
+                });
+            });
+        {% else %}
+            showAlertGuide(false);
+            $("#channelList").off("click", "button.btn-follow")
+            $("#channelList").on("click", "button.btn-follow", function(){
+                $("#guestModal").appendTo("body").modal('show');
+            });
+        {% endif %}
+    </script>
+    {% if not request.user.is_authenticated %}
+        {% include "y15/components/sign_in_register_modal.html" %}
+        <script type="text/javascript">$("#guestModalRegister").appendTo("body"); $("#guestModal").appendTo("body");</script>
+    {% endif %}
+{% endblock %}

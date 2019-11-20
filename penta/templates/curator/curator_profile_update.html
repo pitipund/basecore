@@ -1,0 +1,96 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/curator/curator_profile_update.js' %}"></script>
+    
+    <div class="col-xs-12 col-sm-12 col-md-12" style="padding-top:15px;">
+        <ol class="breadcrumb">
+            <li class="active">{% trans "Update Profile" %}</li>
+        </ol>
+    </div>
+    {% if messages %}
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="alert alert-danger" style="padding:10px;">
+                {% for message in messages %}
+                    {{message}}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}<!-- end error alert -->
+    <div  class="col-xs-12 col-sm-12 col-md-12 text-right">
+        <h5 id="datejoin_div"><font style="font-weight:bold;">{% trans "Date joined" %}: </font>{{user.date_joined}}</h5>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 text-right">
+        <h5 id="lastLogin_div"><font style="font-weight:bold;">{% trans "Last login" %}: </font>{{user.last_login}}</h5>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div id="spinnerbar" align="center"></div>
+        <form id="profile_update_form" class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {% if form.username.errors %}<div class="form-group has-error">
+            {% else %}                   <div class="form-group">
+            {% endif %}
+                <label for="username" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Username" %}</label>
+                <div id="username_div" class="col-xs-8 col-sm-9 col-md-10"></div>
+            </div><!--end username-->
+            {% if form.first_name.errors %}<div class="form-group has-error">
+            {% else %}                     <div class="form-group">
+            {% endif %}
+                <label for="first_name" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Firstname" %} {% if form.first_name.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.first_name}}
+                        {% if form.first_name.errors %}{% for error in form.first_name.errors %}
+                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                    {% endfor %}{% endif %}
+                </div>
+            </div><!--end first_name-->
+            {% if form.last_name.errors %}<div class="form-group has-error">
+            {% else %}                    <div class="form-group">
+            {% endif %}
+                <label for="last_name" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Lastname" %} {% if form.last_name.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.last_name}}
+                    {% if form.last_name.errors %}{% for error in form.last_name.errors %}
+                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                    {% endfor %}{% endif %}
+                </div>
+            </div><!--end last_name-->
+            {% if form.email.errors %}<div class="form-group has-error">
+            {% else %}                <div class="form-group">
+            {% endif %}
+                <label for="email" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Email" %} {% if form.email.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.email}}
+                    {% if form.email.errors %}{% for error in form.email.errors %}
+                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                    {% endfor %}{% endif %}
+                </div>
+            </div><!--end email-->
+            <div class="form-group">
+                <label for="image" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Profile image" %} *</label>
+                <div id="image_div" class="col-xs-8 col-sm-9 col-md-10"></div>
+            </div><!--end image-->
+            <div class="form-group">
+                <label class="col-xs-offset-4 col-sm-offset-3 col-md-offset-2">
+                    {{form.receive_mail}} รับข่าวสารการอัพเดตของช่องที่ติดตาม
+                </label>
+            </div><!--end receive_mail-->
+            <div class="form-group">
+                <div class="col-xs-8 col-sm-9 col-md-10 col-xs-offset-4 col-sm-offset-3 col-md-offset-2">
+                    <a id="submitBtn" class="btn btn-primary" onclick="submit_profile();"><span class="glyphicon glyphicon-ok-circle"></span> {% trans "Submit" %}</a>
+                    <a id="cancelBtn" class="btn" href="{% url 'feed:feed_home' %}"><span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}</a>
+                </div>
+            </div>
+        </form>
+    </div><!--end col-xs-12 col-sm-12 col-md-12-->
+                        
+    <script type="text/javascript">
+        var current_text ='{% trans "Currently" %}';
+        var change_text ='{% trans "Change" %}';
+        var error_text = '{% trans "Profile url: Can not use admin." %}';
+        var username = '{{user.username}}';
+        var image = '{{image}}';
+    </script>
+{% endblock %}

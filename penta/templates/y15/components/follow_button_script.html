@@ -1,0 +1,132 @@
+<script>
+
+    {% if following %}
+    var following = true;
+    {% else %}
+    var following = false;
+    {% endif %}
+
+    function updateFollowButton() {
+        $("#follow-button").removeClass("btn-primary btn-success active");
+        if (following) {
+            $("#follow-button").html("<span class='glyphicon glyphicon-ok'></span> กำลังติดตาม");
+            $("#follow-button").addClass("btn-success active");
+        } else {
+            $("#follow-button").html("ติดตาม");
+            $("#follow-button").addClass("btn-primary");
+        }
+    }
+
+    $(document).ready(function() {
+        updateFollowButton();    
+    });
+
+    function followFail(){
+        alert("เกิดข้อผิดพลาดในการติดตามรายการนี้ กรุณาทดลองใหม่ภายหลัง");
+    }
+
+    $( "#follow-button" ).click(function() {
+        var b = $(this);
+        if (following) {
+            $.post("/th/unfollowchannel/{{ c.id }}/", {}, function( data ) {
+                var success = $.parseJSON(data);
+                if (success) {
+                    following = false;
+                    updateFollowButton();
+                    updateSideBar();
+                    $(channel_subscribe_btn).trigger("unsubscribing");
+                }
+            }).fail(followFail);
+        } else {
+            $.post("/th/followchannel/{{ c.id }}/", {}, function( data ) {
+                var success = $.parseJSON(data);
+                if (success) {
+                    following = true;
+                    updateFollowButton();
+                    updateSideBar();
+                    $(channel_subscribe_btn).trigger("subscribing")
+                }
+            }).fail(followFail);
+        }
+    });
+
+    $.fn.subscribeButton  = function(options) {
+
+        var subscribe_button = $(this),
+            settings = $.extend({
+                // These are the defaults.
+                subscribe_url: "/api/v2/channel/subscribe/",
+                unsubscribe_url: "/api/v2/channel/unsubscribe/",
+                is_subscribe: false
+            }, options );
+        
+        var subscribing = (settings.is_subscribe);
+
+        $(this).click(function(){
+            //Do some REST POST Here
+            //.fail(onFail);
+            subscribe_button.addClass("disabled");
+            subscribe_button.html("รับข่าวสาร...");
+            if(subscribing) {
+                // post unsubscribing
+                $.post(settings.unsubscribe_url, function(result){
+                    var success = $.parseJSON(result);
+                    if(success) {
+                        subscribing = false;
+                        updateUI();        
+                    }
+                }).fail(onFail);
+            } else {
+                // post subscribing
+                $.post(settings.subscribe_url, function(result){
+                    var success = $.parseJSON(result);
+                    if(success) {
+                        subscribing = true;
+                        updateUI();        
+                    }
+                }).fail(onFail);
+            }
+        });
+
+        var onDone = function(){
+            updateUI()
+        };
+
+        var onFail = function(result){
+            updateUI(false);
+            if(result.status==404)
+                alert("กรุณากดติดตามแชนแนลเพื่อรับข่าวสาร");
+            else
+                alert("เกิดความผิดพลาดกรุณาลองใหม่ภายหลัง")
+        };
+
+         var updateUI = function(setSubscribing) {
+            if(setSubscribing!=null)
+                subscribing = setSubscribing;
+            
+            subscribe_button.removeClass("btn-default btn-info active disabled");
+            if (subscribing) {
+                subscribe_button.addClass("btn-default active");
+                subscribe_button.html('<span class="glyphicon glyphicon-ok"></span> รับข่าวสาร</a>');
+
+            } else {
+                subscribe_button.addClass("btn-info");
+                subscribe_button.html('<span class="glyphicon glyphicon-envelope"></span> เลือกรับข่าวสาร</a>');
+            }
+            
+        };
+
+        $(this).on("subscribing", function() {
+            updateUI(true);
+        });
+
+        $(this).on("unsubscribing", function() {
+            updateUI(false);
+        });
+
+        updateUI();
+
+        return this;
+    }
+
+</script>

@@ -1,0 +1,38 @@
+{% load i18n %}
+{% load static %}
+
+<script src="{% static 'scripts/libs/mustache.min.js' %}"></script>
+<script src="{% static 'scripts/browse/classes.js' %}"></script>
+<style type="text/css">
+    .image{
+        position: relative;
+        margin: 0 auto;
+        display: table;
+    }
+    .image-button{
+      position: absolute;      
+      bottom: 5px;
+      right: 5px;
+    }
+    .channel_title{
+        position:absolute;
+        right:0px;
+        bottom:0px;
+        left:0px;
+        padding:5px;
+        background:none repeat scroll 0% 0% rgba(0, 0, 0, 0.75);
+        color:#ffffff;
+        margin-left:5px;
+        margin-right:5px;
+        margin-bottom:10px;
+    }
+</style>
+
+<div id="channelList" style="margin:15px -20px;"></div>
+
+<script type="text/javascript">
+    var SUBSCRIBE_CHANNEL = "{% url 'curator:site_curator_subscribe_channel' %}";
+    var channelList = new ChannelList(document.getElementById("channelList"));
+    var followText = "{% trans 'Follow' %}";
+    var unfollowText = "{% trans 'Unfollow' %}";
+</script>

@@ -1,0 +1,359 @@
+{% extends "y15/base_browse.html" %}
+
+{% block header %}
+<title>{{ c.name }} - Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+{% endblock %}
+
+{% block middlepane %}
+
+<style type="text/css">
+    
+    #channelbox {
+        padding: 0px;
+        margin-bottom: 10px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        background-color:#D8D8D8;
+    }
+
+    #channelLogo {
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+    }
+
+    .channel-info {
+        line-height: 160%;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+
+</style>
+
+<div id="channel-messages">
+
+</div>
+
+<div class="channel-info panel panel-default col-md-12" id="channelbox">
+    <div class="panel-body">
+        <div class="pull-left">
+            <img id="channelLogo" src="{{ c.image }}" style="width:200px; height:200px; margin-right: 10px;">
+        </div>
+
+        <div class="pull-right text-right" style="margin-top:20px">
+            <div><a class="btn btn-danger" href="/th/channelplay/{{ c.id }}/" target="_blank"><span class="glyphicon glyphicon-play"></span> เล่น</a></div>
+            <div style="margin-top:8px"><a class="small" href="/th/channelplay/{{ c.id }}/{{first}}/" target="_blank">เล่นวีดีโอแรก</a></div>
+            <div><a class="small" href="/th/channelplay/{{ c.id }}/{{last}}/" target="_blank">เล่นวีดีโอล่าสุด</a></div>
+        </div>
+
+        <div>
+            <span class="lead">{{ c.name }}</span><br>
+            <a href="/th/follower/{{ c.id }}">จำนวนผู้ติดตาม {{ follower }}</a><br>
+            จำนวนวิดีโอ {{ video_count }} <br>
+
+            {% if not own %}
+                {% if following %}
+                    <a id="follow-button" class="btn btn-success active"></a>
+                {% else %}
+                    <a id="follow-button" class="btn btn-primary"></a>
+                {% endif %}
+
+                {% if subscribing %}
+                    <a class="btn-subscribe btn btn-info active"><span class="glyphicon glyphicon-envelope"></span> รับข่าวสาร</a>
+                {% else %}
+                    <a class="btn-subscribe btn btn-info"><span class="glyphicon glyphicon-envelope"></span> เลือกรับข่าวสาร</a>
+                {% endif %}
+            {% endif %}
+            {% if own %}
+                {% if c.id == user.userdetail.get_share_channel.id %}
+                <a id="mail-button" href="mail/" class="btn btn-sm btn-info">Mail</a>
+                <a id="edit-button" href="/{{user.id}}/profile/" class="btn btn-sm btn-default">
+                    Edit Profile</a>
+                {% elif c.id == user.userdetail.get_saved_channel.id %}
+                {% else %}
+                <a id="mail-button" href="mail/" class="btn btn-sm btn-info">Mail</a>
+                <a id="edit-button" href="#" class="btn btn-sm btn-default" data-toggle="modal" data-target="#editChannelModal">
+                    Edit</a>
+                {% endif %}
+                {% if can_delete %}
+                <a id="delete-button" href="#" class="btn btn-sm btn-danger">Delete</a>
+                {% endif %}
+
+                {% if c.detail %}
+                <p style="white-space:pre-wrap; margin-top:10px;">{{ c.detail }}</p>
+                {% endif %}
+
+                {% include "y15/components/edit_channel_modal_template.html" %}
+
+                <script>
+                    $("#edit-button").click(function(){
+                        $.get("/feed/channel/{{c.id}}/", function(result) {
+                            reloadForTags($("#tagEditorComponent-edit"),result.tags);
+                        });
+                    });
+
+                    $("#delete-button").click(function() {
+                        var r = confirm("เมื่อลบแล้วแชนแนลแล้ว จะไม่สามารถนำกลับมาได้ คุณต้องการลบใช่ไหม?");
+                        if (r == true) {
+                            $.ajax({
+                                url: "/feed/channel/{{ c.id }}/",
+                                method: "DELETE"
+                            }).done(function (data) {
+                                location.replace("{% url 'feed:feed_home' %}")
+                            });
+                        }
+                    });
+                </script>
+            {% endif %}
+
+            {% if c.tags_list|length %}
+            <br>
+            <div class="pull-left" style="margin-top:10px;">
+
+            <label>Tag:</label>
+            {% for tag in c.tags_list %}
+                <span class="label label-default" style="font-size:14px;">{{tag.name}}</span>
+            {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if own %}
+<form id="channelSharePost">
+{% csrf_token %}
+{% include "y15/postbox.html" %}
+</form>
+
+{% include "y15/components/preview_suggestion_template.html" %}
+<script type="text/javascript">
+    $(document).ready(function() { 
+        $("#sharevideo").click(function(){
+            $("#channelSharePost").ajaxSubmit({
+                url: "{{ request.path }}",
+                type: 'POST',
+                success: onDone,
+                error: onFail
+            });
+
+            function onDone(){
+                cleanPostbox();
+                location.reload();
+            }
+
+            function onFail() {
+                alert("เกิดความผิดพลาด กรุณาทดลองใหม่ภายหลัง");
+                clearPostboxState();
+            }
+
+            return false;
+        }); 
+    });
+
+</script>
+{% else %}
+<form id="suggest-form">
+    {% csrf_token %}
+    {% include "y15/postbox.html" %}
+</form>
+
+<div class="suggest-success alert alert-success" role="alert" hidden>
+    <strong>วิดีโอของคุณได้ถูกแนะนำไปเรียบร้อยแล้ว!</strong> ขอบคุณค่ะ <span class="glyphicon glyphicon-remove pull-right" onClick="$(this).parent().hide(300)" style="cursor:pointer;"></span>
+</div>
+
+<script type="text/javascript">
+    $("#link").attr("name","url");
+    $("#sharevideotext").html("แนะนำวิดีโอ");
+    $(document).ready(function() { 
+        $("#sharevideo").click(function(){ 
+            $('#suggest-form').ajaxSubmit({
+                url: "/feed/suggestion/{{c.id}}/",
+                type: 'POST',
+                success: onDone,
+                error: onFail 
+            }); 
+
+            function onDone(){
+                $(".suggest-success").show(400);
+                cleanPostbox();
+            }
+
+            function onFail() {
+                alert("เกิดความผิดพลาดระหว่างแนะนำวิดีโอ กรุณาทดลองใหม่ภายหลัง");
+                clearPostboxState();
+            }
+
+            return false;
+        });
+    }); 
+</script>
+{% endif %}
+
+{% include "y15/components/playlist_script_template.html" %}
+
+{% for p in P %}
+{% include "y15/components/playlist_template.html" %}
+{% endfor %}
+
+<nav>
+  <ul class="pagination">
+    {% if P.has_previous %}
+    <li><a href="?page={{ P.previous_page_number }}" aria-label="Previous">
+    {% else %}
+    <li class="disabled"><a aria-label="Previous">
+    {% endif %}
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    {% for page in page_nums %}
+      {% if page == P.number %}
+        <li class="active">
+      {% else %}
+        <li>
+      {% endif %}
+          <a href="?page={{ page }}">{{ page }}</a>
+        </li>
+    {% endfor %}
+
+    {% if P.has_next %}
+    <li><a href="?page={{ P.next_page_number }}" aria-label="Next">
+    {% else %}
+    <li class="disabled"><a aria-label="Next">
+    {% endif %}
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+  </ul>
+</nav>
+
+{% endblock %}
+
+{% block footer %}
+
+{% include "y15/components/follow_button_script.html" %}
+<script type="text/javascript">
+
+    var channel_subscribe_btn = $(".btn-subscribe").subscribeButton({
+            subscribe_url: "{% url 'api_v2_channel_subscribe' c.id%}", 
+            unsubscribe_url: "{% url 'api_v2_channel_unsubscribe' c.id%}", 
+            is_subscribe: {{ subscribing|yesno:"true,false" }} 
+        });
+
+    function channelTags(){
+        var tags = [];
+        {% for tag in c.tags_list %}
+        tags.push({"id":{{ tag.id }},"name":"{{ tag.name }}"})
+        {% endfor %}
+        return tags;
+    }
+
+    function fb_share(url, title, detail, imgsrc){
+        // url = "//penta.center/"+url;
+        imgsrc = "//img.youtube.com/vi/"+imgsrc+"/0.jpg"
+
+        fb_publish(title, detail, document.URL , imgsrc)
+    }
+
+    {% if own %}
+        var suggestCollapse = $("#suggestCollapse");
+        $.get("/feed/suggestion/{{c.id}}/", function(suggestions){
+            if(suggestions<1)
+                return;
+            var index;
+
+            for (index in suggestions){
+                var suggestion = suggestions[index];
+                var video = suggestion.link;
+                var by = suggestion.suggested_by;
+                var newDom = '<div class="panel-body" id="suggest-item-'+suggestion.id+'">'+
+                                '<div class="my-panel-head clearfix" style="margin-bottom: 10px;">'+
+                                    '<img src="'+by.image+'" width="50" height="50" style="float:left; margin-right: 5px;"/>'+
+                                    '<div style="float:left;">'+
+                                        '<div><a href="/th/channel/'+by.id+'">'+by.full_name+'</a></div>'+
+                                        '<div>'+momentizeString(suggestion.create_at)+'</div>'+
+                                    '</div>'+
+                                    '<div style="float:right;">'+
+                                        '<button type="button" class="btn-approve btn btn-lg btn-success btn-circle" data-id="'+suggestion.id+'"><i class="glyphicon glyphicon-ok"></i></button>'+
+                                        '<button style="margin-left:5px;" type="button" class="btn-reject btn btn-lg btn-danger btn-circle" data-id="'+suggestion.id+'"><i class="glyphicon glyphicon-remove"></i></button>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="user-detail col-md-12 clearfix" id="detail-wrapper-'+suggestion.id+'">'+
+                                    '<blockquote>'+suggestion.detail+'</blockquote>'+
+                                '</div>'+
+                                '<div class="video-wrapper clearfix">'+
+                                    '<div class="video-title col-md-12">'+
+                                        '<h4>'+video.name+'</h4>'+
+                                    '</div>'+
+                                    '<div class="video-container col-md-12">'+
+                                        '<div style="margin:auto;">'+
+                                            '<img class="video-image img-responsive" style="" src="'+video.thumbnail_url+'"/>'+
+                                        '</div>'+
+                                        '<div class="center video-play-btn" data-video-id="'+video.video_id+'" data-video-type="'+video.video_type+'"></div>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>';
+                $("#suggestCollapse").append(newDom);
+            }
+            $("#own-badge-"+{{c.id}}).text("");
+            $("#suggestion-parent").show();
+        });
+
+        suggestCollapse.on("click",".btn-approve",function(){
+            var id = $(this).data("id");
+            $.post("/feed/suggestion/approve/"+id+"/",function(){
+                finishFromApproval(id);
+            });
+        });
+
+        suggestCollapse.on("click",".btn-reject",function(){
+            var id = $(this).data("id");
+            $.post("/feed/suggestion/disapprove/"+id+"/",function(){
+                finishFromApproval(id);
+            });
+        });
+
+        function finishFromApproval(id) {
+            $("#suggest-item-"+id).fadeOut(300, function(){
+                $(this).remove();
+                if(suggestCollapse.children().length<=0) {
+                    $("#suggestion-parent").hide();
+                }
+            });
+        }
+
+    {% endif %}
+
+    $(document).ready(function(){
+
+        var unsubscribe = Boolean(getUrlParameter('unsubscribe'));
+{#        console.log("ZZZZZZZRRRRRR");#}
+{#        console.log(unsubscribe);#}
+        if (unsubscribe) {
+            var unsubscribe_message = '<div class="alert alert-warning alert-dismissible" role="alert">' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                'ยกเลิกรับข่าวสารเรียบร้อย</div>';
+            $("#channel-messages").append(unsubscribe_message);
+            $("a.btn-subscribe").click();
+        }
+
+        function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++)
+            {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam)
+                {
+                    return sParameterName[1];
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

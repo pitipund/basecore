@@ -1,0 +1,119 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include "curator/include/config_style.html" %}
+
+        <style type="text/css">
+            .nav-sidebar > .large{
+                font-size: 20px;
+            }
+
+            .nav-sidebar > li > a {
+                border-left: #212121 solid 5px;
+            }
+            .nav-sidebar > .active > a{
+                color: #fff;
+                font-size: 1.5em;
+                background-color: #0e0e0e;
+                border-left: #16c1f3 solid 5px; 
+            }
+            .nav-sidebar > .active > a:hover{
+             
+            }
+
+            .nav-sidebar > li{
+                cursor: pointer;
+            }
+            .nav-sidebar > li > a{
+                padding-left: 20px;
+                padding-right: 20px;
+                cursor: pointer;
+                color: #999;
+            }
+            .nav-sidebar > li > a:hover{
+                color: #fff;
+                background-color: #0e0e0e;
+            }
+            .nav-sidebar > li > a.listheader{
+                color:#999;
+                padding-left: 20px;
+                padding-right: 20px;
+                cursor: auto;
+                border-bottom-width:1px;
+                border-bottom-color:#999;
+                border-bottom-style: solid;
+                border-top-width:1px;
+                border-top-color:#333;
+                border-top-style: solid;
+                font-size: 1em;
+                font-weight: bold;
+                background-color: #052934;
+            }
+
+            .nav-sidebar > li > a.listheader:hover{
+                background-color: #052934;
+            }
+            .nav > li > a{
+                position: relative;
+                display: block;
+                padding: 10px 15px;
+            }
+            span.badge{
+                background:#111;
+            }
+            .sidebar{
+                padding-left: 0;
+                padding-right: 0;
+                background-color: #052934;
+            }
+            .main{
+                padding-left: 30px;
+                padding-right: 30px;
+                background-color: #eee;
+            }
+            .sidebar, .main{
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                z-index: 1000;
+                display: block;
+                padding-top: 50px;
+                overflow-y:scroll;
+            }
+            .container{
+                padding: 0;
+                margin: 0;
+            }
+
+        </style>
+
+        {% block head %}
+        {% endblock %}
+
+    </head>
+    <body style="padding-top: 50px;">
+        {% include "channel/include/header.html" %} 
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 sidebar">
+                    {% block sidebar %}
+                    {% endblock %}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-md-offset-3 main">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div><!-- end container -->
+        {% include "curator/include/analytics.html" %}
+    </body>
+    <script>
+        $(document).ready(function(){
+            $(".main").click( function(){
+                toggleSideBar(false);
+            });
+        });
+    </script
+</html>

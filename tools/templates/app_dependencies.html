@@ -1,0 +1,114 @@
+{% load static %}
+<html>
+<head>
+    <title>HIS APPS DEPENDENCIES</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/vis/4.7.0/vis.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.7.0/vis.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/semantic/dist/semantic.css' %}" />
+    <style>
+        html, body, .full-screen {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .segment {
+            flex-grow: 1 !important;
+            flex-basis: 0 !important;
+            margin: 0px !important;
+            overflow: auto;
+        }
+        .ui.header {
+            position: fixed;
+        }
+        .ui.header.left {
+            left: 15px;
+        }
+        .ui.header.right {
+            right: 15px;
+        }
+        .pre {
+            overflow: visible;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex.row {
+            flex-direction: row;
+        }
+        .flex.column {
+            flex-direction: column;
+        }
+        .flex.row > * ,
+        .flex.column > * {
+            min-height: 0px;
+            min-width: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="full-screen flex row">
+        <div class="ui segment" style="overflow: hidden;">
+            <span class="ui header left">HIS APPS DEPENDENCIES</span>
+            <div id="mynetwork" style="width: 100%; height: 100%;"></div>
+        </div>
+        <div class="segment flex column">
+            <div class="ui segment">
+                <pre class="pre">{{dependencies_text}}</pre>
+            </div>
+            <div class="ui segment">
+                <pre class="pre">{{dependencies_dict}}</pre>
+            </div>
+        </div>
+    </div>
+    <script language="javascript">
+        // create an array with nodes
+        var nodes = new vis.DataSet(
+        {{ nodes|safe }}
+        );
+
+        // create an array with edges
+        var edges = new vis.DataSet(
+        {{ edges|safe }}
+        );
+        var data = {
+            nodes: nodes,
+            edges: edges
+        }
+
+        // create a network
+        var container = document.getElementById('mynetwork');
+
+        var options = {
+            "nodes": {
+                "color": {
+                    "highlight": {
+                        "border": "rgba(255,13,0,1)",
+                        "background": "rgba(255,173,169,1)"
+                    }
+                },
+            },
+            "edges": {
+                "color": {
+                    "color": "#387ce9",
+                    "highlight": "rgba(255,13,0,1)"
+                },
+                "smooth": {
+                    "type": "discrete",
+                    "forceDirection": "none"
+                }
+            },
+            "physics": {
+                "hierarchicalRepulsion": {
+                    "centralGravity": 0
+                },
+                "solver": "hierarchicalRepulsion",
+            },
+        };
+        var network = new vis.Network(container, data, options);
+    </script>
+</body>
+</html>
+
+

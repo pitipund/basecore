@@ -1,0 +1,109 @@
+{% load i18n %}
+{% load static %}
+<html style="padding-left:0px; margin:0px;">
+
+<head>
+
+{% include "curator/include/analytics.html" %}
+
+<meta charset="UTF-8">
+<meta name="fragment" content="!">
+<script src="{% static 'jquery/jquery.js' %}" ></script>
+<script src="{% static 'jquery/jquery.form.js' %}" ></script>
+<script src="{% static 'jquery/jquery.validate.js' %}" ></script>
+<link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
+<link href="{% static 'styles/libs/bootstrap.min.css' %}" rel="stylesheet"/>
+<script src="{% static 'scripts/libs/bootstrap.min.js' %}"></script>
+<script src="{% static 'scripts/libs/moment-with-locales.min.js' %}"></script>
+
+<style media="screen" type="text/css">
+
+a:link { text-decoration: none; }
+a:visited { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+body {
+  background-color: #f5f6f5;
+}
+
+a.btn-fb-share {
+  background:#465995;
+}
+
+a.btn-fb-share:hover {
+  background:#354884;
+}
+
+
+</style>
+
+<script>
+  // moment locale setup
+  moment.locale('th');
+
+  function momentizeString(string) {
+    var time = moment(string);
+    if(!time.isValid)
+      return "";
+    var now = moment();
+    var diffYears = now.diff(time,"years")
+    if(diffYears>0)
+      return moment(string).format("Do MMMM YYYY");
+    var diffMonths = now.diff(time,"months")
+    if(diffMonths>0)
+      return moment(string).format("Do MMMM");
+    var diffWeeks = now.diff(time,"weeks")
+    var diffDays = now.diff(time,"days")
+    if(diffWeeks>0 || diffDays>0)
+      return moment(string).format("ddddที่ Do MMMM h:mm");
+    if(diffDays<=0)
+      return moment(string).fromNow();
+
+
+    return moment(string).format("dddd, MMMM Do YYYY, h:mm:ss a")
+  }
+
+</script>
+
+<link href="{% static 'styles/custom_styles/mystyle.css' %}" rel="Stylesheet">
+<link href="{% static 'styles/custom_styles/curatorStyle.css' %}" rel="Stylesheet">
+<link  href="{% static 'feed/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+<link  href="{% static 'feed/css/feeditem.css' %}?v=1.1" rel="stylesheet" type="text/css" />
+{% block header %}
+{% endblock %}
+<script src="{% static 'scripts/feed/ajax_csrf_setup.js' %}"></script>
+<!-- <script type="text/javascript" src="{% static 'scripts/curator/curator_channel_create.js' %}"></script> -->
+<script src="{% static 'scripts/feed/tag_editor.js' %}"></script>
+
+
+
+</head>
+
+<body>
+{% include "channel/include/header2.html" %}
+{% include "y15/components/share_modal_template.html" %}
+
+<div class="container" style="margin-top: 70px;">
+	<div class="row">
+		{% block leftbar %}
+		{% endblock %}
+		{% block mainpane %}
+		{% endblock %}
+		{% block rightbar %}
+		{% endblock %}
+	</div>
+
+	{% block footer %}
+	{% endblock %}
+  <script src="{% static 'scripts/feed/fb_script.js' %}"></script>
+  <script src="{% static 'scripts/libs/bootstrap3-typeahead-mod.js' %}"></script>
+</div>
+
+{% if not request.user.is_authenticated %}
+  {% include "y15/components/sign_in_register_modal.html" %}
+{% endif %}
+
+{% block endbody%}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,145 @@
+{% load static %}
+<style type="text/css">
+    .editing-textarea{
+        width: 500px;
+        font-size: 16;
+    }
+
+    .detail-editing {
+        margin-top: 5px;
+    }
+</style>
+<div class="col-md-12 panel panel-default postitem playlist-item-wrapper" >
+    <div class="panel-body">
+        <div class="my-panel-head clearfix">
+            <!-- <img src="{{ p.channel.image }}" width="50" height="50" style="float:left; margin-right: 5px;"/> -->
+            <div class="video-title-room col-md-8 lead">{{ p.name }}</div>
+            <div style="float:right;">
+                <a onclick='fb_share("/th/channelplay/{{ p.description.0.channelid }}/{{ p.description.0.playlist_id }}/",
+                        "{{p.name|escapejs}}", "{{p.description.0.detail|escapejs }}", "{{p.video_id}}");'
+                   class="btn-fb-share btn btn-sm btn-primary" style="margin-left:5px;">
+                    <img src="{% static 'images/facebook.png' %}" height="16" align="middle" />&nbsp;
+                </a>
+                <a class="btn btn-sm btn-primary btn-share" data-toggle="modal" data-target="#shareModal"
+                       data-playlistid="{{ p.playlist_id }}">แชร์</a>
+                {% if p.saved %}
+                    <a class="btn btn-sm btn-success savestatus saved btn-save" value={{ p.playlist_id }} disabled="disabled"><span class="glyphicon glyphicon-bookmark"></span> เก็บ</a>
+                {% else %}
+                    <a class="btn btn-sm btn-success savestatus save btn-save" value={{ p.playlist_id }}><span class="glyphicon glyphicon-bookmark"></span> เก็บ</a>
+                {% endif%}
+
+            </div>
+            <div class="clearfix"></div>
+            <!-- <span>ความยาว {{ p.duration|floatformat }} นาที</span><br> -->
+        </div>
+
+        <div class="video-wrapper clearfix">
+            <div class="video-container">
+                <div style="margin:auto;"><img class="video-image" style="" src="{{ p.image }}"/></div>
+                <div class="center video-play-btn" data-video-id='{{ p.video_id }}' data-video-type="{{ p.video_type }}"></div>
+            </div>
+        </div>
+
+        {% if p.upload_description %}
+        <div class="col-md-12 spoiler">
+            <div class="spoiler-btn">Show detail</div>
+            <div class="spoiler-body collapse">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/01.jpg"/></div>
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/02.jpg"/></div>
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/03.jpg"/></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/04.jpg"/></div>
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/05.jpg"/></div>
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/06.jpg"/></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/07.jpg"/></div>
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/08.jpg"/></div>
+                        <div class="col-md-4"><img style="max-width:190px;" onerror='hideContainer(this)' src="{% get_media_prefix %}snapshot/{{ p.thumbnail }}/09.jpg"/></div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <blockquote>
+                        <p style="white-space:pre-wrap; word-break: break-all;">{{ p.upload_description }}</p>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="shared-by-wrapper">
+            <h5>แชร์โดย</h5>
+            {% for d in p.description %}
+
+                {% if forloop.counter == 3 %}
+                    <a  role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" onclick="$(this).remove()">
+                      แสดงทั้งหมด...
+                    </a>
+                    <div class="collapse" id="collapseExample">
+                {% endif %}
+                <div class="clearfix" id="playlist-item-{{d.playlist_id}}">
+                    <div class="descriptionItem row">
+                        <div class="col-md-12">
+                            <img class="img pull-left" width="40" height="40" src="{{ d.channelimage }}" style="margin-right:10px"/>
+                            <div id="detail-wrapper-{{d.playlist_id}}">
+                                <div>
+                                    <a href="/th/channel/{{ d.channelid }}/">{{ d.channelname }}</a> &nbsp;<span>เมื่อ {{ d.create_at|date:"d F Y"  }}</span>
+                                    <div style="float:right;">
+                                        {% if d.own %}
+                                            <div class="btn-group">
+                                              <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                แก้ไข <span class="caret"></span>
+                                              </button>
+                                              <ul class="dropdown-menu" role="menu">
+                                                <li><a class="btn-edit" data-id="{{d.playlist_id}}"><span class="glyphicon glyphicon-edit"></span> แก้ไข</a></li>
+                                                <li class="divider"></li>
+                                                <li><a class="btn-delete" data-id="{{d.playlist_id}}"><span class="glyphicon glyphicon-trash"></span> ลบ</a></li>
+                                              </ul>
+                                            </div>
+                                        {% endif %}
+                                        <a class="play-btn btn btn-xs btn-danger" href="/th/channelplay/{{ d.channelid }}/{{ d.playlist_id }}/" target="_blank"><span class="glyphicon glyphicon-play"></span> เล่น</a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="likecount count-{{d.playlist_id}}">
+                                        {% if d.like_count == 1 %}
+                                        {{ d.like_count }} Like
+                                        {% elif d.like_count > 1 %}
+                                        {{ d.like_count }} Likes
+                                        {% endif %}
+                                    </span>
+                                    {% if d.liked %}
+                                        <a class="likestatus liked" value={{ d.playlist_id }}>Unlike</a>
+                                    {% else %}
+                                        <a class="likestatus like" value={{ d.playlist_id }}>Like</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="user-detail col-md-12" style="padding-bottom:5px;">
+                                <span id="detail-{{d.playlist_id}}"><p style="white-space:pre-wrap; word-break: break-all; margin-bottom: 0px;">{% if d.detail %}{{ d.detail }}{% endif %}</p></span>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not forloop.last %}
+                        <hr style="margin-bottom: 5px; margin-top: 0px;">
+                    {% endif %}
+                </div>
+                {% if forloop.last and forloop.counter > 2%}
+                    </div> <!-- close collapse -->
+                {% endif %}
+		    {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+function hideContainer(el) {
+    $(el).hide();
+}
+</script>
+

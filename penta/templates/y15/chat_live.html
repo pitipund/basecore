@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Live</title>
+    <script type="text/javascript">
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+            }
+            return "";
+        }
+    
+        function sendMessage(id) {
+            var target = document.getElementById(id);
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/api/v2/chat/live/send_message/", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            xhttp.send("live_id="+ id +"&msg=" + target.value);
+            target.value = '';
+        }
+    </script>
+</head>
+<body>
+    <table>
+    {% for item in channel %}
+        <tr>
+            <td><img src="{{item.thumb}}" style="height:48px"></td>
+            <td>{{ item.name }}</td>
+            <td><input id="{{ item.id }}" type="text" style="width:480px" onkeydown="if (event.keyCode == 13) document.getElementById('{{ item.id }}_btn').click()"> <button id="{{ item.id }}_btn" onclick="sendMessage('{{ item.id }}')">send</button></td>
+        <tr>
+    {% endfor %}
+    </table>
+</body>
+</html>

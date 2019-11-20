@@ -1,0 +1,52 @@
+{% if usecase.description %}
+    {{ usecase.description|safe }}
+{% endif %}
+{% for screen in usecase.doc_screens %}
+{% if forloop.counter >= 2 %}
+<!-- space between multiple screens mapping to same usecase -->
+<p></p>
+{% endif %}
+<img src="http://{{ request.META.HTTP_HOST }}{{ MEDIA_URL }}{{ screen.screenshot }}" id="fig:screen_{{ screen.id}}"
+     alt="Screen {{ screen.full_name }}{% if screen.additionalscreenshot_set.exists %} (1){% endif %}" />
+
+{% for addition in screen.additionalscreenshot_set.all %}
+<img src="http://{{ request.META.HTTP_HOST }}{{ MEDIA_URL }}{{ addition.screenshot }}" id="fig:screen_add_{{ addition.id}}"
+     alt="Screen {{ screen.full_name }} ({{ forloop.counter|add:'1' }})" />
+{% endfor %}
+
+<p></p>
+
+<table border="1">
+    <caption>Field Property หน้าจอ {{ screen.full_name }} {#tbl:table_{{ screen.id }}}</caption>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Length</th>
+        <th>RW/RO</th>
+        <th>Mandatory</th>
+        <th>DB Table</th>
+        <th>DB Column</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in screen.tbl %}
+        <tr>
+            <td>{{ row.Name }}</td>
+            <td>{{ row.Type }}</td>
+            <td>{{ row.Length }}</td>
+            <td>{{ row.RW }}</td>
+            <td>{{ row.Mandatory }}</td>
+            <td>{{ row.db_table }}</td>
+            <td>{{ row.db_column}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% empty %}
+    <p>ใช้หน้าจอเดียวกันกับ
+        {% for ref in usecase.ref_usecases %}{% if forloop.counter >= 2 %}, {% endif %}
+            Usecase {{ ref.code }} {{ ref.name }}
+        {% endfor %}
+    </p>
+{% endfor %}

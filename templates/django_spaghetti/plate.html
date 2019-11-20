@@ -1,0 +1,117 @@
+{% block extra_scripts %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/vis/4.7.0/vis.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.7.0/vis.min.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+<style>
+  * {
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    overflow-y:hidden;
+  }
+  #header {
+    height: auto;
+  }
+  #visualization {
+    flex: 1;
+  }
+</style>
+<div id="header">
+  <form name="filterForm">
+   <div id="group_filter">Module: </div>
+  </form>
+</div>
+<div id="visualization"></div>
+
+<script language="javascript">
+  function getAllGroups(nodes) {
+    var groups = {};
+    nodes.forEach(function(node){
+      groups[node.group] = true;
+    });
+    return groups;
+  }
+  function setupGroupFilter(data, network) {
+    var groups = getAllGroups(data.nodes);
+    var out = "Module: ";
+    for(var group in groups) {
+      out += '<input type="checkbox" name="group" value="' + group + '" id="group_' + group + '" checked />';
+      out += '<label for="group_' + group + '">' + group+ '</label>';
+    }
+    // deselect all
+    out += '&nbsp;<input type="button" value="Select All" />';
+    out += '&nbsp;<input type="button" value="Select None" />';
+    document.getElementById('group_filter').innerHTML = out;
+    function reloadGraph() {
+      var selected = {};
+      for(var i = 0; i < document.filterForm.group.length; i++) {
+        if(document.filterForm.group[i].checked) {
+          selected[document.filterForm.group[i].value] = true;
+        }
+      }
+      var filterFunc = function(node) {
+        return node.group in selected;
+      };
+      network.setData({
+        nodes: data.nodes.get({filter: filterFunc}),
+        edges: data.edges
+      });
+    }
+    document.getElementById("group_filter").addEventListener("click", function(e) {
+      if(e.target) {
+        if(e.target.value == "Select All") {
+          for(var i = 0; i < document.filterForm.group.length; i++) {
+            document.filterForm.group[i].checked = true;
+          }
+          reloadGraph();
+        }
+        else if(e.target.value == "Select None") {
+          for(var i = 0; i < document.filterForm.group.length; i++) {
+            document.filterForm.group[i].checked = false;
+          }
+          reloadGraph();
+        }
+      }
+    });
+    document.getElementById("group_filter").addEventListener("change", reloadGraph);
+  }
+  var nodes = new vis.DataSet(
+      {{ meatballs|safe }}
+  );
+
+  var edges = new vis.DataSet(
+      {{ spaghetti|safe }}
+  );
+
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+
+  var container = document.getElementById('visualization');
+  var options = {
+    "edges": {
+      "smooth": {
+        "type": "cubicBezier",
+        "roundness": 0.55
+      }
+    },
+
+    "layout": {
+        hierarchical: {
+            sortMethod: 'hubsize',
+            direction:'LR'
+        }
+    },
+    "autoResize": true,
+
+  };
+
+  var network = new vis.Network(container, data, options);
+  setupGroupFilter(data, network);
+</script>

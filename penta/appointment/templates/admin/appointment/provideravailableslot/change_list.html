@@ -1,0 +1,9 @@
+{% extends "admin/import_export/change_list_import_export.html" %}
+{% block object-tools-items %}
+    <li>
+      <a href="{% url 'management_site:refresh-provider-available-slot' %}">
+        Refresh Available Slot
+      </a>
+    </li>
+    {{ block.super }}
+{% endblock %}

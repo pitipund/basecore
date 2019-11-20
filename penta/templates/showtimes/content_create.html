@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Power-All Showtime</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% include "showtimes/include/config_style.html" %}
+        <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/content_create.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+    </head>
+    <body onload="JavaScript:setChannel()";>
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% include "showtimes/include/header.html" %} 
+                    <div style="padding:0px 20px 0px 20px;">
+                        {% if action == 'create' %}<h3>Create Content</h3>
+                        {% else %}                 <h3>Update Content</h3>
+                        {% endif %}
+                        <hr/>
+                    </div> 
+                    {% if messages %}
+                    <div class="alert alert-error" style="margin:20px; padding:10px;">
+                        {% for message in messages %}
+                            {{message}}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <form id="content_create_form" class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+                        <div id="spinnerbar" align="center"></div>
+                        {% if form.name.errors %}<div class="control-group error">
+                        {% else %}               <div class="control-group">
+                        {% endif %}
+                            <label for="name" class="control-label">Name {% if form.name.field.required %}*{% endif %}</label>
+                            <div class="controls">
+                                <div class="clearfix">
+                                    <div class="input">
+                                        {{form.name}}<p class='text-warning'>Allow only a-z A-Z 0-9 - ' whitespace</p>{% if form.name.errors %}{% for error in form.name.errors %}
+                                            <span class="help-inline">{{error|escape}}</span>
+                                        {% endfor %}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--end name-->
+                        {% if form.choice.errors %}<div class="control-group error">
+                        {% else %}                 <div class="control-group">
+                        {% endif %}
+                            <label for="choice" class="control-label">Content type {% if form.choice.field.required %}*{% endif %}</label>
+                            <div class="controls">
+                                <div class="clearfix">
+                                    {{form.choice}}{% if form.choice.errors %}{% for error in form.choice.errors %}
+                                        <span class="help-inline">{{error|escape}}</span>
+                                    {% endfor %}{% endif %}
+                                </div>
+                            </div>
+                        </div><!--end choice-->
+                        {% if form.file_image.errors %}<div class="control-group error">
+                        {% else %}                     <div class="control-group">
+                        {% endif %}
+                            <label for="file_image" class="control-label">Image {% if form.file_image.field.required %}*{% endif %}</label>
+                            <div class="controls">
+                                {{form.file_image}}<p class='text-warning'>image size 1200*480, type .jpg</p>{% if form.file_image.errors %}{% for error in form.file_image.errors %}
+                                    <span class="help-inline">{{error|escape}}</span>
+                                {% endfor %}{% endif %}
+                            </div>
+                        </div><!--end file_image-->
+                        {% if form.file_content.errors %}<div class="control-group error">
+                        {% else %}                       <div class="control-group">
+                        {% endif %}
+                            <label for="file_content" class="control-label">File {% if form.file_content.field.required %}*{% endif %}</label>
+                            <div class="controls">
+                                {{form.file_content}}{% if form.file_content.errors %}{% for error in form.file_content.errors %}
+                                    <span class="help-inline">{{error|escape}}</span>
+                                {% endfor %}{% endif %}
+                            </div>
+                        </div><!--end file_content-->
+                        {% if form.channel.errors %}<div class="control-group error">
+                        {% else %}                  <div class="control-group">
+                        {% endif %}
+                            <label for="channel" class="control-label">Channel *</label>
+                            <div class="controls">
+                                <div id="channel_div"></div>
+                                <input type="hidden" name="channel_id" id="channel_id"/>
+                            </div>
+                        </div><!--end channel-->
+                        {% if form.explain.errors %}<div class="control-group error">
+                        {% else %}                  <div class="control-group">
+                        {% endif %}
+                            <label for="explain" class="control-label">Explain {% if form.explain.field.required %}*{% endif %}</label>
+                            <div class="controls">
+                                {{form.explain}}{% if form.explain.errors %}{% for error in form.explain.errors %}
+                                    <span class="help-inline">{{error|escape}}</span>
+                                {% endfor %}{% endif %}
+                            </div>
+                        </div><!--end explain-->
+                        <input name="user" type="hidden" value="{{user.id}}"/>
+                        <div class="control-group">
+                            <label class="control-label"></label>
+                            <div class="controls">
+                                <button class="btn btn-primary" id="sendBtn" onclick="createChannel();"><i class="icon-ok icon-white"></i> Submit</button>
+                                <a id="cancelBtn" class="btn" href="{% url 'site_content_list' %}"><i class="icon-remove"></i> Cancel</a>
+                            </div>
+                        </div>
+                        <input id="channelhid" type="hidden" value="{{channel}}">
+                        <input id="channel_selhid" type="hidden" value="{{channel_sel}}">
+                    </form>
+                </div> 
+            </div>
+        </div><!--end container-->
+        {% include "showtimes/include/footer.html" %}
+    </body>
+</html>

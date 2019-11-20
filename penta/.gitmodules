@@ -1,0 +1,6 @@
+[submodule "django_wallet_client"]
+    path = django_wallet_client
+    url = git@192.168.10.21:pentatv/django_wallet_client.git
+[submodule "django_facebook_messenger"]
+	path = django_facebook_messenger
+	url = git@192.168.10.21:pentatv/django_facebook_messenger.git

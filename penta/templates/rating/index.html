@@ -1,0 +1,12 @@
+<html>
+<body>
+	<h1>{{ allrate }} rates from: {{ myjson|length }} Live channels</h1>
+	{% for item in myjson %}
+	 	<img src="/media/{{ item.icon }}" width=20 height=20> 
+	 	{{forloop.counter}}. {{ item.name }}({{ item.id }}): {{ item.count }} {{ item.start_at }}
+		<br/>
+	{% endfor %}
+
+</body>
+
+</html>

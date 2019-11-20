@@ -1,0 +1,196 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% include "curator/include/config_style.html" %}
+        <style>
+            html, body {
+              height: 100%;
+              width: 100%;
+              padding: 0;
+              margin: 0;
+            }
+
+            #full-screen-background-image {
+              z-index: -999;
+              min-height: 100%;
+              min-width: 1024px;
+              width: 100%;
+              height: auto;
+              position: fixed;
+              top: 0;
+              left: 0;
+              opacity: 0.9;
+            }
+            legend{
+                color: #ffffff;
+            }
+            .box-container{
+                background:none repeat scroll 0% 0% rgba(0, 0, 0, 0.0);
+                color:#333;
+                padding:15px 10px;
+                border-style:solid;
+                border-width:0px;
+                border-color: grey;
+            }
+            /* Style for our header texts
+            * --------------------------------------- */
+            h1{
+                font-size: 2.5em;
+                font-family: arial,helvetica;
+                color: #fff;
+                margin:0;
+                padding:0;
+            }
+
+            h2{
+                font-size: 1.5em;
+            }
+
+            .subtitle{
+                margin-top:30px;
+                color: #fff;
+            }
+
+            .intro p{
+                color: #fff;
+            }
+            /* Centered texts in each section
+            * --------------------------------------- */
+            .section{
+                /*text-align:center;*/
+            }
+            /* Defining each sectino background and styles
+            * --------------------------------------- */
+            #section0{
+                background-image: url("{% static 'tweed.png' %}");
+                background-repeat: repeat;
+                background-attachment: fixed;
+            }
+            #section1{
+                background-image: url("{% static 'tweed.png' %}");
+                background-repeat: repeat;
+                background-attachment: fixed;
+            }
+            #section2{
+                background-image: url("{% static 'tweed.png' %}");
+                background-repeat: repeat;
+                background-attachment: fixed;
+            }
+
+            /* Demo Slides */
+
+            .item{
+                padding: 30px 0px;
+                margin: 10px;
+                color: #fff;
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                text-align: center;
+                background-color: rgba(10, 92, 115, 0.3);
+            }
+            .item img{
+                height: 150px;
+                width: 150px;
+                margin: 0 auto;
+                display: block;
+            }
+            .item h3{
+                font-size: 23px;
+                font-weight: 300;
+                margin: 25px 0 0;
+            }
+            .item h4{
+                margin: 5px 0 0;
+                font-size: 18px;
+            }
+            .item h1{
+                margin: inherit;
+            }
+        </style>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#loginbar").css("display","none");
+            });
+            $( window ).scroll(function() {
+
+                var pentaButton = $("#pentaLoginButton");
+                var top = pentaButton.parent().position().top+pentaButton.height();
+                console.log($(window).scrollTop()+" "+top)
+                if($(window).scrollTop()>top)
+                {
+                    $("#loginbar").fadeIn();
+                }
+                else
+                {
+                    $("#loginbar").css( "display", "none" )
+                }
+
+            });
+        </script>
+    </head>
+    <body style="padding-top: 0px;">
+        <img alt="full screen background image" src="{% static 'uploaded/wallpaper/2_1.jpg' %}" id="full-screen-background-image" />
+        {% include "channel/include/header.html" %}
+        {% include "channel/include/loginbar.html" %}
+        <div class="section " id="welcome" style="padding-top:70px;">
+            <div class="jumbotron" style='background: none repeat scroll 0% 0% rgba(10, 92, 115, 0.7);'>
+                <div class="container" style='background: none repeat scroll 0% 0% rgba(30, 30, 30, 0.0); color:#eee;'>
+                    <h1>{% trans "Welcome to Penta CHANNEL" %}</h1>
+                    <h2 class="subtitle">{% trans "Follow your favorite channel, Just one click" %}</h2>
+                    <div class="row" style="margin-top:30px; text-align:center;">
+                        <div class="col-md-2">
+                        <a class="nodeco" id="fbButton" href="https://accounts.thevcgroup.com/login/facebook/?next=https://{{request.get_host}}/accounts/login/?next=%2F">
+                            <label class="show_pointer btn img_text_button facebook_blue">
+                                <image src="{% static 'images/facebook.png' %}" style="padding-right:5px; margin-top:-4px; height: 25px; width:25px;"/>
+                                Connect&nbsp;&nbsp;
+                            </label>
+                        </a>
+                        </div>
+                        <div class="col-md-1">
+                        <h4>{% trans "Or" %}</h4>
+                        </div>
+                        <div class="col-md-2">
+                        <a class="nodeco" id="pentaLoginButton" href="{% url 'site_login' %}">
+                            <label class="show_pointer btn img_text_button penta_blue">
+                                <image src="{% static 'images/pentachannel-logo_white.png' %}" style="padding-right:5px; margin-top:-4px height: 25px; width:25px;"/> {% trans "Penta Account" %}&nbsp;&nbsp;
+                            </label>
+                        </a>
+                        </div>
+                        <div class="col-md-2">
+                        <a class="nodeco" id="pentaRegisButton" href="https://accounts.thevcgroup.com/accounts/register/">
+                            <label class="show_pointer btn img_text_button">
+                                Do not have account?
+                            </label>
+                        </a>
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="background-color: transparent;">
+            <legend><h3 class="subtitle">{% trans "Most Followed Channel" %}</h3></legend><br/>
+            <div id="mostFollowChannel" class="owl-carousel">
+            </div>
+        </div>
+        <div class="container" style="background-color: transparent;">
+            <legend><h3 class="subtitle">{% trans "Top Channel" %}</h3></legend><br/>
+            <div id="topChannel" class="owl-carousel">
+            </div>
+        </div>
+        <div class="container" style="background-color: transparent;">
+            <legend><h3 class="subtitle">{% trans "Recent Channel" %}</h3></legend><br/>
+            <div id="recentChannel" class="owl-carousel">
+            </div>
+        </div>
+        {% include "channel/include/recent_top_channel.html" %}
+
+        {% include "curator/include/analytics.html" %}
+    </body>
+    <script type="text/javascript">
+        // $(".jumbotron").css("height",$(window).height());
+    </script>
+</html>

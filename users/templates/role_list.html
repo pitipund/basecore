@@ -1,0 +1,11 @@
+{# This is recursive template loading which is INEFFICIENT (https://blog.elsdoerfer.name/2008/01/22/recursion-in-django-templates/) #}
+<ul>
+{% for role in roles %}
+    <li><a href="{% url 'admin:users_role_change' role.id %}">{{ role.name }}</a>
+    {% with "role_list.html" as filename %}
+    {% with role.role_set.all as roles %}
+        {% include filename %}
+    {% endwith %}
+    {% endwith %}</li>
+{% endfor %}
+</ul>

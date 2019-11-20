@@ -1,0 +1,12 @@
+<html>
+<body>
+
+<ul>
+    {% for statable in statables %}
+        {% ifchanged %}</ul></li><li>{{ statable.app_label }} <ul>{% endifchanged %}
+        <li><a href="?model={{ statable.model }}">{{ statable.name }}</a></li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>

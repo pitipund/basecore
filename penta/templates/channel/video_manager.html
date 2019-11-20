@@ -1,0 +1,253 @@
+{% extends "channel/base_with_sidebar.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+    <style type="text/css">
+        .facebook_button{
+            background-color: #3b5998;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 4px 12px 3px 0px;
+        }
+        .penta_button{
+            background-color: #16c1f3;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 5px 12px;
+        }
+
+        li.listitem > a {
+            padding:10px 10px;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+        }
+
+        #videoList li { float: left; text-align: center; width: 250px; height: 250px;}
+
+        .pinned_box {
+            right: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            padding: 5px;
+            background-color: gray; /*E4013E*/
+            color: white;
+            text-align: center;
+            opacity: 0.7;
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+
+        .pinned_box:hover{
+            opacity: 1.0;
+        }
+
+        .pinned_box.selected {
+            opacity: 1.0;
+            background-color: green;
+        }
+
+        .trash_box {
+            right: 40px;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            padding: 5px;
+            background-color: #E4013E;
+            color: white;
+            text-align: center;
+            opacity: 0.5;
+            cursor: pointer;
+            font-size: 1.5em;
+
+        }
+
+        .trash_box:hover{
+            opacity: 1.0;
+        }
+
+        .wrench_box {
+            right: 80px;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            padding: 5px;
+            background-color: #FFBF00;
+            color: white;
+            text-align: center;
+            opacity: 0.5;
+            cursor: pointer;
+            font-size: 1.5em;
+
+        }
+
+        .wrench_box:hover{
+            opacity: 1.0;
+        }
+
+        .sortable-placeholder {
+            border: solid 3px #06b1e3;
+        }
+
+  </style>
+    </style>
+    <script src="{% static 'scripts/libs/mustache.min.js' %}"></script>
+    <script src="{% static 'scripts/video_manager/video_manager.js' %}"></script>
+{% endblock %}
+
+{% block sidebar %}
+    <ul class="nav nav-sidebar">
+        <li><a class="listheader">{% trans "My Channel" %}</a></li>
+    {% for channel in mychannels %}
+        <li id="channel_{{ channel.id }}" class="listitem mychannel" title="{% if channel.isLive == True %}({% trans 'Live' %}){% endif %}{{channel}}">
+            <a class="mychannel_item" id="{{ channel.id }}">
+                <image width=40 height=40 src="{{channel.image}}" style="background:#fff;"/>
+                {% if channel.isLive == True %}<font style="color:red;">({% trans 'Live' %})</font>{% endif %}
+                {{channel}}
+                <span onclick="toggleEditMode(); event.stopPropagation();" class="glyphicon glyphicon-pencil badge" style="background:#3fafff; visibility:hidden; position:absolute; top:10px; right:10px;">{% trans 'Edit' %}</span>
+                <span onclick="showPopUp(); event.stopPropagation();" class="glyphicon glyphicon-plus-sign badge" style="background:#5cb85c; visibility:hidden; position:absolute; top:30px; right:10px;">{% trans 'Add' %}</span>
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block content %}
+
+<form id="create_video_form" class="form-horizontal" method="post" enctype="multipart/form-data" action="{% url 'channel:channel_apis_create_video' %}">{% csrf_token %}
+    <div class="modal" id="create_video_dialog">
+        <div class="modal-dialog" style="margin-top:100px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closePopUp();">&times;</button>
+                    <h4 id="create_h4" class="modal-title"></h4>
+                </div>
+                <div class="modal-body">{% csrf_token %}
+                    <div class="row" style="margin:0px;">
+                        <div id="create_spinnerbar" align="center"></div>
+                        <div id="link_container">
+                            <div id="link_div1" class="form-group" style="margin:0px; padding-bottom: 20px;">
+                                <label class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Link" %}:</label>
+                                <div class="col-xs-8 col-sm-9 col-md-10" style="padding:0px;">
+                                    <input id="video_link1" name="video_link1" onblur="validate_link(1);" class="form-control" style="margin-bottom:5px;"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12" style="padding:0px;">
+                            <div class="pull-right" style="padding:0px;">
+                                <button type="button" class="btn btn-info" onclick="create_link_input();">
+                                    <span class="glyphicon glyphicon-plus"></span> {% trans "Add" %}
+                                </button>
+                            </div>
+                            <input type="hidden" id="channelId_hid" name="channelId_hid"/>
+                        </div>
+                        <div class="form-group" style="padding:0px;">
+                            <label class="col-xs-4 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-xs-8 col-sm-9 col-md-10">
+                                <input id="isPin" name="isPin" type="checkbox"/> {% trans "Pin this" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-right">
+                    <button type="button" class="btn btn-success" onclick="post_create_video();">
+                        <span class="glyphicon glyphicon-ok-circle"></span> {% trans "OK" %}
+                    </button>
+                    <button type="button" class="btn btn-default" onclick="closePopUp('dialog');">
+                        <span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="" style="width:70%; position:fixed; background-color: rgba(238,238,238,0.7); z-index:1; float:left;">
+
+        <img class="responsive" id="channelthumbnail" src="" width="150" height="150" style="margin-top:10px; margin:10px; float:left;"></img>
+        <div style="float:left;">
+            <h1 id="channeltitle">Hello, world!</h1>
+            <button id="updateChannelbtn" type="button" class="btn btn-primary" style="padding-top:10px; padding-bottom:10px;"> Update </button>
+            <button id="addbtn" type="button" class="btn btn-success" style="padding-top:10px; padding-bottom:10px;"> Add </button>
+            <div class="btn-group btn-group-lg" style="padding-top:10px; padding-bottom:10px;">
+                <button type="button" class="btn btn-default" id="showAll">All</button>
+                <button type="button" class="btn btn-default" id="showWork">Work</button>
+                <button type="button" class="btn btn-default" id="showBroken">Broken</button>
+            </div>
+
+        </div>
+</div>
+
+
+<ul id="videoList" style="list-style-type: none; padding-top: 180px;"></ul>
+<div id="del_spinnerbar" align="center"></div>
+<div id="fb-root"></div>
+
+<script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/home/create_video.js' %}"></script>
+<script type="text/javascript">
+    var REST_ALL_VIDEO_URL  = "{% url 'channel:rest_allvideos_in_channel' %}";
+{#    var EDIT_PLAYLIST_URL = "{% url 'curator:site_curator_update_playlist' 'user_id' 'playlist_id' %}";#}
+    var DELETE_VIDEO_URL = "{% url 'channel:channel_apis_delete_video' 'videoId' %}";
+    var SAVE_LINK_LOG_URL = "{% url 'channel:channel_apis_save_link_log' 'link_id' %}";
+    var PROFILE_URL  = "{% url 'curator:site_profile' 'user_url' %}";
+    var REORDER_URL = "{% url 'channel:rest_reoderplaylist_in_channel' %}"
+    var confirm_delete_video_text = "{% trans 'Are you sure you want to delete video?' %}";
+    var videoManager = new VideoManagerModel($('#videoList'));
+    var user_id = "{{ user_url }}";
+
+    $(document).ready(function(){
+        $("li.listitem > a").on("click", function(){
+            var channel_id = ''+$(this).attr('id');
+            videoManager.select_channel_id(channel_id);
+        });
+
+        {% if channel %}
+            videoManager.select_channel_id("{{channel}}");
+        {% elif channels.0.id %}
+            videoManager.select_channel_id("{{channels.0.id}}");
+        {% elif mychannels.0.id %}
+            videoManager.select_channel_id("{{mychannels.0.id}}");
+        {% endif %}
+
+        $(".listitem").click(function(){
+            toggleSideBar(false);
+        });
+
+        $("#videoList").sortable({ revert: 300, placeholder: "sortable-placeholder" });
+
+        $("#updateChannelbtn").click(function(){
+            videoManager.updatePlaylistOrder();
+        });
+
+        $("#addbtn").click(function(){
+            showPopUp();
+        });
+
+        $("#showAll").click(function(){
+            $(".is_available_true").fadeIn(300);
+            $(".is_available_false").fadeIn(300);
+        });
+        $("#showWork").click(function(){
+            $(".is_available_true").fadeIn(300);
+            $(".is_available_false").fadeOut(300);
+        });
+        $("#showBroken").click(function(){
+            $(".is_available_true").fadeOut(300);
+            $(".is_available_false").fadeIn(300);
+        });
+
+    });
+
+    $(document).on("videoChanged",function(event){
+        videoManager.select_channel_id(event.channel_id);
+    });
+
+</script>
+<!-- <script type="text/javascript" src="{% static 'scripts/home/home.js' %}"></script> -->
+{% endblock %}

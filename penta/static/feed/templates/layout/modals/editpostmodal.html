@@ -1,0 +1,31 @@
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.dismiss()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h3 class="modal-title">แก้ไขวีดีโอ</h3>
+</div>
+<div class="modal-body">
+
+    <alert style="margin:0 15px 15px"
+            ng-repeat="alert in vm.alerts" type="{{ alert.type }}" close="vm.closeAlert($index)">{{ alert.msg }}</alert>
+
+    <div style="margin:0 15px 15px">
+        <input ng-disabled="vm.isSubmitting" type="text" class="form-control" style="width:100%;" ng-model="vm.name" value="{{ vm.name }}"></input>
+    </div>
+    <div>
+        <img class="col-xs-4" ng-src="{{ vm.real_thumbnail }}" />
+        <div class="col-xs-8">
+            <textarea ng-disabled="vm.isSubmitting" class="form-control" ng-model="vm.detail"
+                      style="height:194px;" placeholder="อยากบอกอะไรเกี่ยวกับวีดีโอนี้?"></textarea>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="modal-footer">
+    <button ng-disabled="vm.isSubmitting" type="button" class="btn btn-default" ng-click="vm.dismiss()">
+        <span>ปิด</span>
+    </button>
+    <button ng-disabled="vm.isSubmitting" type="button" class="btn btn-primary" ng-click="vm.editClick()">
+        <span class="glyphicon glyphicon-ok"></span>
+        <span>แก้ไข</span>
+    </button>
+</div>

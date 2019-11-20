@@ -1,0 +1,77 @@
+
+<h2>Total user per day</h2>
+
+<canvas id="line" height="60" class="chart chart-line" data="vm.data"
+  labels="vm.labels" series="vm.series" legend="true" colours="vm.colours">
+</canvas>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>User Type</th>
+            <th ng-repeat="row in vm.user_per_day">{{ row.date }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Guest</th>
+            <td ng-repeat="row in vm.user_per_day">{{ row.counter.guest }}</td>
+        </tr>
+        <tr>
+            <th>User</th>
+            <td ng-repeat="row in vm.user_per_day"><a ng-href="/curator/admin/reports/api/access/user_in_day/{{ row.date }}/">{{ row.counter.user }}</a></td>
+        </tr>
+        <tr>
+            <th>Penta TV</th>
+            <td ng-repeat="row in vm.user_per_day">{{ row.counter.penta }}</td>
+        </tr>
+        <tr>
+            <th>Staff</th>
+            <td ng-repeat="row in vm.user_per_day">{{ row.counter.staff }}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <th><strong>Total</strong></th>
+            <th ng-repeat="row in vm.user_per_day">{{ row.counter.total }}</th>
+        </tr>
+    </tfoot>
+</table>
+
+
+<h2>Total channel visit/play per day</h2>
+<div class="col-xs-4 form-group">
+    <label for="channel_sort" class="col-xs-4">Sorted by</label>
+    <select id="channel_sort" class="col-xs-8 form-control" ng-model="vm.sorted_by">
+      <option>visit</option>
+      <option>play</option>
+    </select>
+</div>
+<div class="col-xs-8">
+    <p class="text-muted">
+    visit: counts by users that visited channel or channelplay in that day.<br>
+    play: counts by times of channel's videos played in that day.
+    </p>
+</div>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr style="cursor: pointer;">
+            <th  ng-click="vm.channelNameSort()">
+                Channel
+                <span class="glyphicon glyphicon-triangle-top" ng-show="vm.sorted_by_name && vm.reverse"></span>
+                <span class="glyphicon glyphicon-triangle-bottom" ng-show="vm.sorted_by_name && !vm.reverse"></span>
+            </th>
+            <th ng-repeat="date in vm.channel_per_day.date track by $index"
+                ng-click="vm.channelSort($index)">{{ date }}
+                <span class="glyphicon glyphicon-triangle-top" ng-show="vm.current_sorted_column==$index && vm.reverse"></span>
+                <span class="glyphicon glyphicon-triangle-bottom" ng-show="vm.current_sorted_column==$index && !vm.reverse"></span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="channel in vm.channel_per_day.counter">
+            <td>{{ channel.name }}</td>
+            <td ng-repeat="val in channel.values">{{ val.visit.total }} / {{ val.play.total }}</td>
+        </tr>
+    </tbody>
+</table>

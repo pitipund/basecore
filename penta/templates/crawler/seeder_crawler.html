@@ -1,0 +1,146 @@
+{% load i18n %}
+{% load static %}
+
+<link href="{% static 'styles/libs/bootstrap.min.css' %}" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'styles/libs/jquery-ui.css' %}"/>
+<link rel="shortcut icon" href="{% static 'images/pentachannel-logo.png' %}">
+<script src="{% static 'scripts/libs/bootstrap_js/jquery.js' %}"></script>
+<script src="{% static 'scripts/libs/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+<script src="{% static 'scripts/libs/jquery-ui.js' %}"></script>
+
+<script>
+    var type={{type}};
+    var target_url="{% if type == 0 %}{% url 'seeder_crawler' %}{% else %}{% url 'seeder_crawler_extra' %}{% endif %}";
+</script>
+<script type="text/javascript" src="{% static 'scripts/custom_scripts/seeder_crawler.js' %}"></script>
+
+<h2 style="margin-left:10px;">Select shows to add to curator</h2><hr>
+<div class="input-group" style="padding:15px;">
+    <input id="search_name" value="{{title}}" type="text" class="form-control" placeholder="search channel"
+    onkeypress="search(event);"/>
+    <span class="input-group-btn">
+        <button onclick="search(event)" class="btn btn-success"><span class="glyphicon glyphicon-search"></span> search</button>
+    </span>
+</div>
+<form id="tags_form" class="form-horizontal col-md-12" method="post" enctype="multipart/form-data" action="{% url 'seeder_crawler_add' %}">{% csrf_token %}
+    <div class="row">
+        {% if type == 0 %}
+            <div class="col-md-5" style="margin-left:-15px;">
+                <div class="form-group">
+                    <label class="col-md-3 control-label" style="padding-left:30px;text-align:left">Filter channel:</label>
+                    <div class="col-md-9">
+                        <select name="channel" onchange="this.options[this.selectedIndex].value && (window.location = '{% url 'seeder_crawler' %}?channel='+this.options[this.selectedIndex].value+'&page_number={{page_number}}');" class="form-control">
+                            <option value="">-</option>
+                            {% for channel in channels %}
+                                <option value="{{channel.id}}" {% if channel.id == selected_channel %}selected{% endif %}>{{channel.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-md-7" style="margin-left:-15px;">
+            <div class="form-group">
+                <label class="col-md-4 control-label" style="padding-left:30px;text-align:left">Add these channels to user:</label>
+                <div class="col-md-8">
+                    <select name="selected_user" class="form-control">
+                        {% for user in users %}
+                            <option value="{{user.id}}">{{user.username}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div><hr>
+    <input type="hidden" id="user_id" name="user_id" value="{{user.id}}">
+    {% if not results %}
+        <div align="center" >
+            <h3 style="margin:70px;">No more data</h3>
+        </div>
+    {% endif %}
+    {% for result in results %}
+        <div class="ui-state-default">
+            {% if result.playlists == "-" %}
+                <h3>{{result.seeder_name}}</h3>
+            {% else %}
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h3>
+                        <input type="checkbox" id="ch_{{forloop.counter}}" name="ch_{{forloop.counter}}" value="{{result.seeder_id}}__{{result.seeder_name}}" checked>{{result.seeder_name}}</input>
+                    </h3>
+                    {% if type == 1 %}
+                    <div class="row">
+                        <input id="name_input{{forloop.counter}}" type="text" class="form-control" onkeypress="name_auto(event, '{{name}}', '{{forloop.counter}}');" placeholder="Insert Extra Channel name" style="margin:15px; width:98%;">
+                        <div class="form-group col-md-6">
+                            <label class="col-md-3 control-label" style="padding-left:20px; text-align:left">Add to Channel:</label>
+                            <div class="col-md-9">
+                                <select id="toch_{{forloop.counter}}" class="form-control">
+                                    <option value="">-</option>
+                                    {% for channel in channels %}
+                                        <option value="{{channel.id}}">{{channel.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="col-md-3 control-label" style="padding-left:20px; text-align:left">Add to Tag:</label>
+                            <div class="col-md-9">
+                                <select id="tag_{{forloop.counter}}" class="form-control">
+                                    <option value="">-</option>
+                                    {% for tag in tags %}
+                                        <option value="{{tag.id}}">{{tag.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        <div style="margin-top:15px;">
+            <ul class="sortable">
+                {% for playlist in result.playlists %}
+                    {% if playlist == "-" %}
+                        <h5>-</h5>
+                    {% else %}
+                        <div class="ui-state-default"  style="list-style-type: none;cursor: move;">
+                            <input type="checkbox" checked id="pl_{{forloop.parentloop.counter}}_{{forloop.counter}}" name="pl_{{forloop.parentloop.counter}}_{{forloop.counter}}" value="{{playlist.playlist_name}}" {% if tag.show_in_listpage %}checked{% endif %}> {{playlist.playlist_name}}</input>
+                        </div>
+                        {% for link in playlist.links %}
+                            <ul>
+                                <div class="ui-state-default"  style="list-style-type: none;cursor: move;">
+                                    <input type="checkbox" checked id="lk_{{forloop.parentloop.parentloop.counter}}_{{forloop.parentloop.counter}}_{{forloop.counter}}" name="lk_{{forloop.parentloop.parentloop.counter}}_{{forloop.parentloop.counter}}_{{forloop.counter}}" value="{{link.link_id}}" {% if tag.show_in_listpage %}checked{% endif %}> {{link.link_name}}</input>
+                                </div>
+                            </ul>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div><br>
+    {% endfor %}<hr>
+    <div id="master_hid"></div>
+    {% if results %}
+        <div align="center"><button onclick="submitValues()" class="btn btn-success btn-md"><span class="glyphicon glyphicon-ok-circle"></span> Add</button></div>
+    {% endif %}
+</form>
+<div>
+    <h4>
+        {% if page_number > 1 %}
+            <a style="margin:15px;" href='
+            {% if type == 0 %}
+                {% url 'seeder_crawler' %}?page_number={{page_number|add:"-1"}}{% if selected_channel%}&channel={{selected_channel}}{% endif %}'><span class="glyphicon glyphicon-arrow-left"></span> Previous</a>
+            {% else %}
+                {% url 'seeder_crawler_extra' %}?page_number={{page_number|add:"-1"}}{% if selected_channel%}&channel={{selected_channel}}{% endif %}'><span class="glyphicon glyphicon-arrow-left"></span> Previous</a>
+            {% endif %}
+        {% endif %}
+        {% if hasnext %}
+            <a style="float:right;margin:15px;" href='
+            {% if type == 0 %}
+                {% url 'seeder_crawler' %}?page_number={{page_number|add:"1"}}{% if selected_channel%}&channel={{selected_channel}}{% endif %}'>Next <span class="glyphicon glyphicon-arrow-right"></span></a>
+            {% else %}
+                {% url 'seeder_crawler_extra' %}?page_number={{page_number|add:"1"}}{% if selected_channel%}&channel={{selected_channel}}{% endif %}'>Next <span class="glyphicon glyphicon-arrow-right"></span></a>
+            {% endif %}
+        {% endif %}
+    </h4>
+</div>

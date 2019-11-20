@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Power-All Showtime</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% include "showtimes/include/config_style.html" %}
+        <script>
+            delete_link = "{% url 'site_content_delete' 'ling' %}";
+            list_link = "{% url 'site_content_list' %}";
+        </script>
+        <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/content_list.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+    </head>    
+    <body>
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% include "showtimes/include/header.html" %} 
+                    <div style="padding:0px 20px 0px 20px;">
+                        <h3>Content List </h3>
+                        <div class="row-fluid">                            
+                            <div class="span6">
+                                <p style="margin-left:30px;">
+                                    <a id="createContentBtn" href="{% url 'site_content_create' %}" class="btn btn-success" title="Create content"><i class="icon-plus icon-white"></i></a>
+                                    <a id="deleteContentBtn" href="#" class="btn btn-danger disabled" title="Delete content" onclick="delete_content();"><i class="icon-trash icon-white"></i></a>
+                                </p>
+                            </div>
+                            <div class="span6">
+                                <div class="my_pagination pagination-right">
+                                    {% include "showtimes/include/generic_pagination.html" %}
+                                </div> 
+                            </div>
+                            <div class="span11">
+                                <p>Total : {{total}}</p>
+                                {% if messages %}
+                                <div class="alert alert-error" style="padding:10px;">
+                                    {% for message in messages %}
+                                        {{message}}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div id="spinnerbar" align="center"></div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:10%">
+                                        <input type="checkbox" id="content_all" onclick="checkAll();enable_btn();" style="float:left;" title="cheak all"/>
+                                        {% if sort == 'channel' %}
+                                        <a href="?sort=channel_d">Channel  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'channel_d' %}
+                                        <a href="?sort=channel">Channel  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=channel">Channel  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                    </th>
+                                    <th style="width:20%">
+                                        {% if sort == 'name' %}
+                                        <a href="?sort=name_d">Content  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'name_d' %}
+                                        <a href="?sort=name">Content  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=name">Content  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                    </th>
+                                    <th style="width:5%">
+                                        {% if sort == 'choice' %}
+                                        <a href="?sort=choice_d">Type  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'choice_d' %}
+                                        <a href="?sort=choice">Type  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=choice">Type  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                    </th>
+                                    <th style="width:15%">
+                                        {% if sort == 'upload_at' %}
+                                        <a href="?sort=upload_at_d">Create at  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'upload_at_d' %}
+                                        <a href="?sort=upload_at">Create at  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=upload_at">Create at  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                        </a>
+                                    </th>
+                                    <th style="width:15%">
+                                        {% if sort == 'update_at' %}
+                                        <a href="?sort=update_at_d">Update at  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'update_at_d' %}
+                                        <a href="?sort=update_at">Update at  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=update_at">Update at  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                        </a>
+                                    </th>
+                                    <th style="width:30%">Explain</th>
+                                    <th style="width:5%">Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for content in object_list %}
+                                <tr>    
+                                    <td>
+                                        <input type="checkbox" name="content_check" value="{{content.id}}" onclick="enable_btn();"/>&nbsp;&nbsp;&nbsp;<image src="{{MEDIA_URL}}{{content.channel.icon}}" width="50"/><br/><p style="padding:10px 0px 0px 30px;">{{content.channel.name}}</p>
+                                    </td>
+                                    <td>{{content.name}}</td>
+                                    <td>
+                                        {% if content.choice == 'A' %}
+                                        <span class="label label-success">Advertising</span>
+                                        {% else %}
+                                        <span class="label label-info">Content</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{content.upload_at}}</td>
+                                    <td>{{content.update_at}}</td>
+                                    <td>
+                                        {{content.explain|slice:":200"}}<br/>
+                                        <div class="my_pagination pagination-right" style="padding-top:10px;">
+                                            <p><a href="{% url 'site_content_detail' content.id %}" class="btn btn-mini btn-warning" title="More information"><i class="icon-info-sign icon-white"></i> More</a></p>
+                                        </div>
+                                    </td>
+                                    <td><a class="btn btn-info" href="{% url 'site_content_update' content.id %}"><i class="icon-pencil icon-white"></i></a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination" align="center">
+                            <ul>
+                                {% for i in paginator.page_range %}
+                                    <li><a href="?page={{i}}">{{i}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div><!--end style padding-->
+                </div>
+            </div>
+        </div><!--end container -->
+        {% include "showtimes/include/footer.html" %}
+    </body>
+</html>

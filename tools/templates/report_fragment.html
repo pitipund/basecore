@@ -1,0 +1,58 @@
+
+<h2>{{ group.name }}</h2>
+
+<h3>ER Diagram</h3>
+
+<img src="http://{{ request.META.HTTP_HOST }}{% url 'tools:diagram' group.id %}" id="fig:er_{{ group.id}}"
+     alt="CAPTION_FIGURE 1: ER Diagram {{ group.fullname }}" />
+
+<h3>Data Dictionary</h3>
+
+<table border="1">
+    <caption>รายชื่อตาราง {{ group.fullname }} {#tbl:table_{{ group.id }}}</caption>
+    <thead>
+        <tr>
+            <th>Table name</th><th>Description/Objective</th><th>Transaction/Master</th>
+            <th>Remarks</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for m in group.tables %}
+        <tr>
+            <td>{{ m.table_name }}</td>
+            <td>{{ m.description }}</td>
+            <td>{{ m.transaction_or_master }}</td>
+            <td>
+                {{ m.remark|linebreaksbr }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% for m in group.tables %}
+
+{% include "table.html" %}
+
+{% endfor %}
+
+<h3>Use Case ที่เกี่ยวข้อง</h3>
+
+<table border="1">
+    <caption>Use Case ที่เกี่ยวข้องกับ {{ group.fullname}} {#tbl:usecase_{{ group.id }}}</caption>
+    <thead>
+        <tr>
+            <th>ชื่อเอกสาร</th>
+            <th>Process</th>
+            <th>Use Case</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for usecase in group.related_usecases %}
+    <tr>
+        <td>{{ usecase.book }}</td>
+        <td>{{ usecase.fun_code }} {{ usecase.fun_name }}</td>
+        <td>{{ usecase.code }} {{ usecase.name }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

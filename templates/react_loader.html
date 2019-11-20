@@ -1,0 +1,128 @@
+{% load static %}
+{% load render_bundle from webpack_loader %}
+
+<!DOCTYPE html>
+<html class="claro">
+
+  <head>
+    <title>V{{ version }} {{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'lib/semantic/dist/semantic.min.js' %}"></script>
+    <script src="{% static 'lib/webcamjs/webcam.js' %}"></script>
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/calendar.js' %}"></script>
+    <script src="{% static 'js/fullcalendar.js' %}"></script>
+    <script src="{% static 'js/scheduleView.js' %}"></script>
+    <script src="{% static 'js/locale/th.js' %}"></script>
+    <script src="{% static 'js/toastr.min.js' %}"></script>
+    <script src="{% static 'js/Chart.min.js' %}"></script> <!-- Custom Chart.js for drawing graph -->
+    <script src="{% static 'js/hammer.min.js' %}"></script> <!-- For gesture control graph -->
+    <script src="{% static 'js/Chartjs-plugin-zoom.min.js' %}"></script> <!-- For zoom and pan graph -->
+    <script src="{% static 'js/fabric.min.js' %}"></script> <!-- Whiteboard library -->
+    <script src="{% static 'js/jquery-ui-for-draggable.js' %}"></script>
+    <script src="{% static 'js/jquery.contextMenu.js' %}"></script>
+    <script src="{% static 'js/jquery.ui.position.js' %}"></script>
+    <script src="{% static 'js/complete.ly.js' %}"></script>
+    <script src="{% static 'js/jquery.timepicker.js' %}"></script>
+    <script src="{% static 'js/lodash.min.js' %}"></script>
+    <script src="{% static 'js/common.js' %}"></script>
+    <script src="{% static 'js/internationalization.js' %}"></script>
+    <script src="{% static 'js/vc-websocket.js' %}"></script>
+    <script src="{% static 'js/vc-notification.js' %}"></script>
+    <script src="{% static 'js/vc-toast.js' %}"></script>
+
+
+    <link rel="stylesheet" href="{% static 'lib/dist/dgrid/css/dgrid.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/semantic/dist/semantic.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/common.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/calendar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/fullcalendar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/scheduleView.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/jquery.contextMenu.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toastr.min.css' %}" />
+    <script src="{% static 'lib/dist/dojo/dojo.js' %}"></script>
+
+    {% if mock_datetime %}
+        {% include "mock_datetime.html" %}
+    {% endif %}
+
+    {% render_bundle path 'css' config=config %}
+  </head>
+
+  {% block body %}
+  <body style="margin: 0; pointer-events: auto !important;" class="body">
+    <script>
+    DJANGO = {
+      CSRF_TOKEN: '{{ csrf_token }}',
+      VERSION: '{{ version }}',
+      context: {},
+      user: {
+        {% if request.user.is_authenticated %}
+          id: {{ request.user.id }},
+          fullname: "{{ request.user.get_full_name }}",
+          code: "{{ request.user.employee_no }}",
+          token: "{{ request.user.tokenize }}",
+          role_types: [{{ request.user.get_role_type_str|safe }}]
+        {% endif %}
+      },
+      division: {
+        {% if request.division %}
+          id: {{ request.division.id }},
+          code: "{{ request.division.code }}",
+          name: "{{ request.division.name }}"
+        {% endif %}
+      },
+      device: {
+        {% if request.device%}
+          id: {{ request.device.id }},
+          computer_name: "{{ request.device.computer_name }}",
+          location: {
+            {% if request.device.location %}
+              id: {{ request.device.location.id }},
+              name: "{{ request.device.location.name }}"
+            {% endif %}
+          },
+          zone: {
+            {% if request.device.zone %}
+              id: {{ request.device.zone.id }},
+              code: "{{ request.device.zone.code }}",
+              name: "{{ request.device.zone.name }}"
+            {% endif %}
+          }
+        {% endif %}
+      }
+    }
+
+    window.addEventListener("unhandledrejection", function(err, promise) {
+        // handle error here, for example log
+        //console.log(err)
+        err.preventDefault()
+    });
+
+    {% block extrascript %}
+    {% endblock %}
+
+    </script>
+
+    <script type="text/javascript" src="{% static 'lib/qt.js' %}"></script>
+    <script type="text/javascript" src="{% static 'tools/ui2doc.js' %}"></script>
+
+    {% if ui2doc %}
+        <script type="text/javascript">
+            ui2doc()
+        </script>
+    {% endif %}
+    {% if show_cover %}
+        {% include "debug_page.html" %}
+    {% endif %}
+
+    <div id="root" style="overflow: hidden; height: 100%"></div>
+    {% render_bundle path config=config %}
+  </body>
+  {% endblock %}
+</html>

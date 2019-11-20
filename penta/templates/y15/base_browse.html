@@ -1,0 +1,284 @@
+{% extends "y15/base.html" %}
+{% load static %}
+{% block leftbar %}
+<!-- Left bar -->
+<style>
+
+#leftbar {
+}
+
+div.leftbarItem {
+	margin-bottom: 10px;
+}
+
+
+div.leftbarItemTitle, div.leftbarItemTitle > a , div.leftbarItem > a,
+span.leftbarItemTitle, span.leftbarItemTitle > a , span.leftbarItem > a
+{
+	color: #666;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.channelListItem {
+	height: 25px;
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+img.channelLogo {
+	width: 25px;
+	height: 25px;
+	float: left;
+	vertical-align: middle;
+}
+
+.channelTitle {
+	max-width: 118px;
+{#	float: left;#}
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 12px;
+	vertical-align: middle;
+	margin-left: 2px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+    display: inline-block;
+}
+
+.channelBadge {
+	width: 25px;
+	font-size: 10px;
+	margin-left: auto;
+    alignment: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+a.channelListItemLink {
+}
+
+@media only screen and (min-device-width : 996px) and (max-device-width : 1200px)   {
+	.channelTitle {
+		max-width: 75px;
+	}
+}
+
+@media only screen and (min-device-width : 750px) and (max-device-width : 995px)   {
+	.channelTitle {
+		max-width: 40px;
+	}
+}
+
+@media screen and (max-width: 749px) {
+	.channelTitle {
+		max-width: 500px;
+	}
+}
+
+.vcenter {
+	display: -webkit-flex; /* Safari */
+    -webkit-align-items: center; /* Safari 7.0+ */
+    display: flex;
+    align-items: center;
+}
+
+.play-btn-overlay {
+
+}
+.play-btn-overlay > a > .play-btn-overlay-btn {
+    display: none;
+    width: 25px;
+    height: 21px;
+    padding-top: 3px;
+    padding-left: 2px;
+    padding-right: 0;
+    border-width: 0;
+    margin: 2px 0;
+    border-radius: 3px;
+    font-size: 11px;
+}
+.channelListItem:hover > div > .play-btn-overlay > .channelLogo{
+    display: none;
+}
+.channelListItem:hover > div > .play-btn-overlay > a > .play-btn-overlay-btn{
+    display: inline-block;
+}
+
+.bullet {
+	vertical-align:bottom;
+	color: #16C1F3;
+	margin-right: 3px;
+	height: 18px;
+}
+
+.own-badge {
+	background-color: #16c1f3;
+}
+
+</style>
+
+<div class="col-sm-2 col-md-2 col-sm-offset-1 col-md-offset-1" id="leftbar">
+
+	<div class="leftbarItem">
+		<div><img src="{% if user.userprofile.real_image %}{{ user.userprofile.real_image }}{% else %}{% static 'images/anonymous.png{% endif %}' %}" width="40" height="40"/></div>
+		<div class="leftbarItemTitle"><a id="userTitle-left" href="/th/channel/{{ user.userdetail.get_share_channel.id }}/">{% if not user.is_anonymous %}{{ user.get_full_name }}{% else %}Anonymous{% endif %}</a></div>
+	</div>
+
+	<div class="leftbarItem"><a id="savedVideo-left" href="/th/channelplay/{{ user.userdetail.get_saved_channel.id }}/" target="_blank"><span class="glyphicon glyphicon-bookmark bullet" aria-hidden="true"></span><span>วิดีโอที่เก็บไว้ดู</span></a>
+        (<span id="savecount">0</span>)</div>
+
+
+	<div class="leftbarItem"><a class="room-link" href="/th/room/"><span class="glyphicon glyphicon-th bullet" aria-hidden="true"></span>ห้องแชร์วิดีโอ</a></div>
+
+    <hr style="margin:5px 0px;"/>
+	<div class="leftbarItem">
+
+        <div>
+            <span class="leftbarItemTitle" id="mychanneltoggle">แชนแนลของฉัน</span>
+            <a id="plusCreateChannel" class="channelTitle" href="#" data-toggle="modal" data-target="#createChannelModal">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </a>
+        </div>
+
+		<ul class="nav navbar-nav nav-sidebar" id="mychannel"> </ul>
+
+        <ul class="nav navbar-nav nav-sidebar">
+            <a id="plusCreateChannel" class="channelTitle" href="#" data-toggle="modal" data-target="#createChannelModal">
+                <li><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>สร้างช่องเพิ่ม</li>
+            </a>
+        </ul>
+
+		<div class="clearfix"></div>
+	</div>
+
+	<script>
+		$("#mychanneltoggle").click(function() {
+			$("#mychannel").toggle();
+		});
+
+		$.get("/feed/count_unread_suggestion/", function(result){
+			console.log(result);
+			var count_list = result.by_channel;
+			for(var index in count_list) {
+				var count_item = count_list[index];
+				if(count_item.count>0){
+					$("#own-badge-"+count_item.channel).text(count_item.count);
+				}
+			}
+		})
+	</script>
+
+    <hr style="margin:5px 0px;"/>
+	<div class="leftbarItem">
+        <div>
+            <a href="/th">
+    		    <span class="leftbarItemTitle">ช่องที่ฉันติดตาม</span>
+            </a>
+            <a id="plusChannelBrowse" class="channelTitle" href="{% url 'channel:channel_browse' %}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </a>
+        </div>
+		<ul class="nav navbar-nav nav-sidebar" id="followchannel">
+
+		</ul>
+
+        <ul class="nav navbar-nav nav-sidebar">
+            <a id="plusChannelBrowse" class="channelTitle" href="{% url 'channel:channel_browse' %}">
+                <li><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>ติดตามช่องเพิ่ม</li>
+            </a>
+        </ul>
+		<div class="clearfix"></div>
+	</div>
+    <hr style="margin:5px 0px;"/>
+</div>
+
+<script>
+    $(document).ready(function() {
+        updateSideBar();
+    });
+
+    function updateChannelSelectorForShare(ownChannel) {
+    	for(var index in ownChannel){
+    		var channel = ownChannel[index];
+    		var channelDom = '<option value="'+channel.id+'">'+channel.name+'</option>'
+    		$("#modal_channel_id, #postbox_channel_id").append(channelDom);
+    	}
+    }
+
+    function updateSideBar(){
+        $.get('/api/v2/channel/').success(onUpdateSideBar);
+
+        function onUpdateSideBar(data) {
+        	updateChannelSelectorForShare(data.own);
+
+            var saved = data.saved,
+                share = data.share,
+                own = data.own,
+                follow = data.follow,
+
+                mychannel = $('#mychannel'),
+                followchannel = $('#followchannel'),
+                li = "", i;
+
+            $('#savecount').html(saved.unwatch_count);
+
+            if (own.length > 0){
+                $("#mychanneltoggle").css('cursor', 'pointer');
+            }
+            for (i in own) {
+                li += '<li class="channelListItem">';
+                li += '<div class="vcenter row" style="padding-left: 15px; overflow: hidden; white-space: nowrap;">';
+                li += '<a class="channelListItemLink" href="/th/channel/'+ own[i].id +'">';
+                li += '<img class="channelLogo" src="' + own[i].real_icon + '"/>';
+                li += '<span class="channelTitle">' + own[i].name + '</span>';
+                li += '</a><span class="channelBadge badge own-badge" id="own-badge-'+ own[i].id +'"></span>';
+                li += '</div></li>';
+            }
+            mychannel.html(li);
+
+            li = "";
+            for (i in follow){
+                li += '<li class="channelListItem"><div class="vcenter row" style="padding-left: 15px; overflow: hidden; white-space: nowrap;">';
+                li += '<div class="play-btn-overlay"><img class="channelLogo" src="' + follow[i].real_icon + '"/>';
+                li += '<a class="" href="/th/channelplay/' + follow[i].id + '" target="_blank">';
+                li += '<div class="play-btn-overlay-btn btn btn-danger"><span class="glyphicon glyphicon-play"></span></div></a></div>';
+                li += '<a class="channelListItemLink" href="/th/channel/' + follow[i].id + '/">';
+                li += '<span class="channelTitle">'+ follow[i].name +'</span></a>';
+                if (follow[i].unwatch_count > 0)
+                    li += '<span class="channelBadge badge">' + follow[i].unwatch_count + '</span>';
+                li += '</div></li>';
+            }
+            followchannel.html(li);
+        }
+    }
+</script>
+
+{% endblock %}
+
+
+{% block mainpane %}
+<!-- Middle pane -->
+
+<div class="col-sm-6 col-md-6">
+	<td width="600" valign="top" style="max-width:600px;">
+		{% block middlepane %}
+		{% endblock %}
+	</td>
+</div>
+{% endblock %}
+
+{% block rightbar %}
+<!-- Right bar -->
+<div class="col-sm-3 col-md-3">
+	<a href="https://www.penta-tv.com/from-pentachannel" target="_blank">
+	<div>
+		<img src="{% static 'images/banner_pentatv.jpg' %}" style="max-width:250px; margin-bottom:25px;" />
+	</div>
+	</a>
+</div>
+{% endblock %}
+
+
+

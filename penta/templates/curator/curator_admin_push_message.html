@@ -1,0 +1,88 @@
+{% extends "channel/base.html" %}
+
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+<script type="text/javascript">
+angular.module('pushModule', [])
+  .controller('FormController', ['$scope', function($scope) {
+    $scope.target = 'all';
+    $scope.tab = 'toast';
+  }]);
+</script>
+{% endblock %}
+{% block content %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+
+    <form method="post">
+    {% csrf_token %}
+    <div class="col-xs-12 col-sm-12 col-md-12" style="padding-bottom:10px;" ng-app="pushModule" ng-controller="FormController">
+      <input type="hidden" name="push_type" ng-value="tab" />
+        <h1>Push message</h1>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="active"><a href="#toast" role="tab" data-toggle="tab" ng-click="tab = 'toast'">Toast</a></li>
+          <li><a href="#marquee" role="tab" data-toggle="tab" ng-click="tab = 'marquee'">Marquee</a></li>
+          <li><a href="#popup" role="tab" data-toggle="tab" ng-click="tab = 'dialog'">Popup</a></li>
+        </ul>
+
+        <div class="tab-content">
+          <label for="icon" class="control-label">Send to: </label>
+          <p>
+            <input type="radio" name="target" value="all" id="target_all"
+              ng-model="target" />
+            <label for="target_all">All PentaTV</label>
+          </p>
+          <p>
+            <input type="radio" name="target" value="cpuid" id="target_cpuid"
+              ng-model="target" />
+            <label for="target_cpuid">CPU ID: </label>
+            <input type="text" name="cpuid" size="40" placeholder="Enter CPU ID here" ng-disabled="target == 'all'" />
+          </p>
+          <div class="tab-pane active" id="toast">
+            <input type="text" name="toast_text" placeholder="ข้อความสำหรับ Toast"
+              size="50" />
+          </div>
+          <div class="tab-pane" id="marquee">
+            <input type="text" name="marquee_text" placeholder="ข้อความสำหรับตัววิ่ง"
+              size="100" />
+            <p>ระยะเวลา
+            <input type="text" name="marquee_duration" placeholder="duration (in second)"
+              value="30"
+              size="10" /> วินาที
+            </p>
+          </div>
+          <div class="tab-pane" id="popup">
+            <div class="input-group">
+              <input type="text" name="dialog_text" placeholder="ข้อความสำหรับป๊อบอัพ"
+              size="100" />
+            </div>
+            <div>
+              <p><label>ปุ่ม</label></p>
+            </div>
+            <div class="input-group">
+              <input type="text" name="dialog_choice1" value="OK"
+                size="30" />
+              <select name="method_choice1">
+                <option value="update" selected>Open OTA Screen</option>
+                <option value="cancel">Cancel</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <input type="text" name="dialog_choice2" value="Cancel"
+                size="30" />
+              <select name="method_choice2">
+                <option value="update">Open OTA Screen</option>
+                <option value="cancel" selected>Cancel</option>
+              </select>
+
+          </div>
+        </div>
+        <p></p>
+        <p>
+          <input type="submit" value="ส่งข้อความ" />
+        </p>
+    </div>
+    </form>
+{% endblock %}

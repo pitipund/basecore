@@ -1,0 +1,311 @@
+{% load i18n %}
+{% load static %}
+
+<style type="text/css">
+
+#navSideBarToggle {
+    visibility: hidden;
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+        #navSideBarToggle {
+            visibility: visible;
+        }
+}
+
+</style>
+
+<div id="nav_master" class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid" style="background-color: #16c1f3;">
+        <div class="navbar-header">
+            <a href="{% url 'core:home' %}" class="navbar-brand" title="{% trans "Home" %}" style="color: white;"><img src="{% static 'images/pentachannel-row.png' %}" style=""></a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    {% if user.id %}
+                    <span style="color:white;">{{ user.first_name }} <b class="caret"></b></span>
+                    {% else %}
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    {% endif %}
+
+                </button>
+
+            {% if user.id %}
+                <button type="button" class="navbar-toggle sideBarToggle">
+                   <span class="glyphicon glyphicon-list" style="color:white;"/>
+                </button>
+            {% endif %}
+        </div>
+
+        <div id="profile_master" class="navbar-collapse bs-navbar-collapse collapse">
+
+            <div id="profile_dropdown" class="navbar-collapse collapse">
+                {% if user.id %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="navSideBarToggle" class="sideBarToggle">
+                        <a href="#" style="height:50px; padding:15px 25px 10px 15px;">
+                            <span class="glyphicon glyphicon-list" style="color:white;"/>
+                        </a>
+                    </li>
+                    <li id="dropdown_islogin" class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="height:50px; padding:15px 25px 10px 15px;">{% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %} <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            {% if nav_values.notification > 0 %}
+                                <li>
+                                    <a href="{% url 'curator:site_notification_playlist' user.id %}"><span class="badge pull-right" style="background-color:#d9534f;">{{nav_values.notification}}</span> {% trans "Notifications" %}</a>
+                                </li>
+                            {% endif %}
+                        {% comment %}
+                            <li>
+                                <a href="{% url 'curator:site_profile' nav_values.user_url %}"><span class="glyphicon glyphicon-user"></span> {% trans "Profile" %}</a>
+                            </li>
+                        {% endcomment %}
+{% comment %}
+                            {% if not nav_values.avoidaddplaylist %}
+                                <li>
+                                    <a data-toggle="modal" href="#addPlaylistModal"><span class="glyphicon glyphicon-plus-sign"></span> {% trans "Add playlist" %}</a>
+                                </li>
+                            {% endif %}
+{% endcomment %}
+                            <li>
+                                <a data-toggle="modal" href="#languageModal"><span class="glyphicon glyphicon-globe"></span> {% trans "Change Language" %}</a>
+                            </li>
+                        {% comment %}
+                            <li>
+                                <a href="{% url 'site_manual:site_manual' %}"><span class="glyphicon glyphicon-book"></span> {% trans "User Manual" %}</a>
+                            </li>
+                        {% endcomment %}
+                            {% if user.is_staff %}
+                                <li>
+                                    <a href="{% url 'curator:site_admin' %}"><span class="glyphicon glyphicon-cog"></span> {% trans "Admin tools" %}</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a href="{% url 'site_logout' %}"><span class="glyphicon glyphicon-log-out"></span> {% trans "Logout" %}</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul><!--end dropdown, login-->
+                {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li style="padding-right:5px;"><a data-toggle="modal" href="#guestModal">Login</a></li>
+                    <!-- <li style="padding-right:5px;"><a data-toggle="modal" href="#languageModal"><img id="currentLangImage" src="" style="max-height:25px;"/><span id="currentLang"></span></a></li> -->
+                    <li id="dropdown_unlogin" class="dropdown">
+                        <ul class="dropdown-menu" style="padding:15px 22px 15px 15px; top:50px;">
+                            {% if nav_values.page_header != "" %}
+                                <li>
+                                    <div align="center" style="padding-bottom:10px;">
+                                        <a href="https://accounts.thevcgroup.com/login/facebook/?next=https://{{request.get_host}}/accounts/login/?next=%2F">
+                                            <label style="background-color:#3b5998; height:40px; color:white; padding-top:9px;" class="show_pointer">
+                                                <image src="{% static 'images/facebook.png' %}" style="padding-right:5px; margin-top:-4px;"/>{% trans "Facebook" %}&nbsp;&nbsp;
+                                            </label>
+                                        </a>
+                                    </div>
+                                    <div align="center">{% trans "Or" %}</div>
+                                    <div align="center" style="padding:10px 0px;">
+                                        <a href="{% url 'site_login' %}">
+                                            <label style="background-color:#16c1f3; height:40px; color:white; padding:10px 0px 0px 10px;" class="show_pointer">
+                                                <image src="{% static 'images/pentachannel-logo_white.png' %}" style="padding-right:5px; width:25px;"/> {% trans "Penta Account" %}&nbsp;&nbsp;
+                                            </label>
+                                        </a>
+                                    </div>
+                                    <div align="center">{% trans "Or" %}</div>
+                                    <div align="center" style="padding-top:10px;">
+                                        <a href="https://accounts.thevcgroup.com/accounts/register/?site=penta"><label class="show_pointer">{% trans "Sign up" %}&nbsp;&nbsp;</label></a>
+                                    </div>
+                                </li>
+                                <hr style="margin:10px 0px;">
+                            {% endif %}
+                            <li><a data-toggle="modal" href="#languageModal"><span class="glyphicon glyphicon-globe"></span> {% trans "Change Language" %}</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                {% endif %}<!--end dropdown, unlogin-->
+            </div>
+        </div>
+    </div>
+</div><!-- end navbar -->
+
+<!-- Language Modal -->
+<div class="modal" id="languageModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{% trans "Change Language" %}</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <a class="btn btn-default btn-lg btn-block" href="{% url 'curator:curator_set_language' 'th' %}">
+                        <img src="{% static 'images/lang-th.png' %}" style="max-width:28px; max-height:28px;"> ไทย
+                    </a>
+                </p>
+                <p>
+                    <a class="btn btn-default btn-lg btn-block" href="{% url 'curator:curator_set_language' 'en' %}">
+                        <img src="{% static 'images/lang-en.png' %}" style="max-width:28px; max-height:28px;"> English
+                    </a>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal" id="loginModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{% trans "Please login." %}</h4>
+            </div>
+            <div class="modal-body">
+                <p style="color:#000; padding-right:20px;">
+                    <a href="https://accounts.thevcgroup.com/login/facebook/?next=https://{{request.get_host}}/accounts/login/?next=%2F">
+                        <label style="background-color:#3b5998; height:40px; color:white; padding-top:9px;" class="show_pointer btn">
+                            <image src="{% static 'images/facebook.png' %}" style="padding-right:5px; margin-top:-4px;"/>
+                            {% trans "Connect with Facebook" %}&nbsp;&nbsp;
+                        </label>
+                    </a>
+                    {% trans "Or" %}
+                    <a href="{% url 'site_login' %}">
+                        <label style="background-color:#16c1f3; height:40px; color:white; padding:10px 0px 0px 10px;" class="show_pointer btn">
+                            <image src="{% static 'images/pentachannel-logo_white.png' %}" style="padding-right:5px; width:25px;"/> {% trans "Penta Account" %}&nbsp;&nbsp;
+                        </label>
+                    </a>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Quick create playlist Modal -->
+<!--
+{% if not nav_values.avoidaddplaylist %}
+<form id="playlist_quickcreate_form" class="form-horizontal" method="post" enctype="multipart/form-data" action="{% url 'curator:site_curator_quickcreate_playlist' %}">
+    <div class="modal" id="addPlaylistModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-plus"></span> {% trans "Add Playlist" %}</h4>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <label class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Name" %}:</label>
+                    <div class="col-xs-8 col-sm-9 col-md-10 "><input name="name" class="form-control"/></div><br><br>
+                    <label class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Link" %}:</label>
+                    <div class="col-xs-8 col-sm-9 col-md-10 "><input name="link" class="form-control"/></div><br><br>
+                    <label class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Channel" %}:</label>
+                    <div class="col-xs-8 col-sm-9 col-md-10 ">
+                        <select name="channel" class="form-control"/>
+                            {% for channel in predata_channels %}
+                            <option value="{{channel.id}}">{{channel.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div><br><br>
+                </div>
+                <div class="modal-footer text-right">
+                    <button type="submit" class="btn btn-success" /><span class="glyphicon glyphicon-plus"></span> {% trans "Add" %}</button> <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endif %}
+-->
+
+<style type="text/css">
+@media screen and (min-width: 768px) {
+    .sidebar{
+        visibility: visible;
+    }
+}
+</style>
+
+<script>
+    var channel_search = '{{nav_values.channel_search}}';
+    {% if user.id %}
+    var url = "{% url 'channel:channel_search' %}";
+    {% else %}
+    codeToLanguage();
+    {% endif %}
+    if((navigator.userAgent.indexOf("PentaRemote Android")>-1)
+    ||(navigator.userAgent.indexOf("PentaRemote iOS")>-1)){ //is penta remote
+        document.getElementById('nav_master').style.marginTop = '-50px';
+    }
+
+    function codeToLanguage(){
+        code = '{{LANGUAGE_CODE}}';
+        var lang;
+        var img;
+        if(code=="th")
+        {
+            lang = "ไทย";
+            img = "lang-th";
+        }
+        else
+        {
+            lang = "English";
+            img = "lang-en";
+        }
+
+        if(document.getElementById("currentLang")) {
+            document.getElementById("currentLang").innerHTML = ' '+lang;
+            document.getElementById("currentLangImage").src = "{{MEDIA_URL}}images/"+img+".png"
+        }
+
+    }
+
+    $(document).ready(function(){
+        if(!$(".sidebar").html())
+        {
+            $(".sideBarToggle").remove();
+        }
+        else
+        {
+            toggleSideBar();
+        }
+
+    });
+
+    function toggleSideBar(bool){
+        if(!$('.sidebar').html())
+            return;
+
+        if(bool!=undefined){
+            if(bool){
+                $('.sidebar').css('z-index',1020);
+            }
+            else if($('.sidebar').css('z-index')>1000){
+
+                        $('.sidebar').css('z-index',1000);
+                        $('.sidebar').css('visibility','visible');
+                        $('.sidebar').css('display','');
+
+            }
+        }
+        else {
+            $(".sideBarToggle").click(function(){
+                if($('.sidebar').css('z-index')==1000) {
+                    $('.sidebar').css('z-index',1020);
+                }
+                else {
+
+                        $('.sidebar').css('z-index',1000);
+                        $('.sidebar').css('visibility','visible');
+                        $('.sidebar').css('display','');
+
+                }
+            });
+
+        }
+
+    }
+</script>

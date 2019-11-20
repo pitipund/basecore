@@ -1,0 +1,242 @@
+<div ng-show="didLogin||vm.searchText" style="padding-left: 15px; padding-right: 15px">
+    <h2>{{ vm.title }}</h2>
+    <div class="form-inline tab-group" style="">
+        <div class="btn-group">
+            <button
+             class="btn btn-tab"
+             style="height"
+             ng-class="{'active':vm.mode==='videos'}"
+             ng-click="vm.changeMode('videos')"
+             ng-hide="vm.isOwnChannel"
+             ng-disabled="vm.loading"><span class="glyphicon glyphicon-facetime-video"></span> วิดีโอ
+            </button>
+            <button             
+             class="btn btn-tab" 
+             ng-class="{'active':vm.mode==='channels'}" 
+             ng-click="vm.changeMode('channels')" 
+             ng-disabled="vm.loading"><span class="glyphicon glyphicon-th-large"></span> แชนแนล
+            </button>
+        </div>
+        <div class="pull-right">
+        <div class="input-group" style='margin-bottom: -1px;' ng-show="vm.mode!='videos'">
+            <div class="input-group-addon penta-background"><span class="glyphicon glyphicon-filter"></span></div>
+            <input class="form-control" ng-model="channelFilter.name" placeholder="Filter"></input>
+        </div>
+        <button class="btn btn-default" ng-show="vm.mode=='channels' && vm.isOwnChannel" ng-click="vm.createChannel()">
+            <span class="glyphicon glyphicon-plus success-color"></span> สร้างแชนแนลใหม่
+        </button>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+<style>
+    #add-channel-wrapper:hover{
+        text-decoration: none;
+        cursor:pointer;
+    }
+    #add-channel-wrapper:hover .caption{
+        text-decoration: underline;
+    }
+    #add-channel-sign {
+        color:#bbbbcc;
+        font-size:14em;
+        display:inline;
+        position: relative;
+        line-height: 300px;
+        transform: translateY(-50%);
+        text-decoration: none !important;
+    }
+</style>
+
+<div ng-show="vm.mode!='videos'">
+    <div 
+     class="channel-item" 
+     ng-repeat="channel in  channelFiltered = ( vm.channels | filter: channelFilter)"> <!-- | orderBy:'-create_at' -->
+        <div class="channel-item-main">
+            <div class="channel-image-wrapper">
+                <a 
+                 href="{{channel.play_url}}" 
+                 target="_self">
+                    <div 
+                     class="channel-image"
+                     lazy-src="{{ channel.real_icon }}" >
+                    </div>
+                </a>
+                <div ng-show="$index==1&&vm.needToShowNew" class="channel-item-new-badge">NEW</div>
+
+                <a 
+                 style="text-decoration: initial;" 
+                 ng-href="/th/channel/{{channel.id}}/">
+                    <span 
+                     class="badge" 
+                     style="position: absolute; right: 10; top: 10px; background: red;"
+                     ng-show="channel.unread_count>0" data-toggle="tooltip" title="มีวิดีโอแนะนำ({{channel.unread_count}})">
+                        {{channel.unread_count}}
+                    </span>
+                </a>
+
+                <button 
+                 class="btn btn-md btn-default btn-follow"
+                 ng-class="{'btn-success': channelArrayContains(channel.id, follow)}"
+                 ng-disabled="channelArrayContains(channel.id, own)||channel.id==share.id"
+                 ng-click="vm.followChannel(channel.id, channelArrayContains(channel.id, follow))"
+                 ng-hide="channelArrayContains(channel.id, own)||channel.id==share.id">
+                    <span ng-if="!channelArrayContains(channel.id, own)&&!(channel.id==share.id)">
+                    <i class="glyphicon glyphicon-ok"></i> 
+                    <span class="text-btn-follow">{{ channelArrayContains(channel.id, follow)? "กำลังติดตาม" : "ติดตาม"}}</span>
+                    </span>
+                </button>
+            </div>
+            <a 
+             style="text-decoration: initial;" 
+             ng-href="{{channel.channel_url}}">
+                <div class="channel-title">{{ channel.name }}</div>
+            </a>
+        </div>
+    </div>
+    <h3 
+     style="padding-left: 15px;" 
+     ng-hide="channelFiltered.length > 0 || vm.channels.length == 0"> ไม่มีแชนแนลที่เกี่ยวข้องกับ "{{channelFilter.name}}" {{ channelFiltered}}
+    </h3>
+    <div style="height:20px" in-view="vm.loadMoreContents()"></div>
+</div>
+
+<!-- did not login Dialog -->
+<div ng-show="!didLogin&&!vm.searchText">
+    <div class="jumbotron">
+        <h1>Penta CHANNEL</h1>
+        <p>คุณสามารถสร้างแชนแนลรายการของคุณเองหรือติดตามรายการอื่นๆได้ง่ายๆ เพียง Login เป็นสมาชิกกับเรา</p>
+        <p>              
+            <div class="" style="margin-top:30px">
+                <a class="btn-login btn btn-primary"
+                   href="https://accounts.thevcgroup.com/login/facebook/?next=http://www.pentachannel.com/accounts/login/?next=http://www.pentachannel.com/th"
+                   data-loading-text="กำลัง Login...."
+                   style="background-color:#3b5998;">
+                   <i class="fa fa-facebook"></i>&nbsp;Login with Facebook
+                </a>
+                &nbsp;&nbsp;หรือ
+                <a class="btn btn-md" data-toggle="modal" href="#guestModalRegister" style="">สมัครที่นี่</a>
+            </div>
+        </p>
+    </div>
+    <img width="100%" src="/media/images/allchannel.png">
+</div>
+
+<!-- did not follow  -->
+<div ng-hide=" !didLogin || vm.isOwnChannel || vm.channels.length>0 || vm.playlists.length > 0 || vm.searchText">
+<!-- <div ng-hide=" !didLogin || vm.isOwnChannel || vm.channels.length>0"> -->
+<!-- <div ng-show=" didLogin && !vm.isOwnChannel && vm.empty"> -->
+    <div class="jumbotron">
+        <h1>ยินดีต้อนรับสู่ Penta CHANNEL</h1>
+        <p></p>
+        <p>คุณสามารถติดตามแชนแนลรายการอื่นๆได้ง่ายๆ ตามประเภทที่คุณสนใจเพียง</p>
+        <p> กด              
+            <button class="btn btn-md btn-default">
+                <i class="glyphicon glyphicon-ok"></i> 
+                <span class="text-btn-follow">ติดตาม</span>
+            </button>
+            บนแชนแนลรายการที่คุณต้องการ
+        </p>
+    </div>
+</div>
+
+<div ng-show="vm.playlists.length == 0 && vm.channels.length == 0 && vm.searchText " style="padding-left: 15px;">
+    <h1> {{ !vm.loading? "ไม่มีแชนแนลที่เกี่ยวข้องกับ "+vm.searchText : "กำลังค้นหา..." }}</h1>
+</div>
+
+
+<!-- Start Video Feed -->
+<div ng-show="vm.mode=='videos'">    
+    <div class="container feed-container" ng-repeat="playlist in vm.playlists">
+        <div class="postitem row">
+            <div class="col-xs-4 video-wrapper">
+                <div class="video-container">
+                    <div ng-if="playlist.src != undefined">
+                    <a ng-href="/th/generalplay/{{ playlist.src }}/{{ playlist.src_id }}/" target="_self">
+                        <div class="video-image-main">
+                            <div class="video-image" lazy-src="{{ playlist.link.real_thumbnail }}"></div>      
+                            <div class="center video-play-btn" data-video-id='{{ playlist.link.video_id }}' data-video-type="{{ playlist.link.video_type }}"></div>
+                        </div>
+                    </a>
+                    </div>
+                    <div ng-if="playlist.src == undefined">
+                    <a ng-href="{{playlist.play_url}}" target="_self">
+                        <div class="video-image-main">
+                            <div class="video-image" lazy-src="{{ playlist.link.real_thumbnail }}"></div>      
+                            <div class="center video-play-btn" data-video-id='{{ playlist.link.video_id }}' data-video-type="{{ playlist.link.video_type }}"></div>
+                        </div>
+                    </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-8 detail-wrapper">
+                <div class="video-title">
+                    <div ng-if="playlist.src != undefined">
+                    <a ng-href="/th/generalplay/{{ playlist.src }}/{{ playlist.src_id }}/" target="_self" title="{{playlist.name}}">
+                        {{ playlist.name }}
+                    </a>
+                    </div>
+                    <div ng-if="playlist.src == undefined">
+                    <a ng-href="{{playlist.play_url}}" target="_self" title="{{playlist.name}}">
+                        {{ playlist.name }}
+                    </a>
+                    </div>
+                </div>
+                <div class="btn-group" style="right: 60px; position: absolute;">
+                    <button class="btn btn-default dropdown-toggle btn-icon"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            ng-show="channelArrayContains(playlist.channel, own) || playlist.channel == share.id || isAdmin">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                      <ul class="dropdown-menu pull-right">
+                        <li><a ng-click="vm.editPost($index)"><span class="glyphicon glyphicon-edit"></span> แก้ไข</a></li>
+                        <li><a ng-click="vm.deletePost(playlist)"><span class="glyphicon glyphicon-trash"></span> ลบ</a></li>
+                      </ul>
+                </div>
+                <facebook-button playlist="playlist" style="right: 30px; position: absolute;"></facebook-button>
+                <save-button playlist="playlist" style="right: 0; position: absolute;"></save-button>
+                <div class="shared-by-wrapper">
+                    <div class="descriptionItem row">
+                        <div class="col-md-12">
+                            <div class="play-btn-overlay">
+                                <img class="img channelLogo pull-left" width="40" height="40" lazy-src="{{ playlist.channel_image }}"/>
+                                <a class="" ng-if="playlist.src == undefined" ng-href="{{playlist.play_url}}" target="_self">
+                                    <div class="play-btn-overlay-btn btn btn-danger"><span class="glyphicon glyphicon-play"></span></div>
+                                </a>
+                                <a class="" ng-if="playlist.src != undefined" ng-href="/th/generalplay/{{ playlist.src }}/{{ playlist.src_id }}/" target="_self">
+                                    <div class="play-btn-overlay-btn btn btn-danger"><span class="glyphicon glyphicon-play"></span></div>
+                                </a>
+                            </div>
+                            <div class="shared-detail-wrapper">
+                                <div ng-if="playlist.src == undefined">
+                                    <a ng-href="{{playlist.channel_url}}">{{ playlist.channel_name }}</a>
+                                </div>
+                                <div ng-if="playlist.src != undefined">
+                                    {{ playlist.channel_name }}
+                                </div>
+                                <div>
+                                    <span class="time-text">เมื่อ {{ playlist.create_at|date:"d MMM yyyy 'at' HH:mm" }}</span>
+                                </div>
+                            </div>
+                            <div class="user-detail col-md-12" style="padding-bottom:5px;">
+                                <span><p style="white-space:pre-wrap; word-break: break-all; margin-bottom: 0px;">{{ playlist.detail }}</p></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="position: absolute; right:5; bottom:0;">                                        
+                        <span class="likecount">
+                            <ng-pluralize count="playlist.user_like_count" when="{ '0': '', '1': '1 Like', 'other': '{} Likes' }"></ng-pluralize>
+                        </span>
+                        <a class="btn-like" ng-click="vm.likePlaylist(playlist)">{{ playlist.liked? "Unlike":"Like" }}</a>
+                    </div>
+                </div>
+            </div> <!--detail wrapper-->
+		</div> <!-- wrapper -->
+    </div> <!-- ng-repeat -->
+    <div class="clearfix"></div>
+    <div style="height:20px" in-view="vm.loadMoreContents()"></div>
+</div><!-- End Video Feed -->

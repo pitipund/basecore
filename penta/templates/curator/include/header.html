@@ -1,0 +1,193 @@
+{% load i18n %}
+
+<div id="nav_master" class="navbar navbar-default navbar-fixed-top" style="margin-bottom:0px;">
+    <div class="container" style="background-color: #16c1f3; padding-right:5px;">
+        <div class="navbar-header">
+            <a href="{% url 'channel:channel_index' %}" class="navbar-brand" title="{% trans "Home" %}"><img src="{% static 'images/pentachannel-logo_white.png' %}" alt="" style="max-width:189px; max-height:28px;"></a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            {% if user.id %}
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse2" style="padding-top:6px; padding-bottom:6px;">
+                    <span class="glyphicon glyphicon-star" style="color:#fff;"></span>
+                </button>
+            {% endif %}
+        </div>
+        <div id="profile_master" class="navbar-collapse bs-navbar-collapse collapse">
+            {% if pageheader != "index" %}
+                <div class="col-lg-4 col-md-4 col-sm-5">
+                    <script type="text/javascript" src="{% static 'scripts/curator/curator_header.js' %}"></script>
+                    <form class="navbar-form navbar-left" id="searchNavForm" name="searchNavForm" method="get">
+                        <div class="input-group">
+                            <input id="searchNav_input" type="text" class="form-control col-lg-8" onkeypress="search(event);" value="{{word}}">
+                            <span class="input-group-btn">
+                                <button onclick="click_search();" class="btn btn-info"><span class="glyphicon glyphicon-search"></span></button>
+                                <input type="hidden" id="q" name="q">
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+            <div id="profile_dropdown" class="navbar-collapse collapse">
+                {% if user.id %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle visible-sm visible-md visible-lg" data-toggle="dropdown"> <span class="glyphicon glyphicon-star"></span> </a>
+                        <ul class="dropdown-menu">
+                            <li class="item"><a href="{% url 'channel:channel_home' %}"><span class="glyphicon glyphicon-star"></span> {% trans "All Favorites" %}</a></li>
+                            {% if fav_channel %}
+                                <li class="divider"></li>
+                                {% for fav_channel in fav_channel %}
+                                    <li class="item">
+                                        <a href="{{fav_channel.curatorChannel.url}}">{{fav_channel.curatorChannel.name}}</a>
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </li>
+                    <li id="dropdown_islogin" class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %} <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            {% if notification > 0 %}
+                                <li>
+                                    <a href="{% url 'curator:site_notification_playlist' user.id %}"><span class="badge pull-right" style="background-color:#d9534f;">{{notification}}</span> {% trans "Notifications" %}</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a href="{% url 'curator:site_profile' user.id %}"><span class="glyphicon glyphicon-user"></span> {% trans "Profile" %}</a>
+                            </li>
+                            {% if not avoidaddplaylist %}
+                                <li>
+                                    <a data-toggle="modal" href="#addPlaylistModal"><span class="glyphicon glyphicon-plus-sign"></span> {% trans "Add playlist" %}</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a data-toggle="modal" href="#languageModal"><span class="glyphicon glyphicon-globe"></span> {% trans "Change Language" %}</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'curator:site_manual' %}"><span class="glyphicon glyphicon-book"></span> {% trans "User Manual" %}</a>
+                            </li>
+                            {% if user.is_staff %}
+                                <li>
+                                    <a href="{% url 'curator:site_admin' %}"><span class="glyphicon glyphicon-wrench"></span> {% trans "Admin tools" %}</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a href="{% url 'site_logout' %}"><span class="glyphicon glyphicon-log-out"></span> {% trans "Logout" %}</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="dropdown_unlogin" class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Log in" %} <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a data-toggle="modal" href="#languageModal"><span class="glyphicon glyphicon-globe"></span> {% trans "Change Language" %}</a></li>
+                            <li class="well">
+                                <div><span class="glyphicon glyphicon-log-in"></span> {% trans "Log in" %}</div><hr>
+                                <div align="center">
+                                    <a href="https://accounts.thevcgroup.com/login/facebook/?next=https://{{request.get_host}}/accounts/login/?next=%2F"><label style="background-color:#3b5998;height:25px;color:white;" class="show_pointer"><image src="{% static 'images/facebook.png' %}"/>{% trans "Facebook" %}&nbsp;&nbsp;</label></a>
+                                </div>
+                                <div align="center">{% trans "Or" %}</div>
+                                <div align="center">
+                                    <a href="{% url 'site_login' %}"><label style="background-color:#94ce53;height:25px;color:white;" class="show_pointer"><image src="{% static 'images/powerall.png' %}"/> {% trans "Penta Account" %}&nbsp;&nbsp;</label></a>
+                                </div><hr>
+                                <div align="center">
+                                    <a href="https://accounts.thevcgroup.com/accounts/register/?site=penta"><label class="show_pointer">{% trans "or Sign up" %}&nbsp;&nbsp;</label></a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        {% if user.id %}
+            <div id="favorite_master" class="navbar-collapse2 bs-navbar-collapse">
+                <div id="favorite_dropdown" class="navbar-collapse2 collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{% url 'channel:channel_home' %}"><span class="glyphicon glyphicon-star"></span> {% trans "All Favorites" %}</a></li>
+                        <li class="divider"></li>
+                        {% if fav_channel %}
+                            {% for fav_channel in fav_channel %}
+                                <li>
+                                    <a href="{{fav_channel.curatorChannel.url}}">{{fav_channel.curatorChannel.name}}</a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div><!-- end navbar -->
+<!-- Language Modal -->
+<div class="modal" id="languageModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{% trans "Change Language" %}</h4>
+            </div>
+            <div class="modal-body">
+                <p><a class="btn btn-default btn-lg btn-block" href="{% url 'curator:curator_set_language' 'th' %}">ไทย</a></p>
+                <p><a class="btn btn-default btn-lg btn-block" href="{% url 'curator:curator_set_language' 'en' %}">English</a></p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+{% if not avoidaddplaylist %}
+<form id="playlist_quickcreate_form" class="form-horizontal" method="post" enctype="multipart/form-data" action="{% url 'curator:site_curator_quickcreate_playlist' %}">
+    <div class="modal" id="addPlaylistModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-plus"></span> {% trans "Add Playlist" %}</h4>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <label class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Name" %}:</label>
+                    <div class="col-xs-8 col-sm-9 col-md-10 "><input name="name" class="form-control"/></div><br><br>
+                    <label class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Link" %}:</label>
+                    <div class="col-xs-8 col-sm-9 col-md-10 "><input name="link" class="form-control"/></div><br><br>
+                    <label class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Channel" %}:</label>
+                    <div class="col-xs-8 col-sm-9 col-md-10 ">
+                        <select name="channel" class="form-control"/>
+                            {% for channel in predata_channels %}
+                            <option value="{{channel.id}}">{{channel.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div><br><br>
+                </div>
+                <div class="modal-footer text-right">
+                    <button type="submit" class="btn btn-success" /><span class="glyphicon glyphicon-plus"></span> {% trans "Add" %}</button> <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+                </div>
+            </div><!--end modal-content -->
+        </div><!--end modal-dialog -->
+    </div><!--end modal -->
+</form>
+{% endif %}
+
+<script>
+    var channel_search = '{{channel_search}}';
+    {% if type == 'playlist' %}
+        var url = "{% url 'site_search_playlist' %}";
+    {% elif type == 'profile' %}
+        var url = "{% url 'site_search_profile' %}";
+    {% else %}
+        var url = "{% url 'site_search_channel' %}";
+    {% endif %}
+    var user_id = '{{user.id}}';
+    if((navigator.userAgent.indexOf("PentaRemote Android")>-1)
+    ||(navigator.userAgent.indexOf("PentaRemote iOS")>-1)){ //is penta remote
+        document.getElementById('nav_master').style.marginTop = '-50px';
+    }
+</script>

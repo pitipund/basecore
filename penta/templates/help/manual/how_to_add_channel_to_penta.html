@@ -1,0 +1,77 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<div class="page-header">
+<h2>{% trans 'How to add channel to ' %}<a href="https://penta-tv.com/th" target="_blank">{% trans 'PentaTV' %}</a></h2>
+<h4>{% trans 'This feature require Penta extension.' %}
+<a href="https://www.penta-tv.com/th/extension#install" target="_blank">{% trans ' Click here to install.' %}</a>
+</h4>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">1. {% trans 'Click on Penta extension icon, type your PentaTV ip address and click Add.' %}</div>
+  <div class="panel-body">
+    <div class="row">
+        <div class="col-xs-6">
+            <a class="thumbnail">
+              <img src="{% static 'images/help/manual/how_to_add_channel_to_penta/1-1.png' %}">
+            </a>
+        </div>
+        <div class="col-xs-6">
+            <a class="thumbnail">
+              <img src="{% static 'images/help/manual/how_to_add_channel_to_penta/1-2.png' %}">
+            </a>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">2. {% trans 'Click on your PentaTV ip address. if connect success, Connected sign will show.' %}</div>
+  <div class="panel-body">
+    <div class="row">
+        <div class="col-xs-6">
+            <a class="thumbnail">
+              <img src="{% static 'images/help/manual/how_to_add_channel_to_penta/2-1.png' %}">
+            </a>
+        </div>
+        <div class="col-xs-6">
+            <a class="thumbnail">
+              <img src="{% static 'images/help/manual/how_to_add_channel_to_penta/2-2.png' %}">
+            </a>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">3. {% trans 'Go to pentachannel.com/home/ or pentachannel.com/channel/{channel} and click Add to PentaTV.' %}</div>
+  <div class="panel-body">
+    <div class="row">
+        <div class="col-xs-6">
+            <a class="thumbnail">
+              <img src="{% static 'images/help/manual/how_to_add_channel_to_penta/3-1.png' %}">
+            </a>
+        </div>
+        <div class="col-xs-6">
+            <a class="thumbnail">
+              <img src="{% static 'images/help/manual/how_to_add_channel_to_penta/3-2.png' %}">
+            </a>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">4. {% trans 'Channel will add to your PentaTV.' %}</div>
+  <div class="panel-body">
+    <div class="row">
+        <div class="col-xs-12">
+            <a class="thumbnail">
+              <img src="{% static 'images/help/manual/how_to_add_channel_to_penta/4-1.png' %}">
+            </a>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'agreement/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="blockquote">
+        {{ username }} have been removed.
+    </div>
+    <a href="{% url 'PRX:agreement_home' %}" class="btn btn-primary">{% trans 'return' %}</a>
+{% endblock %}

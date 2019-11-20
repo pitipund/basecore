@@ -1,0 +1,124 @@
+{% extends 'agreement/base.html' %}
+{% load i18n %}
+
+{% block content %}
+  {% if user.profile.hn %}
+    <div class="alert alert-success mt-3">
+    &checkmark; {% blocktrans %}This user has already activated{% endblocktrans %}
+    </div>
+    <div class="text-center"><a href="{% url 'PRX:agreement_home' %}" class="btn btn-default">{% trans 'Back' %}</a></div>
+  {% endif %}
+  <form id="agreement-form" method="post" class="mt-3">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="hn">HN</label>
+      <div class="input-group">
+        <input id="hn" name="hn" class="form-control" v-model="hn" required
+               v-on:keydown.enter="getPatientInfo($event)" v-on:input="resetInfo()">
+        <span class="input-group-btn">
+          <div class="btn btn-primary" v-on:click="getPatientInfo()">{% trans 'Search' %}</div>
+        </span>
+      </div>
+    </div>
+    <div v-cloak>
+      <div class="alert alert-danger" v-if="message">${ message }</div>
+      <table class="table table-sm table-striped">
+        <tr>
+          <th></th><th>{% trans 'Register' %}</th><th>{% trans 'From HIS' %}</th>
+        </tr>
+        <tr>
+          <th>{%  trans 'Citizen ID/Passport' %}</th><td>{{ user.cid }}</td><td>${ info.cid }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Title' %}</th><td>{{ profile.extra_data.pre_name }}</td><td>${ info.pre_name }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'First name' %}</th><td>{{ profile.first_name }}</td><td>${ info.first_name }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Last name' %}</th><td>{{ profile.last_name }}</td><td>${ info.last_name }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Gender' %}</th><td>{{ profile.extra_data.gender }}</td><td>${ info.gender }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Date of birth' %}</th><td>{{ profile.dob }}</td><td>${ info.dob | moment('MMMM DD, YYYY') }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Nationality' %}</th><td>{{ profile.extra_data.nationality }}</td><td>${ info.nationality }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Mobile phone' %}</th><td>{{ profile.phone_no }}</td><td>${ info.phone_no }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Address' %}</th><td>{{ profile.address }}</td><td>${ info.address }</td>
+        </tr>
+        <tr>
+          <th colspan="3">{% trans 'Emergency Contact Person' %}</th>
+        </tr>
+        <tr>
+          <th>{% trans 'First name' %}</th><td>{{ profile.ecp_first_name }}</td><td>${ info.ecp_first_name }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Last name' %}</th><td>{{ profile.ecp_last_name }}</td><td>${ info.ecp_last_name }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Mobile phone' %}</th><td>{{ profile.ecp_phone_no }}</td><td>${ info.ecp_phone_no }</td>
+        </tr>
+        <tr>
+          <th>{% trans 'Relationship' %}</th><td>{{ profile.ecp_relationship }}</td><td>${ info.ecp_relationship }</td>
+        </tr>
+      </table>
+    </div>
+    {% if not hn %}
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" id="agreed" v-model="agreed" required>
+        <label class="form-check-label" for="agreed">{% blocktrans %}User has signed the agreement{% endblocktrans %}</label>
+      </div>
+      <input type="submit" class="btn btn-primary" v-bind:disabled="!agreed || !info.hn">
+    {% else %}
+      <a href="{% url 'PRX:user_deactivate' user.username %}" class="btn btn-danger">{% trans 'Deactivate' %}</a>
+    {% endif %}
+    <a class="btn btn-light" href="{% url 'PRX:agreement_home' %}">{% trans 'Back' %}</a>
+  </form>
+{% endblock %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script>
+    new Vue({
+      el: '#agreement-form',
+      data: {
+        info: {},
+        hn: '{{ hn }}',
+        agreed: false,
+        message: '',
+        alreadyChange: false,
+      },
+      created: function() {
+        if (this.hn) {
+          this.getPatientInfo();
+        }
+      },
+      methods: {
+        getPatientInfo: function(event) {
+          this.message = '';
+          axios.get('/users/api/trakcare/patient_info', {params:{hn: this.hn}})
+            .then((data) => {
+              this.info = data.data;
+              this.hn = this.info.hn;
+            })
+            .catch((error) => {
+              this.message = "{% trans 'Patient with this HN is not found' %}";
+              this.info = {};
+              console.log(error)
+            });
+          if (event) event.preventDefault();
+        },
+        resetInfo: function(event) {
+          this.info = {};
+        }
+      }
+    });
+  </script>
+{% endblock %}

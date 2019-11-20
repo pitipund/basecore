@@ -1,0 +1,92 @@
+{% load static %}
+<html>
+<head>
+{% include "curator/include/config_style.html" %}
+<style>
+	.mmg {
+		margin-left: 30px;
+	}
+</style>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+  var piechart;
+  var data;
+
+	function drawChart() {
+		data = google.visualization.arrayToDataTable([
+		['Task', 'Click'],
+		['PPG', {{ppgs|length}}],
+		['Live Grid', {{ live_grids|length }}],
+		['Live Pinned', {{ live_pins|length }}],
+		]);
+
+		var options = {
+		title: 'Live Channel 	Usage Activities'
+		};
+
+		piechart = new google.visualization.PieChart(document.getElementById('piechart'));
+		piechart.draw(data, options);
+		google.visualization.events.addListener(piechart, 'select', selectHandler);
+	}
+
+
+	function selectHandler(e) {
+	  // alert('A table row was selected '+ piechart.getSelection());
+	  	var selectedItem = piechart.getSelection()[0];
+	  	console.log(selectedItem)
+    	if (selectedItem) {
+    		var value = data.getValue(selectedItem.row,0);
+      		if(value=="PPG"){
+      			$("#ppg_div").fadeIn();
+      			$("#grid_div").fadeOut(0);
+				$("#pin_div").fadeOut(0);
+      		} else if(value=='Live Grid') {
+				$("#ppg_div").fadeOut(0);
+      			$("#grid_div").fadeIn();
+				$("#pin_div").fadeOut(0);
+      		} else if(value=='Live Pinned') {
+				$("#ppg_div").fadeOut(0);
+      			$("#grid_div").fadeOut(0);
+				$("#pin_div").fadeIn();
+      		}
+    	}
+	}
+
+	$(document).ready(function(){
+		$("#grid_div").fadeOut();
+		$("#pin_div").fadeOut();
+	});
+</script>
+</head>
+<body>
+	<h1 class="mmg">Analyst</h1>
+	<div id="piechart" style="width: 900px; height: 500px;"></div>
+
+	<div id="ppg_div" class="mmg">
+		<h2>from PPG(times)</h2>
+		{% for key,channel in ppg_channels.items %}
+	 		{{ forloop.counter }} <img src="{% get_media_prefix %}{{ channel.icon }}" height="30"> {{ channel.name }} count:{{ channel.count }}
+			<br/>
+		{% endfor %}
+	</div>
+
+	<div id="pin_div" style="display:none" class="mmg">
+		<h2>from Pinned(times)</h2>
+		{% for key,channel in pin_channels.items %}
+		 	{{ forloop.counter }} <img src="{% get_media_prefix %}{{ channel.icon }}" height="30"> {{ channel.name }} count:{{ channel.count }}
+			<br/>
+		{% endfor %}
+	</div>
+
+	<div id="grid_div" style="display:none" class="mmg">
+		<h2>from Grid(times)</h2>
+		{% for key,channel in grid_channels.items %}
+		 	{{ forloop.counter }} <img src="{% get_media_prefix %}{{ channel.icon }}" height="30"> {{ channel.name }} count:{{ channel.count }}
+			<br/>
+		{% endfor %}
+	</div>
+</body>
+
+</html>

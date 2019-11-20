@@ -1,0 +1,54 @@
+
+<!-- Sidebar -->
+<div id="sidebar-wrapper" class="" style="height: 100%" onmouseover="document.body.style.overflow='hidden';" onmouseout="document.body.style.overflow='auto';">
+    <ul class="sidebar-nav">
+        <li 
+         class="sidebar-brand" 
+         ng-class="{'selected':vm.selectedIndex()==vm.sidebarItemIndex.suggest}">
+            <a 
+            ng-click="goTo('/',{}); vm.setSelected('suggest');" >
+                <span class="fa fa-thumbs-up"></span>&nbsp;แนะนำ
+            </a>
+        </li>
+        <li
+         class="sidebar-brand"
+         ng-class="{'selected':vm.selectedIndex()==vm.sidebarItemIndex.update}">
+            <a
+             ng-click="goTo('/new/',{}); vm.setSelected('update');">
+                <span class="fa fa-star"></span>&nbsp;แชนแนลอัพเดท <span ng-show="vm.suggestionCount()>0" class="badge" style="background: red; text-indent:0px;">{{vm.suggestionCount()}}</span>
+            </a>
+        </li>
+        <li 
+         class="sidebar-brand" 
+         ng-class="{'selected':vm.selectedIndex()==vm.sidebarItemIndex.own}">
+            <a 
+             ng-click="goTo('/own/',{}); vm.setSelected('own');">
+                <span class="fa fa-user"></span>&nbsp;แชนแนลของฉัน <span ng-show="vm.suggestionCount()>0" class="badge" style="background: red; text-indent:0px;">{{vm.suggestionCount()}}</span>
+            </a>
+        </li>
+        <li 
+         class="sidebar-brand" 
+         ng-class="{'selected':vm.selectedIndex()==vm.sidebarItemIndex.follow}">
+            <a 
+             ng-click="goTo('/follow/'); vm.setSelected('follow');">
+                <span class="fa fa-heart"></span>&nbsp;แชนแนลที่ติดตาม <span ng-show="vm.countNewFollowedVideos()>0" class="badge" style="text-indent:0px;">{{vm.countNewFollowedVideos()}}</span>
+            </a>
+        </li>
+    </ul>
+    <ul class="sidebar-nav">
+    	<li style=" border-top: 1px solid #454545; color: #16c1f3; cursor: default; text-indent: 20px;">หัวข้อที่น่าสนใจ</li>
+    </ul>
+    <ul class="sidebar-nav sidebar-sub">
+        <li 
+         class="" 
+         ng-repeat="tag in vm.highlightTags" 
+         ng-class="{'selected':vm.selectedIndex()==$index}"
+         style="text-indent: 40px;" >
+            <a 
+             ng-click="goTo(tag.browse_url); vm.setSelectedIndex($index);">
+                {{ tag.name }}
+            </a>
+        </li>
+    </ul>
+</div>
+<!-- /#sidebar-wrapper -->

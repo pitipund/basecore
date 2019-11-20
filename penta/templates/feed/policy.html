@@ -1,0 +1,307 @@
+{% load static %}
+{% load truncatechartrue %}
+{% load static_withquery %}
+<html>
+{% block header %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="fragment" content="!">
+        <meta property="og:title" content="{{ og_title|truncatechartrue:80 }}"/>
+        <meta property="og:url" content="{{ og_url }}">
+        <meta property="og:image" content="{{ og_image }}"/>
+        <meta property="og:site_name" content="{{ og_site_name }}"/>
+        <meta property="og:description" content="{{ og_desc|truncatechartrue:250 }}"/>
+
+        <title>{{ og_title }}</title>
+        <base href="/th/"/>
+
+        {% if not debug and not request.GET.no_analytic %}
+            <script>
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_staff %}
+                        var lstatus = 'Staff';
+                    {% else %}
+                        var lstatus = 'Member';
+                    {% endif %}
+                {% else %}
+                    var lstatus = 'Guest';
+                {% endif %}
+
+                (function (i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r;
+                    i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
+                    a = s.createElement(o),
+                        m = s.getElementsByTagName(o)[0];
+                    a.async = 1;
+                    a.src = g;
+                    m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+                ga('create', 'UA-11452091-11', 'auto');
+                // ga('send', 'pageview', {
+                //   'dimension1': lstatus ..
+                // });
+            </script>
+        {% endif %}
+
+        {% if optimize %}
+            <link href="{% static_withquery 'dist/css/app.min.css' %}" rel="stylesheet" type="text/css"/>
+        {% else %}
+            <link href="{% static 'feed/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/angular-chart.css' %}" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/angular-tooltips.min.css' %}" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/sidebar.css' %}" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/feeditem.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/ngToast.min.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/ngToast-animations.min.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/jqcloud.min.css' %}" rel="stylesheet" type="text/css"/>
+            <link href="{% static 'feed/css/bootstrap-datetimepicker.css' %}" rel="stylesheet" type="text/css"/>
+        {% endif %}
+        {#    <link href="{% static 'reports/css/styles.css' %}" rel="stylesheet" type="text/css" />#}
+    </head>
+{% endblock %}
+
+<body ng-app="feed-policy">
+{% if optimize %}
+    <script async src="{% static_withquery 'dist/js/app.min.js' %}"></script>
+{% else %}
+    <script src="{% static 'feed/js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'feed/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-route.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-animate.min.js' %}"></script>
+    <script src="{% static 'feed/js/angulartics.min.js' %}"></script>
+    <script src="{% static 'feed/js/angulartics-ga.min.js' %}"></script>
+    <script src="{% static 'feed/js/Chart.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-chart.min.js' %}"></script>
+    <script src="{% static 'feed/js/prefixfree.min.js' %}"></script>
+    <script src="{% static 'feed/js/jquery.form.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-cookies.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-inview.js' %}"></script>
+    <script src="{% static 'feed/js/angular-sanitize.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-tooltips.min.js' %}"></script>
+    <script src="{% static 'feed/js/ui-bootstrap-tpls-0.13.0.min.js' %}"></script>
+    <script src="{% static 'feed/js/ng-file-upload-shim.min.js' %}"></script>
+    <script src="{% static 'feed/js/ng-file-upload.min.js' %}"></script>
+    <script src="{% static 'feed/js/ngToast.min.js' %}"></script>
+    <script src="{% static 'feed/js/jqcloud.min.js' %}"></script>
+    <script src="{% static 'feed/js/moment.min.js' %}"></script>
+    <script src="{% static 'feed/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'feed/app/feed.js' %}?v=1.1"></script>
+    <script src="{% static 'feed/app/feed.routes.js' %}"></script>
+    <script src="{% static 'feed/app/feed.config.js' %}"></script>
+    <script src="{% static 'feed/app/layout/layout.module.js' %}"></script>
+    <script src="{% static 'feed/app/layout/controllers/sidebar.controller.js' %}"></script>
+    <script src="{% static 'feed/app/layout/controllers/tageditor.controller.js' %}"></script>
+    <script src="{% static 'feed/app/layout/controllers/facebookbutton.controller.js' %}"></script>
+    <script src="{% static 'feed/app/layout/controllers/savebutton.controller.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/lazysrc.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/sidebar.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/tageditor.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/facebookbutton.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/savebutton.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/services/sidebar.service.js' %}"></script>
+    <script src="{% static 'feed/app/layout/services/post.service.js' %}"></script>
+    <script src="{% static 'feed/app/layout/services/tag.service.js' %}"></script>
+    <script src="{% static 'feed/app/layout/services/usersuggestion.service.js' %}"></script>
+    <script src="{% static 'feed/app/layout/modals/postbox.modal.js' %}"></script>
+    <script src="{% static 'feed/app/layout/modals/suggestionbox.modal.js' %}"></script>
+    <script src="{% static 'feed/app/layout/modals/createchannel.modal.js' %}"></script>
+    <script src="{% static 'feed/app/layout/modals/editpost.modal.js' %}?v=1.0"></script>
+    <script src="{% static 'feed/app/browse/browse.module.js' %}"></script>
+    <script src="{% static 'feed/app/browse/controllers/browse.controller.js' %}"></script>
+    <script src="{% static 'feed/app/browse/controllers/ownchannel.controller.js' %}?v=1.0"></script>
+    <script src="{% static 'feed/app/browse/controllers/followchannel.controller.js' %}"></script>
+    <script src="{% static 'feed/app/browse/controllers/highlight.controller.js' %}"></script>
+    <script src="{% static 'feed/app/browse/controllers/channelview.controller.js' %}"></script>
+    <script src="{% static 'feed/app/browse/controllers/searchview.controller.js' %}"></script>
+    <script src="{% static 'feed/app/browse/controllers/updatechannel.controller.js' %}"></script>
+    <script src="{% static 'feed/app/browse/services/browse.service.js' %}"></script>
+    <script src="{% static 'feed/app/account/account.module.js' %}"></script>
+    <script src="{% static 'feed/app/account/services/account.service.js' %}"></script>
+    <script src="{% static 'scripts/feed/fb_script.js' %}"></script>
+    <script src="{% static 'feed/js/angular-jqcloud.js' %}"></script>
+    <script src="{% static 'scripts/feed/tag_editor.js' %}"></script>
+    <!-- DONT FORGET TO ADD YOUR NEW JS FILE IN Gruntfile.js MANUALLY -->
+{% endif %}
+
+<toast></toast>
+{% include "channel/include/header2.html" %}
+<!-- Contents go here -->
+<div class="container-fluid">
+    <div class="row clearfix" style="margin-bottom: 50px">
+
+    </div>
+    <div id="wrapper" class="container-fluid" in-view-container>
+
+        <sidebar></sidebar>
+        <div id="page-content-wrapper">
+            <div class="container marketing">
+                <div class="col-xs-8 col-md-9 text-justify">
+                    <h1 style="margin:50px 0 28px">Privacy Policy</h1>
+                    <p><b>WE DO NOT</b> and will not sell or rent your personal information to anyone, for any reason, at
+                        any time.
+                    </p><p>
+                    Our most important asset is our relationship with you. So we committed to maintaining the
+                    confidentiality, integrity and security of any personal information about our users.
+                </p><p>
+                    <b>THIS PRIVACY &amp; SECURITY POLICY EXPLAINS HOW WE PROTECT PERSONAL INFORMATION PROVIDED THROUGH
+                        WWW.PENTA.CENTER AND ANY OTHER SUB-DOMAINS (THE “SITE”) AND HOW WE USE THAT INFORMATION IN
+                        CONNECTION WITH OUR SERVICE OFFERED THROUGH THE SITE (THE “SERVICE”). “PERSONAL INFORMATION” FOR
+                        PURPOSES OF THIS POLICY MEANS INFORMATION THAT IDENTIFIES YOU, SUCH AS YOUR NAME, ADDRESS, PHONE
+                        NUMBER, FAX NUMBER OR EMAIL ADDRESS. WE STRESS ITS PRIVACY AND SECURITY STANDARDS TO GUARD
+                        AGAINST IDENTITY THEFT AND PROVIDE SECURITY FOR YOUR PERSONAL INFORMATION.</b>
+                </p><p>
+                    We know that you care how information about you is used and shared, and we appreciate your trust
+                    that we will do so carefully and sensibly. This Policy explains PENTA CENTER's treatment of information
+                    that we collect when you use our services (collectively, the "PENTA CENTER Service"), which may include
+                    personally identifiable information ("Personal Information"). By using PENTA CENTER's services, you are
+                    accepting the practices described here.
+                </p><p>
+                    This policy does not apply to the practices of companies that PENTA CENTER does not own or control, or
+                    to individuals that PENTA CENTER does not employ or manage, including operators of Web sites you may
+                    visit before or after visiting the PENTA CENTER Web site, download or otherwise access through the PENTA
+                    CENTER Service.
+                </p><p>
+                    <b>Information We Collect</b>
+                </p><p>
+                    PENTA CENTER collects information from users, which may include Personal Information through our
+                    software as follows:
+                </p><p>
+                    <b>Cookies:</b>
+                </p><p>
+                    A cookie is a small piece of information that is placed on your computer when you visit certain
+                    websites. Find out more about the use of cookies on http://www.cookiecentral.com. We use the
+                    following types of cookie:
+                </p><p>
+                    (1) Analytics cookies that anonymously remember your computer or mobile device when you visit our
+                    website. They keep track of browsing patterns and build up a profile of how our readers use the
+                    website. We might use that information to target advertisements to you on our and other websites.
+                </p><p>
+                    (2) Service cookies that help us to make our website work as efficiently as possible; remember your
+                    registration and login details; remember your settings preferences; and meter the number of pages
+                    you view for the purpose of administering subscriptions to The Telegraph.
+                </p><p>
+                    (3) Third party advertising and analytics cookies, which are placed by or on behalf of independent
+                    advertisers who are advertising on our site. These cookies may be placed within the advertisement
+                    and elsewhere on our site. They are anonymous – they cannot identify individuals. They are used for
+                    statistical analysis by allowing the advertiser to count how many people have seen their
+                    advertisement or have seen it more than once. They might also allow the advertiser to tailor
+                    advertising to you when you visit other websites.
+                </p><p>
+                    We have no access to third party cookies and third party organisations have no access to ours. The
+                    third party organisations that place cookies have their own strict privacy policies.
+                </p><p>
+                    Information You Give Us, we receive and store information you enter on our Web site or give us in any other way.
+                </p><p>
+                    <b>Personal information:</b>
+                </p><p>
+                    From time to time we may request other personal information to provide you with other benefits of
+                    the Service. In all such instances, you will be given the opportunity to provide or to decline to
+                    provide that information, and it will be used only for the stated purpose. PENTA CENTER may make
+                    anonymous or aggregate personal information and disclose such data only in a non-personally
+                    identifiable manner to:
+                </p><p>
+                    · Advertisers and other third parties for their marketing and promotional purposes, such as the
+                    number of users who applied for a credit card or how many users clicked on a particular PENTA CENTER
+                    offer;
+                </p><p>
+                    · Organizations approved by PENTA CENTER that conduct research into consumer spending; and
+                </p><p>
+                    · Users of the Service for purposes of comparison of their personal financial situation relative to
+                    the broader community.
+                </p><p>
+                    Such information does not identify you individually. Access to your Registration Information,
+                    Account Credentials, Account Information and any other personal information you provide is strictly
+                    restricted and used in accordance with specific internal procedures and safeguard governing access,
+                    in order to operate, develop or improve the Service. These individuals have been selected in
+                    accordance with our security policies and practices and are bound by confidentiality obligations.
+                    They may be subject to discipline, including termination and criminal prosecution, if they fail to
+                    meet these obligations. We may also use third party vendors or service providers to help us provide
+                    the Service to you, such as sending e-mail messages on our behalf or hosting and operating a
+                    particular feature or functionality of the Service. Our contracts with these third parties outline
+                    the appropriate use and handling of your information and prohibit them from using any of your
+                    personal information for purposes unrelated to the product or service they're providing. We require
+                    such third parties to maintain the confidentiality of the information we provide to them.
+                </p><p>
+                    <b>Registration data:</b>
+                </p><p>
+                    · When you register for the PENTA CENTER Service, we ask that you provide basic contact information such
+                    as your name, address, and email address.
+                </p><p>
+                    <b>Voluntary information:</b>
+                </p><p>
+                    · We may collect additional information at other times, including but not limited to, when you
+                    provide feedback, change your content or email preferences, respond to a survey, or communicate with
+                    PENTA CENTER Customer Support.
+                    Information Collected Automatically
+                </p><p>
+                    · We receive and store certain types of information whenever you interact with us via WWW.PENTA.CENTER
+                    or the PENTA CENTER software.
+                </p><p>
+                    <b>Computer configuration:</b>
+                </p><p>
+                    · We automatically receive and log information from your browser as well as your mobile devices.
+                </p><p>
+                    · Referral, clickstream, and site interaction data:
+                </p><p>
+                    · We may also record the URL you linked from to get to WWW.PENTA.CENTER, your clickstream through and
+                    from our Web site, and other generally accepted tracking information.
+                </p><p>
+                    · Online session information and use is only used to improve your experience
+                </p><p>
+                    <b>Email delivery and open rates:</b>
+                </p><p>
+                    · To help us make our emails more useful and interesting, and to ensure that we are delivering the
+                    Publications you have ordered, we often receive a confirmation when you receive and/or open email
+                    from PENTA CENTER.
+                </p><p>
+                    · Software installation, file downloads, and publication access:
+                </p><p>
+                    · When you install PENTA CENTER mobile application, we may record when each file transfer begins and ends,
+                    and any errors that interrupt the transfer. The PENTA CENTER mobile application also records whether or not
+                    you downloaded and accessed a given Publication.
+                </p><p>
+                    <b>Information from Other Sources:</b>
+                </p><p>
+                    · We may receive information about you from other sources, add it to our account information and
+                    treat it in accordance with this policy
+                </p><p>
+                    · Demographic information:
+                </p><p>
+                    · We may reference other sources of demographic in order to provide you with more targeted
+                    communications and promotions.
+                </p><p>
+                    <b>Delete your data</b>
+                </p><p>
+                    · Your data is yours. You can remove it anytime you want. When you request us to delete your account
+                    for the Service, your data will be permanently expunged from our primary production servers and
+                    further access to your account will not be possible. We will also promptly disconnect any connection
+                    we had established to your Account Information and delete all account credentials. However, portions
+                    of your data, consisting of aggregate data derived from your Account Information, may remain on our
+                    production servers indefinitely. Your data may also remain on a backup server or media. PENTA CENTER
+                    keeps these backups to ensure our continued ability to provide the Service to you in the event of
+                    malfunction or damage to our primary production servers. We also reserve the right to use any
+                    aggregated or anonymous data derived from or incorporating your personal information.
+                </p><p>
+                    <b>How to Contact Us</b>
+                </p><p>
+                    · If you have any questions or concerns regarding our Privacy Policy or our use of your information,
+                    please email pentatv@thevcgroup.com
+                </p><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'y15/components/sign_in_register_modal.html' %}
+
+<noscript>penta channel tv video clip movie music เพนต้า แชนแนล ทีวี วิดีโอ ดูหนัง ดูซีรี่ย์ ฟังเพลง ออนไลน์ คลิป ใหม่
+    ย้อนหลัง
+</noscript>
+</body>
+</html>

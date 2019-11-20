@@ -1,0 +1,89 @@
+{% extends "channel/base_with_sidebar.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+    <style type="text/css">
+        .main{
+            background-color: #111111;
+        }
+        .facebook_button{
+            background-color:#3b5998;
+            color:#ffffff;
+            background-image:url('{% static 'images/facebook.png');
+            font-weight:bold;
+            background-repeat:no-repeat;
+            background-position:left;
+            padding-top:4px;
+            padding-bottom:3px;
+        }
+        .sidebar{
+            padding-left:10px;
+            padding-right:10px;
+            background-color: #212121;
+        }
+    </style>
+{% endblock %}
+
+{% block sidebar %}
+    <h4 id=' %}"chname" style="color:#aaa; padding:10px; margin:0px;">{{name}}</h4>
+    <image id="ch_icon" style="width:100%;" src="{{icon}}"/>
+    <h5 style="color:#3adafa;">{% trans "Follows" %}: <span id="subscribers_numberlive_{{id}}">{{subscribers_number}}</span></h5>
+    <a href="{% url 'curator:site_profile' owner_url %}"><h5>{% trans "By" %}: {{owner}}</h5></a>
+    <h5 id="chdetail" style="color:#aaa;">{{detail}}</h5>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12" style="padding:10px 0px;">
+            <h3 id="videoplayer_title" style="color:#aaa;">{{name}}</h3>
+            <h4 id="owner_title" style="color:#aaa; position:absolute;"></h4>
+            <div class="pull-right">
+                <a id="subscription_buttonlive_{{id}}" style="font-weight:bold;"
+                    {% if user.id %}
+                        onclick="subscribeChannel(
+                        {% if isSubscribe %}
+                            1, 'live_{{id}}')" class="btn btn-sm btn-danger"><span class='glyphicon glyphicon-warning-sign'></span> {% trans "Unfollow" %}
+                        {% else %}
+                            0, 'live_{{id}}')" class="btn btn-sm btn-info"><span class='glyphicon glyphicon-star'></span> {% trans "Follow" %}
+                        {% endif %}
+                    {% else %}
+                        data-toggle="modal" href="#loginModal" class="btn btn-sm btn-info"><span class='glyphicon glyphicon-warning-star'></span> {% trans "Follow" %}
+                    {% endif %}
+                </a>
+                <a class="btn btn-sm facebook_button"
+                    {% if user.id %}
+                        onclick="fb_share();"
+                    {% else %}
+                        data-toggle="modal" href="#loginModal"
+                    {% endif %}
+                    >
+                    <p style="margin-bottom:0px; padding:2px 0px 4px 15px;" width="20" height="20">{% trans "Share" %}</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="player" style="width:100%; height:80%; overflow:hidden;"></div>
+    <div id="fb-root"></div>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/swfobject/swfobject/master/swfobject/swfobject.js"></script>
+    <script type="text/javascript">
+        var subscribe_text = '{% trans "Follow" %}';
+        var unsubscribe_text = '{% trans "Unfollow" %}';
+        var id = "{{id}}";
+        var channel_name = '{{name}}';
+        var channel_icon = '{{icon}}';
+        $(document).ready(function(){
+            var url = encodeURIComponent('{{url}}')+"&provider=http&http.startparam=start";
+            var so = new SWFObject('https://player.longtailvideo.com/player.swf','mpl','100%','100%','9');
+            so.addParam('allowscriptaccess','always');
+            so.addParam('allowfullscreen','true');
+            so.addVariable('autostart','true');
+            so.addVariable('file',url);
+            so.addVariable('image',channel_icon);
+            so.addVariable('stretching','exactfit');
+            so.write('player');
+        });
+    </script>
+
+    <script type="text/javascript" src="{% static 'scripts/curator/curator_playlist_list.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/channel/channel.js' %}"></script>
+{% endblock %}

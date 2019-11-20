@@ -1,0 +1,10 @@
+<ul>
+{% for division in divisions %}
+    <li><a href="{% url 'admin:core_division_change' division.id %}">{{ division.name }}</a>
+    {% with "division.html" as filename %}
+    {% with division.division_set.all as divisions %}
+        {% include filename %}
+    {% endwith %}
+    {% endwith %}</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,354 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/curator/curator_channel_create.js' %}"></script>
+
+    <div class="col-xs-12 col-sm-12 col-md-12" style="padding-top:15px;">
+        <ol class="breadcrumb">
+            <li class="active">
+                {% if action == 'create' %}{% trans "Create Channel" %}
+                {% else %}                 {% trans "Update Channel" %}
+                {% endif %}
+            </li>
+         </ol>
+    </div>
+    {% if messages %}
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="alert alert-danger" style="padding:10px;">
+                {% for message in messages %}
+                    {{message}}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}<!--end error alert-->
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div id="spinnerbar" align="center"></div>
+        <form id="channel_create_form" class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {% if form.name.errors %}<div class="form-group has-error">
+            {% else %}               <div class="form-group">
+            {% endif %}
+            <div class="col-xs-12 col-sm-12 col-md-12"><label  class="instruction_text text-info ">{% trans "1.Add Channel Name" %}</label></div>
+                <label for="name" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Channel Name" %} {% if form.name.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.name}}
+                    {% if form.name.errors %}{% for error in form.name.errors %}
+                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                    {% endfor %}{% endif %}
+                </div>
+            </div><!--end name-->
+            {% if form.icon.errors %}<div class="form-group has-error">
+            {% else %}               <div class="form-group">
+            {% endif %}
+            <div class="col-xs-12 col-sm-12 col-md-12"><label  class="instruction_text text-info">{% trans "2.Choose to upload channel's icon or enter image URL of your icon(need to select one of them)" %}</label></div>
+                <label for="icon" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Icon" %} *</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.icon}}
+                    {% if form.icon.errors %}{% for error in form.icon.errors %}
+                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                    {% endfor %}{% endif %}
+                </div>
+            </div><!--end icon-->
+            {% if form.icon_url.errors %}<div class="form-group has-error">
+            {% else %}               <div class="form-group">
+            {% endif %}
+                <label for="icon_url" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "or Icon URL" %} {% if form.icon_url.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.icon_url}}
+                    {% if form.icon_url.errors %}{% for error in form.icon_url.errors %}
+                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                    {% endfor %}{% endif %}
+                </div>
+            </div><!--end icon_url-->
+            {% if action != 'create' %}
+            <div class="form-group">
+                <label for="url_name" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Sample image" %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">
+                        {% if form.icon.value %}
+                        <image src="{{MEDIA_URL}}{{form.icon.value}}" style="min-width:200px; max-width:300px;"/>
+                        {% else %}
+                            {% if form.icon_url.value %}
+                            <image src="{{form.icon_url.value}}" style="min-width:200px; max-width:300px;"/>
+                            {% else %}
+                            -
+                            {% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div><!--end sample image-->
+            {% endif %}
+
+            {% if form.detail.errors %}<div class="form-group has-error">
+            {% else %}                 <div class="form-group">
+            {% endif %}
+            <div class="col-xs-12 col-sm-12 col-md-12"><label class="instruction_text text-info">{% trans "3.Add detail for your channel." %}</label></div>
+                <label for="detail" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Detail" %} {% if form.detail.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.detail}}
+                    {% if form.detail.errors %}{% for error in form.detail.errors %}
+                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span><br>
+                    {% endfor %}{% endif %}
+                </div><!--end isLive-->
+            </div>
+            {% if form.tag.errors %}<div class="form-group has-error">
+            {% else %}              <div class="form-group">
+            {% endif %}
+            <div class="col-xs-12 col-sm-12 col-md-12"><label  class="instruction_text text-info">{% trans "4.Add tags for your channel." %}</label></div>
+                <label for="tag" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Tag" %} {% if form.tag.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    <input type="hidden" id="tags" name="tags" value="[]">
+                    <div id="tag_selected"></div>
+                    <div id="tag_add">
+                        <div class="input-group" style="padding-bottom:5px;">
+                            <input id="txtboxWord" type="text" class="form-control" placeholder="{% trans 'Type new tag or select from below.' %}" autocomplete="off" />
+                            <span class="input-group-btn">
+                                <a  id="btnCreateTag"
+                                    class="btn btn-success"
+                                    data-loading-text="<span class='glyphicon glyphicon-plus-sign' /> {% trans 'Creating...' %}" >
+                                        <span class="glyphicon glyphicon-plus-sign"></span> {% trans "Create Tag" %}
+                                </a>
+                            </span>
+                        </div>
+                        <div id="tag_list"></div>
+                    </div>
+                    <p class="help-block">{% trans "Example" %}: {% trans "Movie" %}</p>
+                </div>
+            </div><!--end tag-->
+            {% if action == 'update' %}
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-12 col-md-12"><label  class="instruction_text text-info">{% trans "5.Arrange your playlist (By drag&drop) and select playlist for pin"  %}</label></div>
+                <label for="tag" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Playlists" %} </label>
+                <div class="col-xs-8 col-sm-9 col-md-10 well">
+                    <ul class="sortable">
+                        {% for playlist in allplaylists %}
+                            <div class="show_pointer">
+                                <div class="radio">
+                                    <label>
+                                        <input type="hidden" value="{{playlist.id}}" name="sort_playlists"/>
+                                        <input type="radio" name="pin_playlist" id="pin{{playlist.id}}" value="{{playlist.id}}" {% if pin_queue == playlist.id %}checked="true"{% endif %}>
+                                        {{playlist.name}}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}<!--end sort playlist-->
+            <input name="user" type="hidden" value="{{user.id}}"/>
+            <div id="key_hid_div"></div>
+
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                            <label class="instruction_text text-info" style="margin-top: 0px; margin-bottom: 0px;">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    <span class="glyphicon glyphicon-chevron-down"></span>
+                                    {% trans "Advance" %}
+                                </a>
+                            </label>
+                    </div>
+                    {% if form.url_name.errors %}
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                    {% else %}
+                    <div id="collapseOne" class="panel-collapse collapse">
+                    {% endif %}
+                        <div class="panel-body">
+                            {% if user.is_staff %}
+                            <div class="form-group">
+                                <div class="col-xs-12 col-sm-12 col-md-12"><label  class="instruction_text text-info">6.กรอกคำที่ต้องการลบออกจากชื่อลิงค์ เช่น ชื่อลิงค์คือ <font style="color:red">"THE HUNGER GAMES: CATCHING FIRE - Official International Trailer #2 (2013) [HD]"</font> และ <font style="color:red">"The Hunger Games: Catching Fire - Official Trailer"</font> หากกรอก <font style="color:red">"The Hunger Games: Catching Fire - "</font> จะได้ชื่อลิงค์ <font style="color:red">"Official International Trailer #2 (2013) [HD]"</font> และ <font style="color:red">"Official Trailer"</font> เป็นต้น</label></div>
+                                <label for="tag" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Link keys" %} </label>
+                                <div class="col-xs-8 col-sm-9 col-md-10">
+                                    <div id="key_div_master"></div>
+                                    <a class="btn btn-success" onclick="setKey_input('');" style="margin-bottom:5px;"><span class="glyphicon glyphicon-plus-sign"></span> {% trans "Add New Key" %}</a>
+                                </div>
+                            </div>
+                            {% endif %}<!--end key-->
+                            {% if isDefault != "True" %}
+                            <div class="checkbox">
+                                <label> {% trans "Live" %}{{form.isLive}}</label>
+                            </div>
+                            {% endif %}
+                             <div class="checkbox">
+                                <label> {% trans "Don't show in search result." %}{{form.isPrivate}}</label>
+                            </div>
+                            {% if form.url_name.errors %}
+                            <div class="form-group has-error">
+                            {% else %}
+                            <div class="form-group">
+                            {% endif %}
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <label class="instruction_text text-info">
+                                        {% trans "7.Enter URL of your channel to show your channel to other people easier." %}
+                                    </label>
+                                </div>
+                                <label for="url_name" class="col-xs-4 col-sm-3 col-md-2 control-label">
+                                    {% trans "Channel Url" %} {% if form.url_name.field.required %}*{% endif %}
+                                </label>
+                                <div class="col-xs-8 col-sm-9 col-md-10">
+                                    {{form.url_name}}
+                                    <p class="help-block">{% trans "Allow only" %} a-z A-Z 0-9 _</p>
+                                    <p id="urlName_p" class="help-block">//penta.center/{{channel_url_p}}</p>
+                                    {% if form.url_name.errors %}{% for error in form.url_name.errors %}
+                                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                                    {% endfor %}{% endif %}
+                                </div>
+                            </div><!--end url_name-->
+                            {% if channel_id %}
+                            <!-- delete all video -->
+                            <button type="button" class="btn btn-danger" id="btn_delete_all">Delete all videos</button>
+                            <!-- end delete all video -->
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-xs-8 col-sm-9 col-md-10 col-xs-offset-4 col-sm-offset-3 col-md-offset-2">
+                    <a id="submitBtn" class="btn btn-primary" onclick="submit_channel('{{action}}', '{{channel_id}}', '{{isDefault}}');"><span class="glyphicon glyphicon-ok-circle"></span> {% trans "Submit" %}</a>
+                    <a id="cancelBtn" class="btn" href="{{back_url}}"><span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}</a>
+                </div>
+            </div>
+        </form>
+    </div><!--end col-xs-12 col-sm-12 col-md-12-->
+
+    <script type="text/javascript">
+        var remove_text = '{% trans "Remove" %}';
+        {% if selected_tags %}
+
+        var selectedTags = {{ selected_tags| safe }};
+        for(var i in selectedTags) {
+            var selectedTag = selectedTags[i];
+            var button = createSelectedTagButton(selectedTag);
+            $("#tag_selected").append(button);
+            addTag($("#tags"),selectedTag);
+        }
+        {% endif %}
+
+        {% for key in link_key %}
+            setKey_input('{{key.name}}');
+        {% endfor %}
+
+        {% if action == 'update' %}
+            $(function() {
+                $( ".sortable" ).sortable();
+            });
+        {% endif %}
+
+        function onSelectedTagButtonClick(id,name){
+            removeTag($("#tags"),{"id":id,"name":name});
+            renderSelectedTagButton($("#tag_selected"),JSON.parse($("#tags").val()));
+        }
+
+        function onTagButtonClick(id,name){
+            addTag($("#tags"),{"id":id,"name":name});
+            renderSelectedTagButton($("#tag_selected"),JSON.parse($("#tags").val()));
+        }
+
+
+        var typingTimer;
+        var delayTime = 500;
+
+        function restDelay(){
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function(){
+                doGetTag();
+            },delayTime);
+            return true;
+        }
+
+        function doGetTag(){
+            var word = $("#txtboxWord").val();
+            console.log(word);
+            $.get("{% url 'apis:apis_tags_query' %}" + "?word=" + word, function(response){
+                $("#tag_list").empty();
+                for(var i=0;i<response.length;i++){
+                    var button = createTagButton(response[i]);
+                    $("#tag_list").append(button);
+                }
+            });
+        }
+
+        function setupCSRF() {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            var csrftoken = getCookie('csrftoken');
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+        }
+
+        $("#txtboxWord").keyup(function(){
+            restDelay();
+        });
+
+        $("#btnCreateTag").click(function(){
+            var word = $("#txtboxWord").val();
+            if(word!="") {
+                $("#btnCreateTag").button('loading');
+                $.get("{% url 'apis:apis_tags_add' %}" + "?word="+word,function(response){
+                    $("#btnCreateTag").button('reset');
+                    if(response['success']){
+                        onTagButtonClick(response['id'],response['name']);
+                        doGetTag();
+                    }else {
+                        alert(response['error']);
+                    }
+                });
+            }else {
+                alert("{% trans 'Failed to create empty tag.' %}");
+            }
+        });
+        
+        {% if channel_id %}
+        $('#btn_delete_all').click(function() {
+            var msg = 'WARNING!! \nThis will delete all videos in {{ form.name.value }}\n';
+            msg += '\nAre you sure you want to DELETE ALL VIDEOS?';
+            var yes = confirm(msg);
+            if(yes) {
+                $('#btn_delete_all').addClass('disabled')
+                                    .text('Deleting...');
+                $.post('{% url 'channel:channel_apis_delete_all_video' %}', {
+                    'channel_id': {{channel_id}}
+                }, function(data) {
+                    if('message' in data) {
+                        alert(data.message);
+                    } else {
+                        alert('Failed to delete video in channel');
+                    }
+                    $('#btn_delete_all').removeClass('disabled')
+                                        .text('Delete all videos');
+                }, 'json');
+            }
+        });
+        {% endif %}
+
+        restDelay();
+        setupCSRF();
+    </script>
+{% endblock %}

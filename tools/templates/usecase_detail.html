@@ -1,0 +1,25 @@
+<!-- This is a page that display usecase from link from Redmine -->
+<div style="width: 250px; position: fixed; left:0; top:0">
+    <ul>
+    {% for usecase in usecases %}
+        <li><a href="#{{ usecase.code }}">{{ usecase.code }} {{ usecase.name}}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div style="margin-left: 250px">
+
+    {% if warning %}
+    <h1 style="color: red">{{ warning|safe }}</h1>
+    {% endif %}
+{% for usecase in usecases %}
+    <h2 id="{{ usecase.code }}">{{ usecase.code }} {{ usecase.name }}</h2>
+    <p>
+        {{ usecase.description|safe }}
+        {% if usecase.description %}
+            <p>Original usecase: {{ usecase.ref }}</p>
+        {% else %}
+            {{ usecase.ref }}
+        {% endif %}
+    </p>
+{% endfor %}
+</div>

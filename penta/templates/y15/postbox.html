@@ -1,0 +1,137 @@
+<style type="text/css">
+	#sharevideo, #postbox_channel_id {
+        width:100%;
+	}
+
+	#link {
+		-webkit-border-top-left-radius: 4px;
+		-webkit-border-top-right-radius: 4px;
+		-moz-border-radius-topleft: 4px;
+		-moz-border-radius-topright: 4px;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+	}
+
+	#sharedesc {
+		resize: none;
+		-webkit-border-bottom-right-radius: 4px;
+		-webkit-border-bottom-left-radius: 4px;
+		-moz-border-radius-bottomright: 4px;
+		-moz-border-radius-bottomleft: 4px;
+		border-bottom-right-radius: 4px;
+		border-bottom-left-radius: 4px;
+	}
+
+	#link , #sharedesc {
+		border: 1px solid #ccc;
+		font-size: 14px;
+	}
+
+	#postbox {
+	}
+
+	#postbox {
+		-webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+		-moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+		box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+	}
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+    .no-padding {
+        padding:0px;
+    }
+
+    .glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+	}
+	 
+	@keyframes spin {
+	    from { transform: scale(1) rotate(0deg);}
+	    to { transform: scale(1) rotate(360deg);}
+	}
+	  
+	@-webkit-keyframes spinw {
+	    from { -webkit-transform: rotate(0deg);}
+	    to { -webkit-transform: rotate(360deg);}
+	}
+	 
+	@-moz-keyframes spinm {
+	    from { -moz-transform: rotate(0deg);}
+	    to { -moz-transform: rotate(360deg);}
+	}
+</style>
+
+<div class="panel panel-default clearfix" id="postbox" style="margin-top:10px;">
+    <div class="panel-body">
+        <div class="no-padding col-md-9 col-sm-10 col-xs-12">
+            <div class="form-group">
+                <input id="link" class="form-control" type="text" name="link" style="width:100%;" placeholder="ลิงค์วิดีโอที่นี่"/>
+            </div>
+            <div id="detail-form" class="form-group collapse">
+                <textarea id="sharedesc" class="form-control" name="detail" style="width:100%; height:100px;" placeholder="อยากบอกอะไรเกี่ยวกับวีดีโอนี้?"></textarea>
+            </div>
+        </div>
+        <div class="no-padding col-md-3 col-sm-2 col-xs-12" style="padding-left: 10px">
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" id="sharevideo"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate hidden"></span><span id="sharevideotext">แชร์วิดีโอ</span></button>
+            </div>
+            <div class="form-group">
+                <select id="postbox_channel_id" class="form-control collapse hidden">
+                    <option value="{{ user.userdetail.get_share_channel.id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                    {% for c in C.own %}
+                    <option value="{{ c.id }}">{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+	$("#sharevideo").click(function() {
+		$(this).attr("disabled","disabled");
+		$(".glyphicon-refresh").toggleClass("hidden");
+		$("#link,#sharevideo, #sharedesc, #postbox_channel_id").attr("readonly","readonly");
+	});
+
+	function showChannelSelection(show) {
+		$("#postbox_channel_id").removeClass("hidden");
+		if (!show) {
+			$("#postbox_channel_id").addClass("hidden");
+		}
+	}
+
+	function setShareButtonText(newText) {
+		if(newText) {
+			$("#sharevideotext").text(newText);
+		} else {
+			$("#sharevideotext").text("แชร์วิดีโอ");
+		}
+	}
+
+	$("#link").focus(function(){
+		if (!$("#detail-form").attr("aria-expanded")) {
+			$("#detail-form").collapse("toggle");
+            $("#postbox_channel_id").collapse("toggle");
+		};
+	});
+
+	function clearPostboxState() {
+		$("#sharevideo").removeAttr("disabled");
+		$(".glyphicon-refresh").toggleClass("hidden");
+        $("#link, #sharevideo, #sharedesc, #postbox_channel_id").removeAttr("readonly");
+	}
+
+	function cleanPostbox() {
+		$("#link, #sharedesc").val('');
+		clearPostboxState();
+	}
+
+</script>

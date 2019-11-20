@@ -1,0 +1,37 @@
+<html>
+<body>
+<table border="1">
+    <tr>
+        <th>Generic</th>
+        <th>Code</th>
+        <th>Name</th>
+        <th>ข้าราชการ</th>
+        <th>ประกันสังคม</th>
+        <th>ประกันสุขภาพ</th>
+    </tr>
+    {% for drug in drugs %}
+    <tr>
+        <td>{% ifchanged %}{{ drug.vtm }}{% endifchanged %}</td>
+        <td>{{ drug.code }}</td>
+        <td>{{ drug.name }} {{ drug.strength }} {{ drug.dosage_form.code }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="6">No Generic Specified</td>
+    </tr>
+    {% for drug in drugs_notmt %}
+    <tr>
+        <td></td>
+        <td>{{ drug.code }}</td>
+        <td>{{ drug.name }} {{ drug.strength }} {{ drug.dosage_form.code }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

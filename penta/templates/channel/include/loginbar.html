@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load static %}
+
+<div id="loginbar">
+        <p align="right" style="margin:0px;">
+            <a class="nodeco" href="https://accounts.thevcgroup.com/login/facebook/?next=https://{{request.get_host}}/accounts/login/?next=%2F">
+                <label class="show_pointer btn img_text_button facebook_blue">
+                    <image src="{% static 'images/facebook.png' %}" style="padding-right:5px; margin-top:-4px; height: 25px; width:25px;"/>
+                    Connect&nbsp;&nbsp;
+                </label>
+            </a>
+            {% trans "Or" %}
+            <a class="nodeco" href="{% url 'site_login' %}">
+                <label class="show_pointer btn img_text_button penta_blue">
+                    <image src="{% static 'images/pentachannel-logo_white.png' %}" style="padding-right:5px; margin-top:-4px height: 25px; width:25px;"/> {% trans "Penta Account" %}&nbsp;&nbsp;
+                </label>
+            </a>
+        </p>
+        <center style="margin-top:5px;"><a href="https://accounts.thevcgroup.com/accounts/register/" style=" color:#bbb;">Do not have account?</a></center>
+</div>

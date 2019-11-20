@@ -1,0 +1,52 @@
+{% block extrahead %}
+<style>
+    a:link { text-decoration: none; color: blue; }
+    a:visited { color: blue; }
+    table {
+        border-collapse: collapse;
+    }
+    thead, tfoot {
+        background-color: #E1E1E1;
+    }
+    td, th {
+        padding: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<br>
+<h3>Flow Matrix : {{flow_category}}</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <td>No.</td>
+        <td>Code</td>
+        <td>Name</td>
+        <td>Flow list</td>
+        {% for flow in flow_code %}
+        <td>{{flow}}</td>
+        {% endfor %}
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for matrix in matrixs %}
+    <tr>
+        <td>{{matrix.no}}</td>
+        <td>{{matrix.code}}</td>
+        <td>{{matrix.name}}</td>
+        <td>{{matrix.flow}}</td>
+        {% for match in matrix.match %}
+        <td>{{match}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+{% endblock content %}
+    <h4>Description</h4>
+    {% for flow in flow_list %}
+    {{flow}}<br>
+    {% endfor %}
+    <h4>Detail</h4>
+

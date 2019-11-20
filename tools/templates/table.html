@@ -1,0 +1,27 @@
+<table border="1">
+    <caption>Data Dictionary ตาราง {{ m.table_name }} ({{ m.model }}) {#tbl:{{ m.table_name }}}</caption>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Data type</th>
+            <th>Key</th>
+            <th>Ref Table</th>
+            <th>Null</th>
+            <th>Remark</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for f in m.fields %}
+    <tr>
+        <td>{{ f.field_name }}</td>
+        <td>{{ f.description_ }}</td>
+        <td>{{ f.data_type }}</td>
+        <td>{{ f.key_type }}</td>
+        <td>{{ f.ref_table }}</td>
+        <td>{{ f.is_null }}</td>
+        <td>{{ f.remark|linebreaksbr }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

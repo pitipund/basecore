@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Power-All Showtime</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% include "showtimes/include/config_style.html" %}         
+        <script type="text/javascript" src="{% static 'scripts/libs/jquery-1.7.2.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/libs/bootstrap-dropdown.js' %}"></script>
+        <script src="{% static 'scripts/libs/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/index.js' %}"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% include "showtimes/include/header.html" %}
+                        <div style="padding:0px 20px 0px 20px;">
+                        <h3>Welcome to Showtime</h3>
+                        <div id="this-carousel-id" class="carousel slide">
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <a href="{% url 'site_showtime_list' %}">
+                                        <img src="{% static 'uploaded/content_image/showtime.jpg' %}" title="SHOWTIME" />
+                                    </a>
+                                </div><!--SHOWTIME LOGO-->
+                                {% for index in object_list %}
+                                <div class="item">
+                                    <a href="{% url 'site_content_detail' index.content.id %}">
+                                        <img src="{{MEDIA_URL}}{{index.content.file_image}}" title="Click to view detail of {{index.content.name}}" />
+                                    </a>
+                                    <div class="carousel-caption">
+                                        <h4>{{index.content.name}}</h4>
+                                        <p>Channel : {{index.content.channel.name}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On : {{index.start_time}} - {{index.end_time}}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div><!--SHOWTIME Content-->
+                            <a class="carousel-control left" href="#this-carousel-id" data-slide="prev">&lsaquo;</a>
+                            <a class="carousel-control right" href="#this-carousel-id" data-slide="next">&rsaquo;</a>
+                        </div>
+                        <br/><br/>
+                        <div class="row-fluid">
+                            <div class="span9">
+                                <div class="alert alert-info"><br/><br/><font size="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer non purus eu leo pellentesque pharetra. Morbi ut felis ante. Nam malesuada aliquet odio, non luctus risus ultricies id. Sed vel sapien vitae diam venenatis pellentesque. Suspendisse semper lorem eu arcu rhoncus, ut auctor nunc tempor. In id magna vitae urna tristique feugiat et aliquet enim. Aliquam a diam sit amet massa hendrerit consequat ut sit amet sapien. Nam cursus auctor quam, vel laoreet lectus pharetra sed.</font><br/><br/><br/></div>
+                            </div>
+                            <div class="span3">
+                                <div class="my_square">
+                                    <h5>Benefits</h5>
+                                    <li>Lorem ipsum dolor sit amet.</li>
+                                    <li>Aliquam suscipit cras amet.</li>
+                                    <li>Mauris blandit turpis duis.</li>
+                                    <li>Nullam vulputate cras amet.</li>
+                                    <li>Suspendisse vulputate amet.</li>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--end container -->
+        {% include "showtimes/include/footer.html" %}
+    </body>
+</html>

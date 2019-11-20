@@ -1,0 +1,429 @@
+<style>
+
+@media screen and (max-width: 600px) {
+    .highlight-item .highlight-title {
+        font-size: 18;
+    }
+
+    .highlight-item {
+        width: 99.8%;
+        margin: 0.5px;
+    }    
+}
+
+@media screen and (min-width: 601px) {
+
+    .highlight-item .highlight-title {
+        font-size: 16;
+    }
+
+    .highlight-item {
+        width: 49.5%;
+        margin: 0.5px;
+    }    
+}
+
+@media screen and (min-width: 900px) {
+
+    .highlight-item .highlight-title {
+        font-size: 14;
+    }
+
+    .highlight-item {
+        width: 24.8%;
+        margin: 0.5px;
+    }    
+}
+
+@media screen and (min-width: 1200px) {
+    .highlight-item .highlight-title {
+        font-size: 18;
+    }
+
+    .highlight-item {
+        width: 24.8%;
+        margin: 0.5px;
+    }    
+}
+
+/* ----------- iPhone 4 and 4S ----------- */
+
+/* Portrait and Landscape */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+    .highlight-item .highlight-title {
+        font-size: 18;
+    }
+
+    .highlight-item {
+        width: 99.8%;
+        margin: 0.5px;
+    }
+
+}
+
+/* Portrait */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+}
+
+/* Landscape */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: landscape) {
+
+}
+
+/* ----------- iPhone 5 and 5S ----------- */
+
+/* Portrait and Landscape */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .highlight-item .highlight-title {
+        font-size: 18;
+    }
+
+    .highlight-item {
+        width: 99.8%;
+        margin: 0.5px;
+    }    
+}
+
+/* Portrait */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+}
+
+/* Landscape */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: landscape) {
+
+}
+
+/* ----------- iPhone 6 ----------- */
+
+/* Portrait and Landscape */
+@media only screen 
+  and (min-device-width: 375px) 
+  and (max-device-width: 667px) 
+  and (-webkit-min-device-pixel-ratio: 2) { 
+    .highlight-item .highlight-title {
+        font-size: 12;
+    }
+
+    .highlight-item {
+        width: 49.5%;
+        margin: 0.5px;
+    }    
+}
+
+/* Portrait */
+@media only screen 
+  and (min-device-width: 375px) 
+  and (max-device-width: 667px) 
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) { 
+
+}
+
+/* Landscape */
+@media only screen 
+  and (min-device-width: 375px) 
+  and (max-device-width: 667px) 
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: landscape) { 
+
+}
+
+/* ----------- iPhone 6+ ----------- */
+
+/* Portrait and Landscape */
+@media only screen 
+  and (min-device-width: 414px) 
+  and (max-device-width: 736px) 
+  and (-webkit-min-device-pixel-ratio: 3) { 
+    .highlight-item .highlight-title {
+        font-size: 14;
+    }
+
+    .highlight-item {
+        width: 49.5%;
+        margin: 0.5px;
+    }    
+}
+
+/* Portrait */
+@media only screen 
+  and (min-device-width: 414px) 
+  and (max-device-width: 736px) 
+  and (-webkit-min-device-pixel-ratio: 3)
+  and (orientation: portrait) { 
+
+}
+
+/* Landscape */
+@media only screen 
+  and (min-device-width: 414px) 
+  and (max-device-width: 736px) 
+  and (-webkit-min-device-pixel-ratio: 3)
+  and (orientation: landscape) { 
+
+}
+/* ----------- End iPhone ----------- */
+
+
+
+.highlight-title {
+    padding: 5px;
+}
+
+
+.highlight-container{
+    padding: 0px 15px;
+}
+
+.highlight-item {
+    display: inline-block;
+    position: relative;
+}
+
+.highlight-item:after {
+    padding-top: 56.25%; /*16:9 ratio*/
+    display: block;
+    content: '';
+}
+
+.highlight-item:hover .highlight-title{
+   
+}
+
+.highlight-item:hover .highlight-image{
+    opacity: 1.0 !important;
+    background-size: 120% !important;
+}
+
+.highlight-main {
+    position: absolute;
+    top: 0; bottom: 0; right: 0; left: 0; /*fill parent*/
+    /*background-color: rgb(0, 162, 232);*/
+    background-color: rgb(30, 30, 30);
+    color: white;
+}
+
+.highlight-item .highlight-image {
+    width: 100%;
+    height: 100%;
+    background-size: 100% !important;
+    -moz-transition: all .5s !important;
+    -webkit-transition: all .5s !important;
+    transition: all .5s !important;
+    opacity: 0.7 !important;
+}
+
+.highlight-item .highlight-title {
+    position: absolute;
+    bottom: 0;
+    color: #fff;
+    text-shadow: 3px 3px 6px rgba(30, 30, 30, 1);
+    -moz-transition: all .5s;
+    -webkit-transition: all .5s;
+    transition: all .5s;
+}
+
+hr {
+    border-top-color: #ccc;
+}
+</style>
+
+<div ng-if="vm.unwatchSavedVideos.length > 0">
+    <div class="highlight-container">
+        <a 
+         ng-href="/th/channelplay/saved/"
+         target="_self">
+            <h3>วิดีโอที่คุณเก็บไว้</h3>
+        </a>
+        <div 
+         class="highlight-item"
+         ng-repeat="video in vm.unwatchSavedVideos">
+            <a 
+             ng-href="{{video.play_url}}" target="_self">
+                <div class="highlight-main">
+                    <div class="highlight-image" lazy-src="{{ video.link.real_thumbnail }}"> 
+                    </div>
+                </div>
+            <div class="highlight-title">{{ video.name }}</div> 
+            </a>
+        </div>
+    </div>
+    <hr />
+</div>
+
+<div ng-if="vm.latestVideosFromFollowedChannelsByUser.length > 0">
+    <div class="highlight-container">
+        <a 
+         ng-href="/th/follow/"
+         target="_self">
+            <h3>ใหม่ล่าสุดจากแชนแนลที่ติดตาม</h3>
+        </a>
+        <div 
+         class="highlight-item"
+         ng-repeat="video in vm.latestVideosFromFollowedChannelsByUser">
+            <a 
+             ng-href="{{video.play_url}}" target="_self">
+                <div class="highlight-main">
+                    <div class="highlight-image" lazy-src="{{ video.link.real_thumbnail }}"> 
+                    </div>
+                </div>
+            <div class="highlight-title">{{ video.name }}</div> 
+            </a>
+        </div>
+    </div>
+    <hr />
+</div>
+
+<div ng-if="vm.latestChannelsByUser.length > 0">
+    <div class="highlight-container">
+        <h3>แชลแนลที่คุณเพิ่งชม</h3>
+        <div class="channel-item highlight-channel-item" ng-repeat="channel in vm.latestChannelsByUser">
+            <div class="channel-item-main" title="{{channel.detail}}">
+                <div class="channel-image-wrapper">
+                    <a href="{{channel.play_url}}" target="_self">
+                        <div 
+                         class="channel-image"
+                         lazy-src="{{ channel.real_icon }}" >
+                        </div>
+                    </a>
+                </div>
+                <a href="{{channel.channel_url}}" target="_self">
+                  <div class="channel-title">{{ channel.name }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <hr />
+</div>
+
+<div class="highlight-container">
+    <a ng-href="/th/channelplay/staffpicks/" target="_self">
+        <h3>ยอดนิยม</h3>
+    </a>
+    <div 
+     class="highlight-item"
+     ng-repeat="video in vm.highlightVideos">
+        <a 
+         ng-href="{{ video.play_url }}" target="_self">
+            <div class="highlight-main">
+                <div class="highlight-image" lazy-src="{{ video.link.real_thumbnail }}"> 
+                </div>
+            </div>
+            <div class="highlight-title">{{ video.name }}</div> 
+        </a>
+    </div>
+</div>
+<hr />
+
+<div class="highlight-container">
+    <h3>แชนแนลที่น่าสนใจ</h3>
+    <div class="channel-item highlight-channel-item" ng-repeat="channel in vm.highlightChannels">
+        <div class="channel-item-main" title="{{channel.detail}}">
+            <div class="channel-image-wrapper">
+                <a href="{{channel.play_url}}" target="_self">
+                    <div 
+                     class="channel-image"
+                     lazy-src="{{ channel.real_icon }}" >
+                    </div>
+                </a>
+            </div>
+            <a href="{{channel.channel_url}}" target="_self">
+              <div class="channel-title">{{ channel.name }}</div>
+            </a>
+        </div>
+    </div>
+    <div class="channel-item highlight-channel-item" ng-repeat="channel in vm.latestChannels">
+        <div class="channel-item-main" title="{{channel.detail}}">
+            <div class="channel-image-wrapper">
+                <a href="{{channel.play_url}}" target="_self">
+                    <div 
+                     class="channel-image"
+                     lazy-src="{{ channel.real_icon }}" >
+                    </div>
+                </a>
+                <div class="channel-item-new-badge">NEW</div>
+            </div>
+            <a href="{{channel.channel_url}}" target="_self">
+              <div class="channel-title">{{ channel.name }}</div>
+            </a>
+        </div>
+    </div>
+</div>
+<hr />
+
+<div ng-if="vm.hotTopics.length > 0">
+<jqcloud words="vm.hotTopics" height="150" shape="rectangle" fontSize="['3em', '2.5em', '2em']" autoResize="true" steps="3" colors="['#16A9E9', '#FFB70D', '#FF470D']"></jqcloud>
+<hr />
+</div>
+
+<div class="highlight-container">
+    <h3>สมาชิกที่สร้างแชนแนลมากที่สุด</h3>
+    <center>
+      <div style="display:inline-block;padding:8px" ng-repeat="con in vm.contributers">
+          <img ng-src="{{con.picture}}" title="{{con.name}}" style="width:100px;height:100px;border-radius:50px;">
+      </div>
+    </center>
+</div>
+<hr />
+
+<div class="highlight-container">
+    <h3>ใหม่ล่าสุด</h3>
+        <div 
+         class="highlight-item"
+         ng-repeat="video in vm.latestVideos">
+            <a 
+             ng-href="{{video.play_url}}" target="_self">
+                <div class="highlight-main">
+                    <div class="highlight-image" lazy-src="{{ video.link.real_thumbnail }}"> 
+                    </div>
+                </div>
+            <div class="highlight-title">{{ video.name }}</div> 
+            </a>
+        </div>
+</div>
+<hr />
+
+<div class="highlight-container" ng-repeat="channel in vm.otherChannels">
+    <a 
+     ng-href="{{channel.play_url}}"
+     target="_self">
+        <h3>{{ channel.name }}</h3>
+    </a>
+        <div 
+         class="highlight-item"
+         ng-repeat="playlist in channel.playlists">
+            <a 
+             ng-href="{{playlist.play_url}}" target="_self">
+                <div class="highlight-main">
+                    <div class="highlight-image" lazy-src="{{ playlist.link.real_thumbnail }}"> 
+                    </div>
+                </div>
+            <div class="highlight-title">{{ playlist.name }}</div> 
+            </a>
+        </div>
+    <hr />
+</div>
+

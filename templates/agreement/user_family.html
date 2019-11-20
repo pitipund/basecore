@@ -1,0 +1,137 @@
+{% extends 'agreement/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Manage Family'%}{% endblock %}
+
+{% block content %}
+  <h2 class="mt-3">{% trans 'Manage family members for'%}</h2>
+  <div id="family-add">
+    <form method="post" action="">
+      {% csrf_token %}
+      <div>
+        <table class="table table-condensed table-sm bg-light mt-3">
+          <tr><td>{% trans 'HN' %}</td><td>{{ user.profile.patient.get_hn }}</td></tr>
+          <tr><td>{% trans 'Name' %}</td><td>{{ user.profile.first_name }} {{ user.profile.last_name }}</td></tr>
+          <tr><td>{% trans 'Date of Birth' %}</td><td>{{ user.profile.dob }}</td></tr>
+          <tr><td>{% trans 'Address' %}</td><td>{{ user.profile.address }}</td></tr>
+        </table>
+      </div>
+      <h3 class="mt-4">{% trans 'Add member' %}</h3>
+      <div class="input-group">
+        <input id="hn" name="hn" class="form-control" v-model="hn"
+               v-on:keydown.enter.prevent="getPatientInfo"
+               v-on:input="resetPatientInfo()"
+               required>
+        <div class="input-group-btn">
+          <div class="btn btn-light" v-on:click="getPatientInfo()">{% trans 'Search' %}</div>
+        </div>
+      </div>
+      <div v-cloak v-if="valid">
+        <table class="table table-condensed">
+          <tr><td>{% trans 'HN' %}</td><td>${info.hn}</td></tr>
+          <tr><td>{% trans 'Name' %}</td><td>${info.first_name} ${info.last_name}</td></tr>
+          <tr><td>{% trans 'Date of Birth' %}</td><td>${info.dob}</td></tr>
+          <tr><td>{% trans 'Address' %}</td><td>${info.address}</td></tr>
+        </table>
+        <input type="submit" class="btn btn-success float-right" value="+ {% trans 'Add' %}">
+        <div class="clearfix"></div>
+      </div>
+      <div v-else>
+        <table class="table table-condensed">
+          <tr><td class="text-center">Not Found</td></tr>
+        </table>
+      </div>
+    </form>
+
+    <!-- Current member -->
+    <div>
+      <h3 class="mt-4">{% trans 'Current members' %}</h3>
+      {% if family %}
+      <table class="mt-4 table table-hover">
+         <thead>
+          <tr>
+            <th scope="col">HN</th>
+            <th scope="col">{% trans 'Full name' %}</th>
+            <th scope="col">#</th>
+          </tr>
+         </thead>
+        <tbody>
+        {% for patient in family %}
+          <tr>
+            <td>{{ patient.get_hn }}</td>
+            <td>{{ patient.first_name }} {{ patient.last_name }}</td>
+            <td>
+              <button
+                      type="button"
+                      class="btn btn-danger btn-sm"
+                      v-on:click="removeFamily( {{ patient.id }}, '{{ user.username }}' )">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="text-muted m-4">{% blocktrans %}Haven't add family members yet.{% endblocktrans %}</div>
+      {% endif %}
+    </div>
+  <a class="btn btn-light" href="{% url 'PRX:agreement_home' %}">{% trans 'Back' %}</a>
+  </div>
+{% endblock %}
+
+
+{% block javascript %}
+  {{ block.super }}
+  <script>
+    new Vue({
+      el: '#family-add',
+      data: {
+        info: {},
+        valid: false,
+        hn: '',
+      },
+      created: function() {
+        console.log('created')
+      },
+      methods: {
+        getPatientInfo: function() {
+          axios.get('/users/api/trakcare/patient_info', {params:{hn: this.hn}})
+            .then((data) => {
+
+              this.info = data.data;
+              console.log(data.data)
+              this.hn = this.info.hn;
+              this.valid = true;
+            })
+            .catch((error) => {
+              this.valid = false;
+              console.log(error)
+            });
+        },
+        resetPatientInfo: function () {
+          this.info = {};
+        },
+        removeFamily: ( patient, username) => {
+          console.log(event);
+          const params = new URLSearchParams();
+          params.append('hn', patient);
+
+          axios({
+            method: 'post',
+            url: '/apis/PRX/'+username+'/remove-family',
+            data: params
+          })
+          .then((data) => {
+            console.log(data);
+            window.location = window.location.href;
+          })
+          .catch((error) => {
+            console.log(error)
+          });
+        }
+      }
+    });
+
+  </script>
+{% endblock %}

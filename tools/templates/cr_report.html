@@ -1,0 +1,89 @@
+{% block extrahead %}
+<style>
+    a:link { text-decoration: none; color: blue; }
+    a:visited { color: blue; }
+    table {
+        border-collapse: collapse;
+        position:relative;
+        width:100%;
+        table-layout:fixed;
+    }
+    thead, tfoot {
+        background-color: #E1E1E1;
+    }
+    td, th {
+        max-width: 70%;
+        padding: 4px;
+        align : right;
+        vertical-align: top;
+    }
+    body {
+        height: 842px;
+        width: 595px;
+        /* to centre page on screen*/
+        margin-left: auto;
+        margin-right: auto;
+    }
+    * {
+        font-family: "TH Sarabun New";
+        font-size: 14pt;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<table border="1">
+    <tr><td bgcolor="EFEFEF" colspan="4"><b>ระบบ HIS สถาบันการแพทย์จักรีนฤบดินทร์</b></td></tr>
+    <tr>
+        <td colspan="2"><b>หัวข้อ:</b> {{title}}</td>
+        <td colspan="2">
+            <b>เอกสารอ้างอิง:</b>
+            {% for book in books %}
+            {{book}} <br>
+            {% endfor %}
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="6" colspan="2"><b>รายละเอียดการขอ(โดยสังเขป)</b><br> {{description}}</td>
+    </tr>
+    <tr>
+        <td><b>รหัสรายการขอ:</b> {{cr_id}}</td>
+        <td><b>เวลาพัฒนา(วัน):</b> {{manday}}</td>
+    </tr>
+    <tr><td colspan="2"><b>ระดับความสำคัญ:</b> {{priority}}</td></tr>
+    <tr><td colspan="2"><b>ประเภท:</b> {{cr_type}}</td></tr>
+    <tr><td colspan="2"><b>วันที่เสนอ:</b> {{submitted_on}}</td></tr>
+    <tr><td colspan="2"><b>ผู้เสนอ:</b> {{submitter}}</td></tr>
+
+    <tr><td  bgcolor="EFEFEF" colspan="4"><b>รายละเอียดการขอแก้ไข</b></td> </tr>
+    <tr><td colspan="4"><b>ปัญหาปัจจุบันของระบบ: </b><br>{{current_problem}}</td></tr>
+     <tr><td colspan="4"><b>เหตุผลในการขอแก้ไข: </b><br>{{reason}}</td></tr>
+     <tr><td colspan="4"><b>ผลกระทบต่อการพัฒนาระบบ: </b><br>{{impact}}</td></tr>
+    <tr><td colspan="4"><b>Use case ที่ส่งผลกระทบ</b> {{usecase}}</td> </tr>
+    <tr><td  bgcolor="EFEFEF" colspan="4"><b>การอนุมัติ</b></td> </tr>
+    <tr>
+        <td>ผู้ขอแก้ไข </td>
+        <td colspan="3">
+            ลายเซ็น<br><br>
+            ตำแหน่ง<br>
+            วันที่
+        </td>
+    </tr>
+        <tr>
+        <td>ผู้ตรวจสอบ </td>
+            <td colspan="3">
+            ลายเซ็น<br><br>
+            ตำแหน่ง<br>
+            วันที่
+        </td>
+    </tr>
+        <tr><td rowspan="3">กรรมการอนุมัติ</td></tr>
+        <tr><td colspan="3">O Approve  O Reject         <b>วันส่งมอบโปรแกรม</b></td></tr>
+       <tr> <td colspan="3">
+            ลายเซ็น<br><br>
+            ตำแหน่ง<br>
+            วันที่
+        </td>
+        </tr>
+</table>
+{% endblock content %}

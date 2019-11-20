@@ -1,0 +1,13 @@
+<table border="1">
+    {% for usecase in usecases %}
+     <tr>
+        <td>{{usecase.book_name}}</td>
+        <td>{{usecase.functional_code}}</td>
+        <td>{{usecase.functional_name}}</td>
+        <td>{{usecase.code}}</td>
+        <td>{{usecase.name}}</td>
+        <td>{{forloop.counter}}</td>
+        <td>{{usecase.consignment_date}}</td>
+    </tr>
+    {% endfor %}
+</table>

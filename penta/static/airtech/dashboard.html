@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html class="claro">
+  <head>
+    <title>Airtech Dashboard</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="dist/qmlweb.css" />
+  </head>
+  <body style="margin: 0; pointer-events: auto !important;" data-qml="qml/front/Dashboard.qml">
+    <script>
+    // Qt Internationalization
+    function qsTr(text) {
+      return text;
+    }
+
+    window.addEventListener("unhandledrejection", function(err, promise) {
+        // handle error here, for example log
+        //console.log(err)
+        err.preventDefault()
+    });
+    </script>
+    <script type="text/javascript" src="dist/qt.min.js"></script>
+  </body>
+</html>

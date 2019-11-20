@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API List</title>
+    <link rel="stylesheet" href="{% static 'feed/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div class="container">
+<h1>API List</h1>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr class="success">
+        <td>Name</td>
+        <td>URL</td>
+        <td>Doc</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for url in urls %}
+        <tr role="button" data-toggle="collapse" href="#collapse-{{ url.name }}" aria-expanded="false" aria-controls="collapse-{{ url.name }}">
+            <td>{{ url.name }}</td>
+            <td>{{ url.pattern }}</td>
+            <td>{% if url.doc %}<span class="glyphicon glyphicon-ok-sign text-success"></span>
+            {% else %}<span class="glyphicon glyphicon-remove-sign text-muted"></span>{% endif %}</td>
+        </tr>
+        <tr class="collapse" id="collapse-{{ url.name }}"><td colspan="3">
+            <pre>{{ url.doc }}</pre>
+        </td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script src="{% static 'feed/js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'feed/js/bootstrap.min.js' %}"></script>
+
+<script>
+</script>
+</body>
+</html>

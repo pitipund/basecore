@@ -1,0 +1,87 @@
+<div>
+    <img src="{% static 'images/header.jpg' %}" style="width:100%"/>
+    <div class="navbar">
+        <div class="my_navbar-inner">
+            <ul class="nav">
+                {% if pageheader == 'streamServer' %}
+                <li><a href="{% url 'site_mainpage' %}" title="Home"><i class="icon-home"></i></a></li>
+                <li class="my_highlight"><a href="{% url 'site_streamServer_list' %}">Stream Server</a></li>
+                <li><a href="{% url 'site_channel_list' %}">Channel</a></li>
+                <li><a href="{% url 'site_content_list' %}">Content</a></li>
+                <li><a href="{% url 'site_textOverlay_list' %}">Text Overlay</a></li>
+                <li><a href="{% url 'site_showtime_list' %}">Showtime</a></li>
+                <li><a href="{% url 'site_contact' %}">Contact</a></li><!--end streamServer-->
+                {% elif pageheader == 'channel' %}
+                <li><a href="{% url 'site_mainpage' %}" title="Home"><i class="icon-home"></i></a></li>
+                <li><a href="{% url 'site_streamServer_list' %}">Stream Server</a></li>
+                <li class="my_highlight"><a href="{% url 'site_channel_list' %}">Channel</a></li>
+                <li><a href="{% url 'site_content_list' %}">Content</a></li>
+                <li><a href="{% url 'site_textOverlay_list' %}">Text Overlay</a></li>
+                <li><a href="{% url 'site_showtime_list' %}">Showtime</a></li>
+                <li><a href="{% url 'site_contact' %}">Contact</a></li><!--end channel-->
+                {% elif pageheader == 'textOverlay' %}
+                <li><a href="{% url 'site_mainpage' %}" title="Home"><i class="icon-home"></i></a></li>
+                <li><a href="{% url 'site_streamServer_list' %}">Stream Server</a></li>
+                <li><a href="{% url 'site_channel_list' %}">Channel</a></li>
+                <li><a href="{% url 'site_content_list' %}">Content</a></li>
+                <li class="my_highlight"><a href="{% url 'site_textOverlay_list' %}">Text Overlay</a></li>
+                <li><a href="{% url 'site_showtime_list' %}">Showtime</a></li>
+                <li><a href="{% url 'site_contact' %}">Contact</a></li><!--end showtime-->
+                {% elif pageheader == 'showtime' %}
+                <li><a href="{% url 'site_mainpage' %}" title="Home"><i class="icon-home"></i></a></li>
+                <li><a href="{% url 'site_streamServer_list' %}">Stream Server</a></li>
+                <li><a href="{% url 'site_channel_list' %}">Channel</a></li>
+                <li><a href="{% url 'site_content_list' %}">Content</a></li>
+                <li><a href="{% url 'site_textOverlay_list' %}">Text Overlay</a></li>
+                <li class="my_highlight"><a href="{% url 'site_showtime_list' %}">Showtime</a></li>
+                <li><a href="{% url 'site_contact' %}">Contact</a></li><!--end showtime-->
+                {% elif pageheader == 'content' %}
+                <li><a href="{% url 'site_mainpage' %}" title="Home"><i class="icon-home"></i></a></li>
+                <li><a href="{% url 'site_streamServer_list' %}">Stream Server</a></li>
+                <li><a href="{% url 'site_channel_list' %}">Channel</a></li>
+                <li class="my_highlight"><a href="{% url 'site_content_list' %}">Content</a></li>
+                <li><a href="{% url 'site_textOverlay_list' %}">Text Overlay</a></li>
+                <li><a href="{% url 'site_showtime_list' %}">Showtime</a></li>
+                <li><a href="{% url 'site_contact' %}">Contact</a></li><!--end content-->
+                {% elif pageheader == 'contact' %}
+                <li><a href="{% url 'site_mainpage' %}" title="Home"><i class="icon-home"></i></a></li>
+                <li><a href="{% url 'site_streamServer_list' %}">Stream Server</a></li>
+                <li><a href="{% url 'site_channel_list' %}">Channel</a></li>
+                <li><a href="{% url 'site_content_list' %}">Content</a></li>
+                <li><a href="{% url 'site_textOverlay_list' %}">Text Overlay</a></li>
+                <li><a href="{% url 'site_showtime_list' %}">Showtime</a></li>
+                <li class="my_highlight"><a href="{% url 'site_contact' %}">Contact</a></li><!--end contact-->
+                {% elif pageheader == 'home' %}
+                <li class="my_highlight"><a href="{% url 'site_mainpage' %}" title="Home"><i class="icon-home"></i></a></li>
+                <li><a href="{% url 'site_streamServer_list' %}">Stream Server</a></li>
+                <li><a href="{% url 'site_channel_list' %}">Channel</a></li>
+                <li><a href="{% url 'site_content_list' %}">Content</a></li>
+                <li><a href="{% url 'site_textOverlay_list' %}">Text Overlay</a></li>
+                <li><a href="{% url 'site_showtime_list' %}">Showtime</a></li>
+                <li><a href="{% url 'site_contact' %}">Contact</a></li><!--end home-->
+                {% else %}
+                <li><a href="{% url 'site_mainpage' %}" title="Home"><i class="icon-home"></i></a></li>
+                <li><a href="{% url 'site_streamServer_list' %}">Stream Server</a></li>
+                <li><a href="{% url 'site_channel_list' %}">Channel</a></li>
+                <li><a href="{% url 'site_content_list' %}">Content</a></li>
+                <li><a href="{% url 'site_textOverlay_list' %}">Text Overlay</a></li>
+                <li><a href="{% url 'site_showtime_list' %}">Showtime</a></li>
+                <li><a href="{% url 'site_contact' %}">Contact</a></li>
+                {% endif %}<!--end if-->
+            </ul>
+            <ul class="nav" style="float:right">
+            {% if user.username %}
+                <li><a href="{% url 'site_logout' %}" title="Sign out"><i class="icon-off"></i> {{user.username}}</a></li>
+            {% else %}
+                <li class="dropdown">
+                    <a href="{% url 'site_mainpage' %}" class="dropdown-toggle" data-toggle="dropdown">Sign in<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'site_login' %}"><i class="icon-user"></i> Sign in</a></li>
+                        <li><a href="https://accounts.thevcgroup.com/accounts/register/"><i class="icon-pencil"></i> Register</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>

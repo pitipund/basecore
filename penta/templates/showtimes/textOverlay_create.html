@@ -1,0 +1,141 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Power-All Showtime</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% include "showtimes/include/config_style.html" %}
+        <!--start generate calendar-->
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <!--end generate calendar-->
+        <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/textOverlay_create.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_createSelect.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+    </head>
+    <body onload="JavaScript:setAll('{{sel_start_date}}');">
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% include "showtimes/include/header.html" %} 
+                    <div style="padding:0px 20px 0px 20px;">
+                        {% if action == 'create' %}<h3>Create Text Overlay</h3>
+                        {% else %}                 <h3>Update Text Overlay</h3>
+                        {% endif %}
+                        <hr/>
+                    </div> 
+                    {% if messages %}
+                    <div class="alert alert-error" style="margin:20px; padding:10px;">
+                        {% for message in messages %}
+                            {{message}}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <form id="textOverlay_create_form" class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+                        <div id="spinnerbar" align="center"></div>
+                        {% if form.channel.errors %}<div class="control-group error">
+                        {% else %}                  <div class="control-group">
+                        {% endif %}
+                            <label for="channel" class="control-label">Channel *</label>
+                            <div class="controls">
+                                <input type="hidden" name="channel_id" id="channel_id"/>
+                                <div id="channel_div"></div>
+                            </div>
+                        </div><!--end channel-->
+                        {% if form.txt_detail.errors %}<div class="control-group error">
+                        {% else %}                     <div class="control-group">
+                        {% endif %}
+                            <label for="txt_detail" class="control-label">Text Overlay {% if form.txt_detail.field.required %}*{% endif %}</label>
+                            <div class="controls">
+                                <div class="clearfix">
+                                    <div class="input">
+                                        {{form.txt_detail}}{% if form.txt_detail.errors %}{% for error in form.txt_detail.errors %}
+                                            <span class="help-inline">{{error|escape}}</span>
+                                        {% endfor %}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--end txt_detail-->
+                        <div class="row-fluid">
+                            <div class="span6">
+                                {% if form.start_time.errors %}<div class="control-group error">
+                                {% else %}                     <div class="control-group">
+                                {% endif %}
+                                    <label for="start_time" class="control-label">Start Date *</label>
+                                    <div class="controls">
+                                        <input type="text" id="sdate" name="sdate" style="width: 86%;"/>
+                                        <span class="help-inline">{{error|escape}}</span>
+                                    </div>
+                                </div><!--end start_date-->
+                            </div>
+                            <div class="span6">
+                                {% if form.stime.errors %}<div class="control-group error">
+                                {% else %}                <div class="control-group">
+                                {% endif %}
+                                    <label for="stime" class="control-label">Start Time *</label>
+                                    <div class="controls">
+                                        <input type="hidden" id="sel_shour_time" value="{{sel_shour_time}}"/>
+                                        <input type="hidden" id="sel_sminute_time" value="{{sel_sminute_time}}"/>
+                                        <div id="stime_div" style="margin-left:-8px;">
+                                            <span class="help-inline">{{error|escape}}</span>
+                                        </div>
+                                    </div>
+                                </div><!--end start_time-->
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                {% if form.txt_speed.errors %}<div class="control-group error">
+                                {% else %}                    <div class="control-group">
+                                {% endif %}
+                                    <label for="txt_speed" class="control-label">Text Speed {% if form.txt_speed.field.required %}*{% endif %}</label>
+                                    <div class="controls">
+                                        <div class="clearfix">
+                                            <div class="input">
+                                                {{form.txt_speed}}{% if form.txt_speed.errors %}{% for error in form.txt_speed.errors %}
+                                                    <span class="help-inline">{{error|escape}}</span>
+                                                {% endfor %}{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--end txt_speed-->
+                            </div>
+                            <div class="span6">
+                                {% if form.txt_round.errors %}<div class="control-group error">
+                                {% else %}                    <div class="control-group">
+                                {% endif %}
+                                    <label for="txt_round" class="control-label">Text Round {% if form.txt_round.field.required %}*{% endif %}</label>
+                                    <div class="controls">
+                                        <div class="clearfix">
+                                            <div class="input">
+                                                {{form.txt_round}}{% if form.txt_round.errors %}{% for error in form.txt_round.errors %}
+                                                    <span class="help-inline">{{error|escape}}</span>
+                                                {% endfor %}{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--end txt_round-->
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"></label>
+                            <div class="controls">
+                                <button class="btn btn-primary" id="sendBtn" onclick="createTextOverlay();"><i class="icon-ok icon-white"></i> Submit</button>
+                                <a id="cancelBtn" class="btn" href="{% url 'site_textOverlay_list' %}"><i class="icon-remove"></i> Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                    <input id="tmpJson" type="hidden" value="{{channel}}"/>
+                    <input id="action" type="hidden" value="{{action}}"/>
+                </div> 
+            </div>
+        </div><!--end container-->
+        {% include "showtimes/include/footer.html" %}
+    </body>
+</html>

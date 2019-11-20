@@ -1,0 +1,26 @@
+{% extends "y15/base_browse.html" %}
+
+{% block header %}
+<title>Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+{% endblock %}
+
+{% block middlepane %}
+
+<div class="row">
+{% for u in U %}
+    <div class="col-xs-6 col-sm-4 col-md-3">
+        <div class="text-center" style="padding: 10px 3px;border:#aaa solid 1px; border-radius: 4px">
+            <img src="{{ u.image }}" style="width:100%; margin-bottom: 5px" />
+            <div class="lead" style="overflow: hidden;">{{ u.showname }}</div>
+{#            <div>{{ u.channel_count }} แชนแนล</div>#}
+{#            <div>{{ u.follower_count }} ผู้ติดตาม</div>#}
+            <div class="clearfix"></div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

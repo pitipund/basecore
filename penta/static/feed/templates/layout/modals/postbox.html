@@ -1,0 +1,54 @@
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.dismiss()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h3 class="modal-title">เพิ่มวีดีโอใหม่</h3>
+</div>
+<div class="modal-body row">
+
+    <alert style="margin:0 15px 15px"
+            ng-repeat="alert in vm.alerts" type="{{ alert.type }}" close="vm.closeAlert($index)">{{ alert.msg }}</alert>
+
+    <div class="col-md-9 col-sm-10 col-xs-12">
+        <div class="form-group">
+            <input 
+             class="form-control" type="text" 
+             ng-model="vm.url"
+             ng-disabled="vm.isSubmitting || vm.isGettingPayload"
+             style="width:100%;" placeholder="ลิงค์วิดีโอที่นี่"/>
+        </div>
+        <div id="detail-form" class="form-group">
+            <textarea 
+             class="form-control" 
+             ng-model="vm.detail"
+             ng-disabled="vm.isSubmitting || vm.isGettingPayload"
+             style="width:100%; height:100px;" placeholder="อยากบอกอะไรเกี่ยวกับวีดีโอนี้?"></textarea>
+        </div>
+        <button 
+         class="btn btn-xs btn-default" 
+         ng-click="vm.getPayload()" 
+         ng-disabled="!vm.url||vm.url.length==0 || vm.isGettingPayload "><i class="fa fa-pencil"></i>ใช้ข้อความจากวิดีโอ</button>
+    </div>
+    <div class="col-md-3 col-sm-2 col-xs-12" style="padding-left:0">
+        <button type="button" class="btn btn-primary col-xs-12" 
+         ng-click="vm.postClick()"
+         ng-disabled="vm.isSubmitting || vm.isGettingPayload">
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate hidden"></span>
+            <span><i ng-show="vm.isSubmitting" class="fa fa-cog fa-spin"></i>&nbsp;แชร์วิดีโอ</span>
+        </button>
+
+        <!--ng-hide="vm.channelInit"-->
+        <select class="form-control col-xs-12" style="margin-top:15px;" 
+                ng-hide="vm.channelInit"
+                ng-disabled="vm.isSubmitting || vm.isGettingPayload"
+                ng-model="vm.channel_id"
+                ng-options="channel.id as channel.name for channel in vm.own">
+            <option value="">-- เลือกแชนแนล --</option>
+        </select>
+        <!--
+        channel: {{ vm.channel_id }}<br/>
+        url: {{ vm.url }}<br/>
+        detail: {{ vm.detail }}<br/>
+        tags: {{ vm.tags }}<br/>
+        -->
+    </div>
+</div>

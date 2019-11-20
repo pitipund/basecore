@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<script src="{% static 'scripts/libs/mustache.min.js' %}"></script>
+<script src="{% static 'scripts/channel/recent_channel.js' %}"></script>
+
+<script type="text/javascript">
+    var RECENT_CHANNEL_URL = "{% url 'channel_apis_index' %}";
+    var recentChannel = new RecentAndTopChannel($("#mostFollowChannel"), $("#recentChannel"), $("#topChannel"), RECENT_CHANNEL_URL);	
+    recentChannel.fetchChannel();
+</script>

@@ -1,0 +1,113 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+
+    <div class="col-xs-12 col-sm-12 col-md-12" style="padding-top:15px;">
+        <ol class="breadcrumb">
+            <li class="active">
+                {% if action == 'create' %} {% trans "Create Playlist" %}
+                {% else %} {% trans "Update Playlist" %}
+                {% endif %}
+            </li>
+        </ol>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div id="spinnerbar" align="center"></div>
+        <form id="playlist_create_form" class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {% if form.channel.errors %}<div class="form-group has-error">
+            {% else %}                  <div class="form-group">
+            {% endif %}
+                <label for="channel" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Channel" %} </label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    <div id="channel_id" name="channel_id"></div>
+                    <input id="channel_hid" type="hidden" value="{{channel}}"/>
+                </div>
+            </div><!--end channel-->
+            {% if form.name.errors %}<div class="form-group has-error">
+            {% else %}               <div class="form-group">
+            {% endif %}
+                <label for="name" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Name" %} {% if form.name.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.name}}
+                    {% if form.name.errors %}{% for error in form.name.errors %}
+                    <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                    {% endfor %}{% endif %}
+                </div>
+            </div><!--end name-->
+            {% if messages %}<div class="form-group has-error">
+            {% else %}       <div class="form-group">
+            {% endif %}
+                <label for="link" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Link" %} {% if form.name.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    <p class="help-block">{% trans "Arrange your link (By drag&drop)" %}</p>
+                    <ul id="sort" class="sortable" style="padding-left:0px;"></ul>
+                </div>
+                <div class="col-xs-8 col-sm-9 col-md-10 col-xs-offset-4 col-sm-offset-3 col-md-offset-2">
+                    <a class="btn btn-success" onclick="setLink_input('');"><span class='glyphicon glyphicon-plus-sign'></span> {% trans "Add more link" %}</a>
+                    <p class="help-block" style="color:#959595">
+                        {% trans "Example" %}: https://www.youtube.com/watch?v=gT_akjwkR90<br>https://www.dailymotion.com/video/x12ghwa_missing-u_shortfilms
+                    </p>
+                </div>
+            </div><!--end link-->
+            {% if form.detail.errors %}<div class="form-group has-error">
+            {% else %}                 <div class="form-group">
+            {% endif %}
+                <label for="detail" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Detail" %} {% if form.detail.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    {{form.detail}}
+                    {% if form.detail.errors %}{% for error in form.detail.errors %}
+                        <span class="col-xs-8 col-sm-9 col-md-10 control-label" style="text-align:left;padding-left:0px;">{{error}}</span>
+                    {% endfor %}{% endif %}
+                </div>
+            </div><!--end detail-->
+            {% if form.tag.errors %}<div class="form-group has-error" style="margin-bottom: -15px;">
+            {% else %}              <div class="form-group" style="margin-bottom: -15px;">
+            {% endif %}
+                <label for="tag" class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Tag" %} {% if form.tag.field.required %}*{% endif %}</label>
+                <div class="col-xs-8 col-sm-9 col-md-10">
+                    <div id="addBtn_div" style="padding-bottom:5px;">
+                        <a onclick="setTag_input('');" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> {% trans "Add New Tag" %}</a>
+                    </div>
+                    <div id="tag_div"></div>
+                    <p class="help-block">{% trans "Example" %}: {% trans "Movie" %}</p>
+                </div>
+            </div><!--end tag-->
+            <input id="link_hid" name="link_hid" type="hidden" value="{{link}}">
+            <input id="channel_hid" name="channel_hid" type="hidden" value="{{channel_id}}">
+            <div class="form-group">
+                <div class="col-xs-8 col-sm-9 col-md-10 col-xs-offset-4 col-sm-offset-3 col-md-offset-2">
+                    <a id="sendBtn" class="btn btn-primary" onclick="submit_playlist();"><span class="glyphicon glyphicon-ok-circle"></span> {% trans "Submit" %}</a>
+                    <a id="cancelBtn" class="btn" href="{{back_url}}"><span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}</a>
+                </div>
+            </div>
+        </form>
+        {{ form.errors }}
+    </div><!--end col-xs-12 col-sm-12 col-md-12-->
+
+    <script type="text/javascript">
+        var warning_support_text = '{% trans "Support only Youtube and Dailymotion" %}';
+        var remove_text = '{% trans "Remove" %}';
+        var dead_link_text = '{% trans "Can not get information from link" %}';
+        var insert_text = '{% trans "Please insert url or title." %}';
+        var action = '{{action}}';
+        var channel_id = '{{channel_id}}';
+        var isLive = '{{isLive}}';
+    </script>
+    <script type="text/javascript" src="{% static 'scripts/curator/curator_playlist_create.js' %}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $( ".sortable" ).sortable();
+        });
+        {% for tag in selected_tags %}
+            setTag_input('{{tag.name}}');
+        {% endfor %}
+        var availableTags = [
+        {% for tag in alltags %}
+            '{{tag.name}}',
+        {% endfor %}
+        ]
+    </script>
+{% endblock %}

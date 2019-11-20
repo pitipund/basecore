@@ -1,0 +1,672 @@
+{% extends "y15/base.html" %}
+{% load truncatechartrue static %}
+
+{% block header %}
+<title>{{ c.name }} - Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+
+<meta property="og:title" content="{% if playitem.detail %}{{ playitem.detail|truncatechartrue:80 }}{% else %}{{ playitem.name|truncatechartrue:80 }}{% endif %}" />
+<meta property="og:type" content="video.movie" />
+<meta property="og:url" content="https://penta.center/th/channelplay/{{c.id}}/{{playitem.id}}/" />
+<meta property="og:image" content="{% if playitem.snapshot %}{{ playitem.snapshot }}{% else %}http://www.penta-tv.com/en/site_media/images/family.png{% endif %}" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="720" />
+<meta property="og:site_name" content="Penta Channel" />
+<meta property="og:description" content="{% if playitem.detail %}{{ playitem.name|truncatechartrue:250 }}{% endif %}" />
+{% endblock %}
+
+{% block rightbar %}
+
+<div class="col-sm-4 col-lg-3">
+        <div id="channelInfo">
+            <div id="channelLogoSection">
+            {% load thumbnail%}
+            {% thumbnail c.image "50x50" as img %}
+                <a href="/th/channel/{{c.id}}/"><img class="channelLogo" src="{{ img.url }}"/></a>
+            {% endthumbnail %}
+
+            </div>
+            <div id="channelDetailSection" >
+                <div id="channelTitle"><a href="/th/channel/{{c.id}}/">{{ c.name }}</a></div>
+                <div id="channelShare"><div id="fbShareChannel" class="btn-fb-share btn btn-primary btn-xs" style="background:#354c8c;"><img src="{% static 'images/facebook.png' %}" height="15" style="vertical-align:baseline;"/></div></div>
+                {% if own %}
+                <div id="editbutton" class="btn btn-default btn-xs" data-is-editing="false">แก้ไข</div>
+                {% endif %}
+                <div id="channelFollower"><a href="/th/follower/{{ c.id }}/" target="_self">จำนวนผู้ติดตาม {{ follower }}</a></div>
+                <div id="channelVideoCount">จำนวนวิดีโอ {{ c.video_count }}</div>
+                {% if own %}
+                <div><button id="togglePostBox" class="channel btn btn-success btn-xs">เพิ่มวิดีโอในแชนแนลนี้</button></div>
+                {% else %}แ
+                    {% if following %}
+                        <div id="follow-button" class="btn btn-success active btn-xs"></div>
+                    {% else %}
+                        <div id="follow-button" class="btn btn-primary btn-xs"></div>
+                    {% endif %}
+                {% endif %}
+                <div class="clearfix" style="clear:both"></div>
+            </div>
+        </div>
+        <div id="channelPlaylist">
+            <table style="width: 100%;">
+                <tr class="{% if p.id == playitem.id%}currentplay{% endif %} loadmore loadmore-before" id="firstListItem">
+                    <td valign="center" align="center" colspan=3><span class="listItemTitle btn" ><a>วิดีโอก่อนหน้า</a></span></td>
+                </tr>
+                {% for p in P %}
+                <tr class="listItem {% if p.id == playitem.id%}currentplay{% endif %}" data-index="{{p.id}}">
+                    <td valign="center"><a class="listItemLink" id="title-{{p.id}}" href="{{ p.playurl }}"><img class="listItemImage" src="{{ p.image }}"/></a></td>
+                    <td valign="center" ><span class="listItemTitle" style="width:120px;"><a class="listItemLink" id="title-{{p.id}}" href="{{ p.playurl }}">{{ p.name }}</a></span></td>
+                    <td style="width:30px;">
+                        {% if own %}
+                        <div title="Move up" class="up editMode" value="{{ p.id }}">
+                            <img align="center" width="15" height="15" src="{% static 'images/moveup.png' %}"/>
+                        </div>
+                        <div title="Move down" class="down editMode" value="{{ p.id }}">
+                            <img align="center" width="15" height="15" src="{% static 'images/movedown.png' %}"/>
+                        </div>
+                        <div title="Remove" class="remove editMode" value="{{ p.id }}">
+                            <img align="center" width="15" height="15" src="{% static 'images/delete.png' %}"/>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="{% if p.id == playitem.id%}currentplay{% endif %} loadmore loadmore-after" id="lastListItem">
+                    <td valign="center" align="center" colspan=3><span class="listItemTitle btn" ><a>วิดีโอต่อไป</a></span></td>
+                </tr>
+            </table>
+        </div>
+        <div id="suggestTitle" style="margin-top: 10px; float:left; display:none;">
+            <span class="glyphicon glyphicon-thumbs-up" style="color: 06b1e3;"></span><span style="color: 06b1e3; margin-left:5px;">แชนแนลรายการแนะนำอื่นๆ</span>
+        </div>
+        <div id="suggestChannelList">
+            <table style="width:100%;">
+            </table>
+        </div>
+</div>
+{% endblock %}
+
+{% block mainpane %}
+
+<style type="text/css">
+
+#control-group> a {
+    width:60px;
+}
+
+#control-group> a >span.glyphicon {
+    font-size: 1.2em;
+}
+
+</style>
+
+<div class="col-sm-8 col-lg-9">
+    {% if own %}
+        {% include "y15/postbox.html" %}
+    {% endif %}
+    <div style="width:100%" valign="top">
+
+        <div id="player" style="background:#333; text-align:center;">
+            {% if playitem.snapshot %}<img class="video-image img-responsive" style="margin:0 auto; height:100%;" src="{{ playitem.snapshot }}"/>{% else %}<h3 style="color: white; padding-top:30px;">ไม่มีวิดีโอในแชนแนลนี้</h3>{% endif %}
+        </div>
+
+        <table style="width:100%; margin-bottom:10px; background: #fff; margin-top: 10px;">
+        <tbody>
+            <tr>
+                <td style="font-size:16px; font-weight:600; vertical-align:top;">
+                    <h3>{{ playitem.name }}</h3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="pull-right">
+                        <a id="fbShareVideo" class="btn btn-md btn-icon"
+                           ng-disabled="vm.disabled" ng-click='vm.shareToFacebook()'>
+                            <i class="fa fa-facebook fa-5"></i>&nbsp;
+                        </a>
+                        <a id="shareButton" class="btn btn-md btn-icon btn-share" style="width:50px;" data-toggle="modal" data-target="#shareModal" data-playlistid="{{ playitem.id }}">
+                            <i class="fa fa-plus"></i>&nbsp;
+                        </a>
+                    </div>
+                    <div id="control-group" class="btn-group" role="group">
+                        <a
+                         data-toggle="tooltip"
+                         data-placement="top"
+                         target="_self"
+                         title="Repeat:off"
+                         id="repeatButton"
+                         data-type=""
+                         role="button"
+                         class="btn btn-default btn-md playback-control">
+                         <span class="glyphicon glyphicon-repeat"></span></a>
+                        <a
+                         data-toggle="tooltip"
+                         data-placement="top"
+                         target="_self"
+                         title="Shuffle:off"
+                         id="shuffleButton"
+                         data-type="random"
+                         role="button"
+                         class="btn btn-default btn-md playback-control">
+                         <span class="glyphicon glyphicon-random"></span></a>
+                        <a
+                         data-toggle="tooltip"
+                         data-placement="top"
+                         target="_self"
+                         title="Next"
+                         href="/th/channelplay/{{ c.id }}/{{ nextindex }}/"
+                         class="btn btn-default btn-md btn-next" {% if nextindex == None %}disabled{% endif %}>
+                         <span class="glyphicon glyphicon-fast-forward"></span></a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+
+        <div style="height:169px; overflow:auto; border-style:solid; border-color:#D8D8D8; padding:0;" id="bottompanel">
+
+            <table style="width:100%; height:100%;">
+                <tr>
+                    <td>
+                        <a href="https://www.penta-tv.com" id="bottom-banner">
+                            <img src="{% static 'images/banner_bottom.jpg' %}" />
+                        </a>
+                    </td>
+                </tr>
+
+                {% comment "Disable detail text under video" %}
+                {% for p in Pl %}
+                    {% if p.detail %}
+                    <tr>
+                        <td style="vertical-align:center;" colspan="3">
+                        {{ p.detail }}
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                {% endcomment %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+
+<script>
+    $(document).ready(function() {
+        updateSideBar();
+    });
+
+    function updateChannelSelectorForShare(ownChannel) {
+        for(index in ownChannel){
+            var channel = ownChannel[index];
+            var channelDom = '<option value="'+channel.id+'">'+channel.name+'</option>'
+            $("#modal_channel_id").append(channelDom);
+        }
+    }
+
+    function updateSideBar(){
+        $.get('/api/v2/channel/').success(onUpdateSideBar);
+
+        function onUpdateSideBar(data) {
+            updateChannelSelectorForShare(data.own);
+        }
+    }
+</script>
+
+<script>
+    var player;
+    var needloginAfterPlay = false;
+    var didLogin = {{ request.user.is_authenticated|yesno:"true,false" }};
+
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    function playNextVideo() {
+        if(needloginAfterPlay&&!didLogin) {
+            $("#guestModal").modal("show")
+            return;
+        }
+        {%if nextindex %}
+            var next_index = {{nextindex}};
+        {% else %}
+            var next_index = -1;
+        {% endif %}
+
+        var mode = $(".playback-control.active").data("type");
+        if(mode){
+            if(mode=="one") {
+                {% if playitem.video_type == 'Y' %}
+                player.playVideo();
+                {% elif playitem.video_type == 'D' %}
+                player.load("{{playitem.video_id}}");
+                {% elif playitem.video_type == 'S' %}
+                player.play();
+                {% endif %}
+                return;
+            } else if(mode=="all") {
+                if(next_index==-1) {
+                    //get first index
+                    {% if firstindex %}
+                        next_index = {{ firstindex }};
+                    {% endif %}
+                }
+            } else if(mode=="random") {
+                {% if randomindex %}
+                next_index = {{ randomindex }};
+                {% else %}
+                // set next_index by random
+                var items = $(".listItem:not(.currentplay)");
+                var item = items[Math.floor(Math.random()*items.length)];
+                next_index = $(item).data("index");
+                {% endif %}
+            }
+            window.location.href="/th/channelplay/{{ c.id }}/"+next_index+"/?mode="+mode;
+        } else {
+            {% if nextindex %}
+            window.location.href="/th/channelplay/{{ c.id }}/{{ nextindex }}/";
+            {% endif %}
+        }
+
+
+    }
+
+    function setRepeatButtonState(state) {
+        var repeatButton = $("#repeatButton");
+        if (state=="all") {
+            repeatButton.data("type","all");
+            repeatButton.attr("title","Repeat:All").tooltip('fixTitle').tooltip('show');
+        } else if(state=="one") {
+            repeatButton.data("type","one");
+            repeatButton.append("<sub>1</sub>");
+            repeatButton.attr("title","Repeat:One").tooltip('fixTitle').tooltip('show');
+        } else {
+            repeatButton.data("type","");
+            repeatButton.children("sub").remove();
+            repeatButton.attr("title","Repeat:off").tooltip('fixTitle').tooltip('show');
+        }
+    };
+
+    (function(){
+        var mode = getParameterByName("mode");
+        if(mode=="random"){
+            $("#shuffleButton").addClass("active");
+            $("#shuffleButton").attr("title","Shuffle:on").tooltip('fixTitle').tooltip('show');
+        } else if(mode){
+            $("#repeatButton").addClass("active");
+            setRepeatButtonState(mode);
+        }
+
+    }());
+
+</script>
+
+{% if playitem.video_type == 'Y' %}
+<script src="https://www.youtube.com/player_api"></script>
+<script>
+// Youtube Player
+function onYouTubePlayerAPIReady() {
+	//$("#player").html("Hello");
+	//setTimeout(function(){
+    player = new YT.Player('player', {
+      height: '500',
+      width: '800',
+      videoId: '{{ playitem.video_id }}',
+      playerVars: { 'autoplay': 1, 'controls': 1,'autohide':1,'wmode':'opaque' },
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
+    });
+    //}, 3000);
+}
+
+function onPlayerReady(event) {
+    event.target.playVideo();
+}
+
+function onPlayerStateChange(event) {
+    if (event.data === 0) {
+        playNextVideo();
+    }
+}
+
+</script>
+{% endif %}
+
+{% if playitem.video_type == 'D' %}
+<script>
+    // Daily motion player
+    window.dmAsyncInit = function()
+    {
+        DM.init({apiKey: 'ee760058651a7c5805a3', status: true, cookie: true});
+
+        var dom = document.getElementById('player');
+        player = DM.player(dom, {video: "{{ playitem.video_id }}" , params: {autoplay: "true"} });
+        // At the end of a video, load the next video if any
+        player.addEventListener("ended", function(e)
+        {
+            playNextVideo();
+        });
+    };
+    (function() {
+        var s, e = document.createElement('script');
+        e.async = true;
+        e.src = document.location.protocol + '//api.dmcdn.net/all.js';
+        s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+    }());
+</script>
+{% endif %}
+
+{% if playitem.video_type == 'S' %}
+<script>
+    (function(){
+        var playerDom = $('#player'),
+            domString = '<video id="html5video" width="100%" height="100%" controls autoplay>'+
+                        '<source src="{{playitem.video_id}}" type="video/mp4">'+
+                        'Your browser does not support the video tag.'+
+                        '</video>';
+        $(playerDom).empty();
+        $(playerDom).append(domString);
+
+        player = document.getElementById('html5video');
+        player.addEventListener('ended',myHandler,false);
+        function myHandler(e) {
+            if(!e) { e = window.event; }
+            // What you want to do after the event
+            playNextVideo();
+        }
+    }());
+</script>
+{% endif %}
+
+
+<script>
+// Playlist management
+{% if own %}
+$("#channelPlaylist").on("click", ".remove", function(){
+    var currentlink = $(this),
+        itemID = $(this).attr("value"),
+        itemTitle = $("#title-"+itemID).text(),
+        success;
+    if(confirm("คุณต้องการที่จะลบ \""+itemTitle+"\" ใช่ไหม?")) {
+        $.post("/th/channelplay/removePlaylist/", { playlist_id: itemID}, function( data ) {
+            success = $.parseJSON(data);
+            if (success) {
+                //currentlink.closest("tr").css("background-color", "grey");
+                setTimeout(function() { currentlink.closest("tr").remove(); }, 200);
+                //alert(currentlink.find(".playlist_id").val());
+            }
+        });
+    }
+
+});
+
+$("#channelPlaylist").on("click", ".up", function(){
+    var currentlink = $(this),
+        currentrow = $(this).closest("tr"),
+        success;
+    if(currentrow.prev().is("#firstListItem"))
+        return;
+    $.post("/th/channelplay/swapPlaylistUp/", { playlist_id: $(this).attr("value") }, function( data ) {
+        success = $.parseJSON(data);
+        if (success) {
+            currentrow.prev().insertAfter(currentrow);
+        }
+    });
+});
+
+$("#channelPlaylist").on("click", ".down", function(){
+    var currentlink = $(this),
+        currentrow = $(this).closest("tr"),
+        success;
+    if(currentrow.next().is("#lastListItem"))
+        return;
+    $.post("/th/channelplay/swapPlaylistDown/", { playlist_id: $(this).attr("value") }, function( data ) {
+        success = $.parseJSON(data);
+        if (success) {
+            currentrow.insertAfter(currentrow.next());
+        }
+    });
+});
+{% endif %}
+
+$("#editbutton").click(function(){
+    var isEditing = $("#editbutton").data("isEditing");
+
+    if(!isEditing){
+        isEditing = true;
+        $(this).text("เสร็จ");
+    }
+    else{
+        isEditing = false;
+        $(this).text("แก้ไข");
+    }
+    $("#editbutton").data("isEditing", isEditing);
+    $(".editMode").toggle();
+});
+
+$("#fbShareChannel").click(function(){
+    fb_share_this_channel();
+});
+
+$("#fbShareVideo").click(function(){
+    fb_share_this_video();
+});
+
+var start = {{start}}+0,
+    end = {{end}}+0,
+    count = {{count}}+0,
+    current = {{indexpos}}+0;
+
+function calculateStartEnd(diff) {
+    start += diff;
+    end += diff;
+
+    if(end >= count) {
+        end = count;
+    }
+    if(start <= 0) {
+        start = 0;
+    }
+}
+
+function checkLoadmore() {
+    if(end >= count) {
+        $("#lastListItem").remove();
+    }
+    if(start <= 0) {
+        $("#firstListItem").remove();
+    }
+}
+
+$(".loadmore").click(function(){
+    var method = "before",
+        target, index, row, p;
+    if($(this).hasClass("loadmore-after")){
+        method = "after";
+        target = $("#lastListItem");
+        calculateStartEnd(25);
+    }
+    else if($(this).hasClass("loadmore-before")){
+        target = $("#firstListItem");
+        calculateStartEnd(-25);
+    }
+
+    $.get("/th/channelplay/{{c.id}}/playlist/?start="+start+"&end="+end, function(result){
+        var isEditing = $("#editbutton").data("isEditing");
+
+        for (index in result) {
+            p = result[index];
+            var displayMode = isEditing? "block" : "none";
+            row =   '<tr class="listItem">'+
+                            '<td valign="center">'+
+                                '<a class="listItemLink" id="title-'+p.id+'" href="/th/channelplay/{{c.id}}/'+p.id+'/">'+
+                                '<img class="listItemImage" src="'+p.image+'" style="width:80px;"/>'+
+                                '</a>'+
+                            '</td>'+
+                            '<td valign="center" ><span class="listItemTitle" style="width:120px;">'+
+                                '<a class="listItemLink" id="title-'+p.id+'" href="/th/channelplay/{{c.id}}/'+p.id+'/">'+p.name+'</a></span>'+
+                            '</td>'+
+                            '<td style="width:30px;">'+
+                                    '<div title="Move up" class="up editMode" value="'+p.id+'" style="display:'+displayMode+';">'+
+                                        '<img align="center" width="15" height="15" src="{% static 'images/moveup.png' %}"/>'+
+                                    '</div>'+
+                                    '<div title="Move down" class="down editMode" value="'+p.id+'" style="display:'+displayMode+';">'+
+                                        '<img align="center" width="15" height="15" src="{% static 'images/movedown.png' %}"/>'+
+                                    '</div>'+
+                                    '<div title="Remove" class="remove editMode" value="'+p.id+'" style="display:'+displayMode+';">'+
+                                        '<img align="center" width="15" height="15" src="{% static 'images/delete.png' %}"/>'+
+                                    '</div>'+
+                            '</td>'+
+                        '</tr>'
+
+            if (method == "before") {
+                $(target).after(row);
+            } else {
+                $(target).before(row);
+            }
+
+        }
+
+        checkLoadmore();
+
+    });
+
+});
+
+function fb_share_this_channel(){
+    var url = "https://penta.center/th/channelplay/{{c.id}}/",
+        title = "{{c.name|escapejs}}",
+        detail = "{{c.detail|escapejs}}",
+        imgsrc;
+    {% load thumbnail%}
+    {% thumbnail c.image "240x240" as img %}
+    imgsrc = "{{ img.url }}";
+    {% empty %}
+    imgsrc = "{% static 'images/saved_channel.png' %}";
+    {% endthumbnail %}
+
+    fb_publish(title, detail, url , imgsrc)
+}
+
+function fb_share_this_video(){
+    var url = document.URL,
+        title = "{{ playitem.name|escapejs }}",
+        detail = "{{ playitem.detail|escapejs }}",
+        imgsrc = "https://img.youtube.com/vi/{{playitem.video_id}}/0.jpg";
+
+    fb_publish(title, detail, url , imgsrc)
+}
+
+
+$(document).ready(function() {
+    var channel_playlist = $("#channelPlaylist");
+	channel_playlist.scrollTop(channel_playlist[0].scrollHeight * {{ sh }});
+    checkLoadmore();
+    {% if own %}
+    $("#postbox").hide();
+
+    $("#togglePostBox").click(function(){
+        $("#postbox").toggle(400);
+    });
+    {% endif %}
+
+    $( "#sharevideo" ).click(function() {
+        var link = $("#link").val(),
+            detail = $("#sharedesc").val();
+        $.post('/api/v2/playlist/', {
+                    channel:{{ c.id }},
+                    detail: detail,
+                    url: link
+                })
+        .done(onDone)
+        .fail(onFail);
+
+        function onDone (result) {
+            console.log("post done");
+            location.reload(true);
+        }
+
+        function onFail (result){
+            console.log("post fail:"+result);
+        }
+
+    });
+
+    $("#repeatButton").click(function (){
+        var isToggleOff;
+        if($(this).hasClass("active") && ($(this).data("type")=="all")) {
+            isToggleOff = false;
+            setRepeatButtonState("one");
+        } else if($(this).hasClass("active") && ($(this).data("type")=="one")) {
+            isToggleOff = true;
+            setRepeatButtonState();
+        } else {
+            isToggleOff = false;
+            setRepeatButtonState("all");
+        }
+        $("#shuffleButton").attr("title","Shuffle:off").tooltip('fixTitle');
+        $(".playback-control").removeClass("active");
+        if(!isToggleOff) $(this).addClass("active");
+    });
+
+    $("#shuffleButton").click(function (){
+        var isToggleOff,
+            repeatButton = $("#repeatButton");
+            $("#shuffleButton").attr("title","Shuffle:on").tooltip('fixTitle').tooltip('show');
+        if($(this).hasClass("active")) {
+            isToggleOff = true;
+            $("#shuffleButton").attr("title","Shuffle:off").tooltip('fixTitle').tooltip('show');
+        }
+        $(".playback-control").removeClass("active");
+        //config repeat
+        repeatButton.children("sub").remove();
+        repeatButton.attr("title","Repeat:off").tooltip('fixTitle');
+        repeatButton.data("type","");
+        if(!isToggleOff) $(this).addClass("active");
+    });
+
+    $("a.listItemLink, a.btn-next").click(function(e){
+        e.preventDefault();
+        var url = $(this).attr("href"),
+            mode = $(".playback-control.active").data("type");
+        if(mode)
+            url += "?mode=" + mode;
+        window.location.href = url;
+    });
+
+    $.get("/feed/suggestchannel/{{c.id}}/",function(suggestchannels){
+        var index;
+        for(index in suggestchannels) {
+            var channel = suggestchannels[index];
+            var newDom = '<tr class="listItem">'+
+                    '<td valign="center"><img class="listItemImage" src="'+channel.icon+'"/></td>'+
+                    '<td valign="center" ><span class="listItemTitle" style="width:120px;">'+
+                    '<a class="listItemLink" href="/th/channelplay/'+channel.id+'/">'+channel.name+'</a>'+
+                    '</span></td>'+
+                    '</tr>';
+            $("#suggestChannelList > table").append(newDom);
+            $("#suggestTitle").show();
+            $("#suggestChannelList").animate({height:200});
+            $("#channelPlaylist").animate({height:500})
+        }
+    })
+
+        .done(function() {
+            console.log("done")
+        })
+        .fail(function() {
+            // Do not neccessory to handle this case
+            console.log("failed");
+        });
+});
+
+</script>
+
+{% include "y15/components/follow_button_script.html" %}
+
+{% endblock %}

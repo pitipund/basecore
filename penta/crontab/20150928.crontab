@@ -1,0 +1,42 @@
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+DJANGO_ENV=production
+# m h  dom mon dow   command
+0 * * * * /home/showtime/showtime/report/cronscript/channelsummary.sh
+0 * * * * /home/showtime/showtime/report/cronscript/activeuser.py
+0 * * * * /home/showtime/showtime/report/cronscript/usersummary.sh 2> /tmp/error.log
+0 8 * * * /home/showtime/showtime/report/cronscript/channelstat.py
+0/5 * * * * /home/showtime/showtime/report/cronscript/livelog.py
+
+0 6 * * * /usr/bin/python /home/showtime/showtime/manage.py update_wallpaper
+0 3 * * * bash /home/showtime/backup_showtime_db.sh
+#0 1 * * * /usr/bin/python /home/showtime/showtime/check_link_dead.py # already done by clear garbage links
+
+# clear django session at midnight everyday
+0 0 * * * /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/manage.py clearsessions
+
+# generate daily access report
+0 2 * * * /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/manage.py generate_daily_report
+
+# clear PentaTV and PentaSearch garbage links
+0 23 1,9,17,25 * * /home/showtime/beta_showtime/cronscripts/clear_broken_video.sh
+0 3 * * 2,5 /home/showtime/beta_showtime/cronscripts/clear_soop_video.sh 
+
+# update highlight videos
+5,35 * * * * /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/manage.py get_highlight
+
+# update highlight videos for weekly
+# 8 19 * * 5 /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/manage.py get_highlight 0 7
+# 8 20 * * 6 /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/manage.py get_highlight 0 7
+# send email about update videos to followers every Tuesday, Friday and Saterday night
+# have to separate due to gmail limit 
+10 17 * * 2,5 /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/email_every_day.py
+10 19 * * 6 /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/email_every_day.py
+# log amount of subscriber
+0 23 * * * /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/log_subscriber.py
+
+# update video from auto system
+30 */4 * * * /home/showtime/beta_showtime/env/bin/python /home/showtime/beta_showtime/update_auto_video.py
+
+# epg loading moved to www-data's crontab

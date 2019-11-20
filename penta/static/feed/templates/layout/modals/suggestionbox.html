@@ -1,0 +1,31 @@
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.dismiss()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h3 class="modal-title">แนะนำวีดีโอ</h3>
+</div>
+<div class="modal-body row">
+
+    <alert style="margin:0 15px 15px"
+            ng-repeat="alert in vm.alerts" type="{{ alert.type }}" close="vm.closeAlert($index)">{{ alert.msg }}</alert>
+
+    <div class="col-md-9 col-sm-10 col-xs-12">
+        <div class="form-group">
+            <input ng-disabled="vm.isSubmitting" class="form-control" type="text" ng-model="vm.url"
+                   style="width:100%;" placeholder="ลิงค์วิดีโอที่นี่"/>
+        </div>
+        <div id="detail-form" class="form-group">
+            <textarea ng-disabled="vm.isSubmitting" class="form-control" ng-model="vm.detail"
+                      style="width:100%; height:100px;" placeholder="อยากบอกอะไรเกี่ยวกับวีดีโอนี้?"></textarea>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-2 col-xs-12" style="padding-left:0">
+        <button ng-disabled="vm.isSubmitting" type="button" class="btn btn-primary col-xs-12" ng-click="vm.postClick()">
+            <span><i ng-show="vm.isSubmitting" class="fa fa-cog fa-spin"></i>แนะนำวีดีโอ</span>
+        </button>
+        <!--<br/>
+        channel: {{ vm.channel_id }}<br/>
+        url: {{ vm.url }}<br/>
+        detail: {{ vm.detail }}<br/>
+        -->
+    </div>
+</div>

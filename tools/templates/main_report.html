@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+
+{% block extrahead %}
+<style>
+    a:link { text-decoration: none; color: blue; }
+    a:visited { color: blue; }
+    table {
+        border-collapse: collapse;
+    }
+    thead tr {
+        background-color: #E1E1E1;
+    }
+    td, th {
+        padding: 4px;
+    }
+
+</style>
+{% endblock %}
+{% block content %}
+
+{% for app in apps %}
+    <h1>{{ app.name }}</h1>
+    {% for group in app.groups %}
+        {% include "report_fragment.html" %}
+    {% endfor %}
+{% endfor %}
+
+{% endblock content %}

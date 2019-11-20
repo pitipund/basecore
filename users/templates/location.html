@@ -1,0 +1,10 @@
+<ul>
+{% for location in locations %}
+    <li><a href="{% url 'admin:users_location_change' location.id %}">{{ location.name }}</a>
+    {% with "location.html" as filename %}
+    {% with location.location_set.all as locations %}
+        {% include filename %}
+    {% endwith %}
+    {% endwith %}</li>
+{% endfor %}
+</ul>

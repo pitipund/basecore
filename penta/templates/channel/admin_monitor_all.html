@@ -1,0 +1,123 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block head %}
+    <script type="text/javascript">
+        var SEND_MONITOR_LOG_URL = "{% url 'channel:channel_log_monitor' %}";
+        var MEDIA_URL = "{{MEDIA_URL}}";
+        var HLS_PLAYER_URL = "{% static 'jwplayer/HLSProvider6.swf' %}";
+        var latest_result = {{result|safe}};
+    </script>
+
+    <link href="https://vjs.zencdn.net/7.1.0/video-js.css" rel="stylesheet">
+    <script src="https://vjs.zencdn.net/7.1.0/video.js"></script>
+    <script src="https://unpkg.com/@videojs/http-streaming@1.2.4/dist/videojs-http-streaming.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+    <script src="{% static 'admin/admin_monitor_all.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<form method="post" id="maintainance">
+    {% csrf_token %}
+    <input type="hidden" id="maintainance_toggle" name="toggle" value="true" />
+</form>
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+  
+{% verbatim %}
+<div ng-app="monitor" ng-controller="Controller">
+
+    <div ng-controller="ChannelListCtrl">
+        <div style="margin-bottom: 10px">
+            <ul class="nav nav-pills">
+
+             <!-- Filter -->
+             <li>
+                <b>Search:</b> <input type="text" ng-model="search.name" />
+             </li>
+             <li><label style="padding-left: 10px"><input type="checkbox" ng-model="show.bad"/> Bad</label></li>
+             <li><label style="padding-left: 10px"><input type="checkbox" ng-model="show.skip"/> Skipped</label></li>
+             <li><label style="padding-left: 10px"><input type="checkbox" ng-model="show.low"/> Low buffer</label></li>
+             <li><label style="padding-left: 10px"><input type="checkbox" ng-model="show.ack"/> Acknowledged</label></li>
+
+             <!-- Maintenance Button -->
+             <li class="pull-right">
+                <a class="dropdown-toggle btn-sm btn-warning" data-toggle="dropdown" href="#">
+                  <span class="glyphicon glyphicon-warning-sign"></span>
+                  Maintenance <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu" ng-controller="MaintainanceControl">
+                  <li><a style="color: #FF0000; font-weight: bold;"
+                   ng-click="toggle(false);"><span class="glyphicon glyphicon-remove"></span> Disable all</a></li>
+                  <li><a ng-click="toggle(true);"><span class="glyphicon glyphicon-ok"></span> Enable all</a></li>
+                </ul>
+              </li>
+            </ul>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+             style="border:1px solid #aaaaaa; padding:5px; min-height: 270px;"
+             ng-repeat="channel in channels | filter:search | statusFilter:show">
+             {{ channel.name | namestrip }}
+
+            <!-- status directive -->
+            <span channel-status="channel.status"></span>
+
+            <!-- player -->
+            <div penta-player="channel.current_stream_url"
+                 id="player_{{ channel.channel_id }}" width="272" height="153">
+            </div>
+
+            <!-- Screenshot -->
+            <row>
+                <div style="margin: auto;text-align: center">
+                    <img height="200" ng-src="{{ channelSS[channel.channel_id] }}" style="max-width: 270px;" err-src="{{ channel.icon }}"
+                        ng-click="play()" ng-hide="player_playing" />
+                </div>
+            </row>
+
+
+            <select ng-model="channel.current_stream_url">
+                <option ng-repeat="url in channel.stream_url track by $index"
+                    value="{{url}}">Link {{$index+1}}</option>
+            </select>
+
+            <!-- Acknowledge Button -->
+            <button id="Gbtn" type="button" class="btn btn-info btn-sm"
+                    ng-click="stop(); channel.status.status=='A'?bad(channel):acknowledge(channel);"
+                    ng-show="player_playing"
+                    ng-class="{disabled:(channel.status.status=='G'||channel.status.status=='R')}">
+                {{ channel.status.status=='A' ? "Un-Ack" : "Ack" }}
+            </button>
+
+            <!-- Restart Button -->
+            <button id="Rbtn" type="button" class="btn btn-danger btn-sm"
+                    ng-click="restart(channel);"
+                    ng-show="player_playing"
+                    ng-disabled="channel.restarting">Restart</button>
+
+            <!-- Close Button -->
+            <button id="Backbtn" type="button" class="btn btn-primary btn-sm"
+                    ng-click="stop();"
+                    ng-show="player_playing"
+                    ng-disabled="channel.restarting">Close</button>
+
+            <!-- Edit Channel Button -->
+            <button id="Bbtn" type="button" class="btn btn-default btn-sm"
+                    ng-click="stop(); edit(channel);" ng-show="player_playing">Edit channel</button>
+        </div>
+    </div>
+
+<!--
+<div penta-player="channel.stream_url.0"
+    <div penta-player="test">aa</div>
+    <div penta-player="test2">aa</div>
+    <div penta-player="test3">aa</div> -->
+</div>
+
+{% endverbatim %}
+
+{% endblock %}

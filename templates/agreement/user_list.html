@@ -1,0 +1,48 @@
+{% extends 'agreement/base.html' %}
+{% load i18n bootstrap_pagination %}
+
+{% block title %}User Agreement{% endblock %}
+
+{% block content %}
+  <form class="mt-3" method="get">
+    <div class="row form-group">
+      <label for="search" class="col-1 col-form-label">Search</label>
+      <div class="col-8">
+        <input id="search" name="search" class="form-control">
+      </div>
+      <div class="col-2">
+        <input type="submit" value="search" class="btn btn-primary">
+      </div>
+    </div>
+  </form>
+
+  <table class="table table-sm table-hover">
+    <thead>
+    <tr>
+      <th>{% trans 'username' %}</th>
+      <th>{% trans 'first name' %}</th>
+      <th>{% trans 'last name' %}</th>
+      <th>{% trans 'activated' %}</th>
+      <th>{% trans 'manage' %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in object_list %}
+      <tr class="pointer" onclick="window.location='{% url 'PRX:user_agreement' user.username %}'">
+        <td>{{ user.username }}</td>
+        <td>{{ user.profile.first_name }}</td>
+        <td>{{ user.profile.last_name }}</td>
+        <td>{% if user.profile.is_signed %}Yes{% else %}No{% endif %}</td>
+        <td>
+          <a href="{% url 'PRX:family_list' user.username %}"
+               class="btn btn-light btn-sm {% if not user.profile.is_signed %}disabled{% endif %}">
+          {% trans 'family' %}</a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-center mt-5">
+    {% bootstrap_paginate page_obj %}
+  </div>
+{% endblock %}

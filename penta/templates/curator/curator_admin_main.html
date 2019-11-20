@@ -1,0 +1,19 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <div class="col-xs-12 col-sm-12 col-md-12" style="padding-bottom:10px;">
+        <h2>Admin tools</h2>
+        <a href="{% url 'curator:site_admin_manage_channel' %}" class="btn btn-primary btn-lg btn-block">Channel Manager</a>
+        <a href="{% url 'curator:site_admin_tag_list' %}" class="btn btn-primary btn-lg btn-block">Arrange List page</a>
+        <a href="{% url 'curator:site_admin_push_messages' %}" class="btn btn-primary btn-lg btn-block">Push message to PentaTV</a>
+        <a href="{% url 'report:reports_view' %}" class="btn btn-primary btn-lg btn-block">Penta Channel Reports</a>
+        <a href="{% url 'curator:site_admin_emails' %}" class="btn btn-primary btn-lg btn-block">Email manager</a>
+        <a href="{% url 'videos_tagging:video_tag_manage' %}" class="btn btn-primary btn-lg btn-block">Video tag rules</a>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <a id="backbtn" href="{{back_url}}" class="btn btn-warning"><span class="glyphicon glyphicon-chevron-left"></span> {% trans "Back" %}</a>
+    </div>
+{% endblock %}

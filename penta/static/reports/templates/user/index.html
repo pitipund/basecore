@@ -1,0 +1,71 @@
+<style>
+    table.table{
+        width: 80%;
+        margin: auto;
+        table-layout: fixed;
+    }
+</style>
+<div>
+    <h2>Total User: {{ vm.totalUser }}</h2>
+
+    <h3>Most recent registered users</h3>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Name</td>
+            <th>Join since</td>
+        </tr>
+        </thead>
+        <tr ng-show="!vm.recentUser.length"><td colspan="2" align="center">No data</td></tr>
+        <tr ng-repeat="user in vm.recentUser">
+            <td><a ng-href="/th/channelplay/{{ user.share_channel }}">{{ user.name }}</a></td>
+            <td>{{ user.date }}</td>
+        </tr>
+    </table>
+
+    <h3>User register count this week</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Date</td>
+            <th>Registered</td>
+        </tr>
+        </thead>
+        <tr ng-show="!vm.registeredUserWeek.length"><td colspan="2" align="center">No data</td></tr>
+        <tr ng-repeat="c in vm.registeredUserWeek">
+            <td>{{ c.date }}</td>
+            <td>{{ c.registered }}</td>
+        </tr>
+    </table>
+
+    <h3>User register count by months</h3>
+    <table class="table table-striped" style="table-layout: fixed;">
+        <thead>
+        <tr>
+            <th>Month</td>
+            <th>Registered</td>
+        </tr>
+        </thead>
+        <tr ng-show="!vm.registeredUserMonth.length"><td colspan="2" align="center">No data</td></tr>
+        <tr ng-repeat="c in vm.registeredUserMonth">
+            <td>{{ c.month }}</td>
+            <td>{{ c.registered }}</td>
+        </tr>
+    </table>
+
+    <h3>User register count by years</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Year</td>
+            <th>Registered</td>
+        </tr>
+        </thead>
+        <tr ng-show="!vm.registeredUserYear.length"><td colspan="2" align="center">No data</td></tr>
+        <tr ng-repeat="c in vm.registeredUserYear">
+            <td>{{ c.year }}</td>
+            <td>{{ c.registered }}</td>
+        </tr>
+    </table>
+
+</div>

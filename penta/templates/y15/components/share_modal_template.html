@@ -1,0 +1,99 @@
+<style type="text/css">
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+}
+ 
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+  
+@-webkit-keyframes spinw {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+ 
+@-moz-keyframes spinm {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
+}
+</style>
+
+<form id="shareModalForm">
+<div class="modal fade" id="shareModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">แชร์ไปยังแชนแนลของคุณ</h4>
+      </div>
+      <input id="shareModalPlaylistId" type="hidden" value="" />
+      <input id="shareModalVideoId" type="hidden" value="" />
+      <input id="shareModalVideoType" type="hidden" value="" />
+      <div class="modal-body">
+        <label for="modal_channel_id">เลือกแชนแนลที่จะแชร์: </label>
+        <div><select id="modal_channel_id">
+          <option value="{{ user.userdetail.get_share_channel.id }}">{{ user.first_name }} {{ user.last_name }}</option>
+        </select></div>
+        
+        
+          <div class="form-group">
+            <label for="modalShareDesc">รายละเอียด</label>
+            <textarea id="modalShareDesc" class="form-control" name="detail" placeholder="อยากบอกอะไรเกี่ยวกับวีดีโอนี้?"></textarea>
+          </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+        <button id="shareModalSubmit" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate hidden"></span> แชร์</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</form>
+
+<script>
+
+    $('#shareModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget), // Button that triggered the modal
+            playlistId = button.data('playlistid');
+        // Extract info from 'data-playlistid' attributes
+        videoId = button.data('videoid');
+        videoType = button.data('videotype');
+        channelId = button.data('channelid');
+        $('#shareModalPlaylistId').val(playlistId);
+        $('#shareModalVideoId').val(videoId);
+        $('#shareModalVideoType').val(videoType);
+        if(channelId) {
+          $("#modal_channel_id").val(channelId);
+        }
+        setTimeout(function() {
+          $("#modalShareDesc").focus();
+        }, 500);
+    });
+    $('#shareModalSubmit').click( function (event) {
+        var channel_id = $("#modal_channel_id").val(),
+            detail = $("#modalShareDesc").val();
+        $("#shareModalSubmit, #modalShareDesc, #modal_channel_id").attr("readonly","readonly");
+        $(".glyphicon-refresh").toggleClass("hidden");
+        if($('#shareModalPlaylistId').val() != "") {
+          $.post("/save/channel/"+channel_id+"/" + $('#shareModalPlaylistId').val() + "/", { detail: detail})
+                .done(onDone)
+                .fail(onFail);
+        } else {
+          $.post("/save_ex/channel/"+channel_id+"/" + $('#shareModalVideoType').val() +"/" + $('#shareModalVideoId').val() + "/", { detail: detail}).done(onDone).fail(onFail);
+        }
+
+        function onDone(data) {
+{#            window.location.replace("{% url 'feed:feed_channel_view' u.userdetail.get_share_channel.id %}")#}
+            location.reload();
+        }
+        function onFail(data) {
+            console.log("fail!" + data.detail);
+        }
+    });
+
+</script>

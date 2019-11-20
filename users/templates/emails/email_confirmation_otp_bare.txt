@@ -1,0 +1,7 @@
+{% load i18n %}{% blocktrans %}Hello, {{ user.email }}{% endblocktrans %}
+{% blocktrans %}Please use this code below to complete your registration.{% endblocktrans %}
+
+    {{ otp.password }}
+
+reference code: {{ otp.ref }}
+{% trans "This OTP will be expired at" %} {{ otp.expired_at|date:"DATETIME_FORMAT" }}.

@@ -1,0 +1,106 @@
+{% extends "y15/base_browse.html" %}
+
+{% block header %}
+<title>Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+{% endblock %}
+
+{% block middlepane %}
+
+<!-- Share box component -->
+{% include "y15/postbox.html" %}
+<script type="text/javascript">
+	showChannelSelection(true);
+</script>
+
+{% if follow_count < 3 %}
+<div class="panel panel-default panel-info">
+	<div class="panel-heading">
+		<h2>ยินดีต้อนรับสู่ Penta Channel!</h2>
+	</div>
+	<div class="panel-body">
+        	มีแชนแนลรายการอื่นอีกมากมายให้คุณเลือกชม คุณสามารถติดตามเพิ่มเติมได้<a href="/browse/">แค่คลิกที่นี่เลย</a><br/><br/>
+		ติดตามกระแสของวิดีโอยอดนิยมได้ที่ <a href="/th/room/">"ห้องแชร์วิดีโอ"</a> ด้านซ้ายมือ<br/><br/>
+		และคุณยังสามารถสร้างแชนแนลรายการของคุณได้เองที่ "<span class="glyphicon glyphicon-plus"></span>" ที่ "แชนแนลอื่นๆของฉัน"
+	</div>
+</div>
+{% endif %}
+
+{% include "y15/components/playlist_script_template.html" %}
+{% for p in P %}
+{% include "y15/components/playlist_template.html" %}
+{% endfor %}
+
+<nav>
+  <ul class="pagination">
+    {% if P.has_previous %}
+    <li><a href="?page={{ P.previous_page_number }}" aria-label="Previous">
+    {% else %}
+    <li class="disabled"><a aria-label="Previous">
+    {% endif %}
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    {% for page in page_nums %}
+      {% if page == P.number %}
+        <li class="active">
+      {% else %}
+        <li>
+      {% endif %}
+          <a href="?page={{ page }}">{{ page }}</a>
+        </li>
+    {% endfor %}
+
+    {% if P.has_next %}
+    <li><a href="?page={{ P.next_page_number }}" aria-label="Next">
+    {% else %}
+    <li class="disabled"><a aria-label="Next">
+    {% endif %}
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+  </ul>
+</nav>
+
+
+<!-- end middlepane block -->
+{% endblock %} 
+
+{% block footer %}
+<script>
+
+	$(document).ready(function() {
+	   
+		$("#sharevideo").click(function() {
+			var currentlink = $(this),
+			    link = $("#link").val(),
+			    detail = $("#sharedesc").val(),
+			    channel_id = $("#postbox_channel_id").val().toString();
+	    
+    	$.post("/th/channeladd/" + channel_id + "/", { link: link, detail: detail, tag: 0}, function( data ) {
+    		window.location = "{{ request.path }}";
+  		})
+      .done(onDone)
+      .fail(onFail);
+
+      function onDone(){
+          cleanPostbox();
+          location.reload();
+      }
+
+      function onFail() {
+          alert("เกิดความผิดพลาด กรุณาทดลองใหม่ภายหลัง");
+          clearPostboxState();
+      }
+
+		});
+	});
+
+  function fb_share(url, title, detail, imgsrc){
+        imgsrc = "//img.youtube.com/vi/" + imgsrc + "/0.jpg"
+
+        fb_publish(title, detail, document.URL , imgsrc)
+    }
+</script>
+
+{% endblock %}

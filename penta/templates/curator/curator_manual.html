@@ -1,0 +1,68 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12" style="padding-top:15px;">
+           <h2>วิธีการใช้งาน Penta Channel</h2>
+        </div><hr>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-5 col-md-4 col-lg-4">
+            <div class="manual-sidebar">
+                <h2>เมนูด่วน</h2>
+                <div class="well" style="padding:0 20px 0 20px;">
+                    <div class="row">
+                        <ul class="nav nav-stacked">
+                            <li><a href="#facebook">การลงทะเบียนโดยใช้ บัญชี Facebook</a></li>
+                            <li><a href="#pentaID">การลงทะเบียนโดยใช้ บัญชี Penta Account</a></li>
+                            <li><a href="#watchVideo">การดูวิดีโอออนไลน์</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-7 col-md-8 col-lg-8" >
+            <h2>เริ่มต้นใช้งาน</h2>
+            <p>Penta Channel คือ แชนแนลทีวีออนไลน์ที่ใครๆก็สร้างได้บนเว็บไซต์ <a href="https://penta.center">https://penta.center</a> โดยการนำลิงค์วิดีโอที่ชื่นชอบมาเรียงให้เล่นต่อกันอย่างต่อเนื่องเหมือนแชนแนลทีวี ปัจจุบัน Penta Channel เป็นศูนย์รวมรายการย้อนหลังมากมายไม่ว่าจะเป็นละคร, ข่าว, วาไรตี้, สาระความรู้ และ อื่นๆอีกมากมาย</p>
+            <p>เมื่อคุณลงทะเบียนบน Penta Channel เรียบร้อยแล้วคุณจะสามารถมีสิทธิ์สร้างแชนแนลทีวี บน เว็บไซต์ Penta Channel ได้ โดยไม่มีค่าใช้จ่าย โดยวิดีโอต่างๆ ที่อยู่ในแชนแนลทีวีที่คุณสร้างนั้น จะต้องเป็นลิงค์วิดีโอที่มาจาก YouTube หรือ DailyMotion <a href="#createchannel">ดูรายละเอียดวิธีการสร้างแชนแนลทีวี</a></p><a id="facebook"></a>
+            <h2 style="margin-top:35px;">เริ่มต้นลงทะเบียนเข้าใช้ Penta Channel</h2>
+            <p>คุณสามารถลงทะเบียนและ ล็อคอินเข้าใช้งาน Penta Channel ได้ โดยใช้ บัญชี Facebook หรือ Penta Account</p>
+            <h4 style="margin-top:25px;">1. ลงทะเบียนโดยใช้ บัญชี Facebook</h4>
+            <img src="{% static 'images/tutorial/1.jpg' %}" class="img-thumbnail text-center"><a id="pentaID"></a>
+            <p>หากคุณ มี บัญชีของ facebook อยู่แล้วสามารถ นำมาใช้ ล็อคอิน เข้าใช้งานระบบได้ทันที ซึ่งการ ล็อคอิน ครั้งแรกจะเป็นการลงทะเบียน Penta Channel</p>
+            <h4 style="margin-top:25px;">2. หรือ ลงทะเบียนโดยใช้ บัญชี Penta Account</h4>
+            <img src="{% static 'images/tutorial/2-1.jpg' %}" class="img-thumbnail text-center">
+            <p>ในกรณีที่คุณไม่มี บัญชีของ facebook ให้กดปุ่ม Sing up เพื่อทำการลงทะเบียนเพื่อขอ Penta Account</p>
+            <img src="{% static 'images/tutorial/2-2.jpg' %}" class="img-thumbnail text-center">
+            <p>กรอกข้อมูลให้ครบถ้วนแล้วกด Register</p>
+            <img src="{% static 'images/tutorial/2-3.jpg' %}" class="img-thumbnail text-center">
+            <p>เมื่อ Register เรียบร้อยแล้วให้คุณยืนยันการลงทะเบียนที่ email คุณ</p>
+            <img src="{% static 'images/tutorial/2-4.jpg' %}" class="img-thumbnail text-center">
+            <p>ให้คุณกดที่ ลิงค์ดังรูปเพื่อ ยืนยันการลงทะเบียน</p>
+            <img src="{% static 'images/tutorial/2-5.jpg' %}" class="img-thumbnail text-center">
+            <p>การลงทะเบียนเสร็จเรียบร้อยแล้ว</p>
+            <img src="{% static 'images/tutorial/2-6.jpg' %}" class="img-thumbnail text-center">
+            <img src="{% static 'images/tutorial/2-7.jpg' %}" class="img-thumbnail text-center"><a id="watchVideo"></a>
+            <p>คุณสามารถใช้ Penta Account ซึ่งก็คือ Email และ Password ของคุณที่ลงทะเบียนไว้ มาใช้ ล็อคอิน ได้ทันที</p>
+            <h2 style="margin-top:35px;">การดูวิดีโอออนไลน์</h2>
+            <p>คุณสามารถดูวิดีโอออนไลน์บน เว็บ Penta Channel ได้ทันทีแม้ว่า คุณไม่ได้ลงทะเบียนไว้ก็ตาม แต่ก็จะไม่สามารถใช้คุณสมบัติอื่นๆ ของ Penta Channel ได้ เช่น การสร้างแชนแนลทีวี, การ Favorite วิดีโอที่คุณชื่นชอบ, การเปลี่ยนภาษาบน เว็บไซต์ เป็นต้น</p>
+            <h4 style="margin:30px;">มาเริ่มต้น ดูวิดีโอ กันเลยดีกว่า</h4>
+            <p>เมื่อเข้ามาที่ เว็บไซต์ Penta Channel แสดงหน้า โฮมเพจ</p>
+            <img src="{% static 'images/tutorial/3-1.jpg' %}" class="img-thumbnail text-center">
+            <p>ในหน้านี้ แบ่งออกเป็น 3 ส่วน หลักๆ</p>
+            <p>ส่วนที่ 1 สำหรับ ช่วยในการค้นหา โดยใส่ชื่อ แชนแนลทีวี, วิดีโอ รายการ หรือ ละคร ที่ต้องการชมและกดปุ่ม “ปุ่มค้นหา” (รูปแว่นขยาย) วิดีโอที่อยู่ใน ระบบ Penta Channel หรือ กดปุ่ม<br><br>
+            คุณสามารถกดปุ่ม แนะนำรายการ เพื่อเข้าไปเลือกแชนแนลรายการทีวี ที่ท่านชื่นชอบ</p>
+            <img src="{% static 'images/tutorial/3-2.jpg' %}" class="img-thumbnail text-center">
+            <p>ในหน้า แนะนำรายการ ที่หมายเลข 1 หมายถึง ประเภทของแชนแนลทีวี โดยเว็บไซต์ Penta Channel ได้ทำการจัดกลุ่มประเภทของแชนแนลทีวีไว้เป็นหมวดหมู่ เพื่อ ความเป็นระบบของแชนแนลทีวีจะได้เป็นประเภทเดียวกัน เช่น ข่าว, วาไรตี้, ละคร, ซิทคอม เป็นต้น<br><br>
+            โดยในแต่ละ ประเภทของแชนแนลทีวี จะถูกแสดงขึ้นมาเบื้องต้น แค่ 8 แชนแนลตามอันดับยอดวิวสูงสุด หากต้องการดู แชนแนลทีวีทั้งหมด ในประเภทของแชนแนลทีวีนั้น กดปุ่ม เพิ่มเติมที่หมายเลข 2</p>
+            <img src="{% static 'images/tutorial/3-3.jpg' %}" class="img-thumbnail text-center">
+            <p>เมื่อกดที่แชนแนลหรือรายการที่เราต้องการดู จะเข้ามาที่หน้า เล่นวิดีโอ</p>
+            <h2 style="margin-top:35px;">xxxxxx</h2>
+            <p>xxxxx</p>
+        </div>
+    </div><!--end row -->
+{% endblock %}

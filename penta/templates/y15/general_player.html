@@ -1,0 +1,548 @@
+{% extends "y15/base.html" %}
+{% load static %}
+{% load static %}
+
+{% block header %}
+<title>Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+{% endblock %}
+
+{% block rightbar %}
+
+<style type="text/css">
+    #channelLogo {
+        width: 50px;
+        height: 50px;
+        float: left;
+        margin: 5px;
+    }
+
+    .channel {
+        font-size: 12px;
+        float: left;
+        margin-top:5px; margin-right:5px;
+    }
+
+    .listItemImage {
+        height: 68px;
+        max-width: 120px;
+        margin: 2px 5px;
+    }
+
+    .listItemTitle {
+        font-size: 13px;
+    }
+
+    .listItem {
+        width: 100%;
+        border-bottom: 1px solid #cecece;
+        height: 74px;
+    }
+
+    .currentplay {
+        background: #06b1e3;
+    }
+
+    tr.currentplay > td > span.listItemTitle > a {
+        color: white;
+    }
+
+    .editMode {
+        display: none;
+    }
+
+    .loadmore , .loadmore>td>span>a{
+        background-color: #444;
+        color: #eee;
+    }
+
+    #player {
+        height:500px;
+    }
+
+    #bottompanel, #player {
+        width:100%;
+    }
+
+    @media only screen and (min-device-width : 768px) and (max-device-width : 1024px)  {
+        /* iPad STYLES GO HERE */
+        #bottompanel, #player {
+            width:600px;
+        }
+
+        a.btn {
+            margin-bottom: 5px;
+        }
+    }
+
+    #channelLogoSection, #channelDetailSection, #channelPlaylist, #suggestChannelList{
+        float: left;
+        padding: 5px;
+    }
+
+    #suggestChannelList{
+        width: 100%;
+        height: 0;
+        margin-top: 5px;
+        overflow-y:scroll;
+    }
+
+    #channelPlaylist {
+        height:650px;
+        width:100%;
+        overflow-y: scroll;
+        float:left;
+    }
+
+    #channelInfo, #channelPlaylist {
+        background-color:#fff;
+        box-shadow: 0 1px 2px rgba(0,0,0,.1);
+    }
+
+    #channelInfo {
+        overflow: auto;
+        border-bottom: solid 1px #999;
+    }
+
+    #channelLogoSection {
+        width: 25%;
+    }
+
+    #channelDetailSection {
+        width: 75%;
+    }
+
+    .channelLogo {
+        width: 100%;
+    }
+
+    #channelTitle {
+        width: 60%;
+        float: left;
+        font-weight: 600;
+    }
+
+    #editbutton, #channelShare{
+        width: 20%;
+        float:left;
+    }
+
+    #channelShare {
+        padding-left:5px;
+    }
+
+    #channelFollower, #channelVideoCount{
+        width: 100%;
+        float: left;
+    }
+
+    #channelAddVideo, #follow-button{
+        width: 100%;
+        float: left;
+    }
+
+    .playback-control#shuffleButton.active, .playback-control#repeatButton.active{
+        background-color: #0A81D7;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    #bookmarkButton.active{
+        background-color: #0A81D7;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    #postbox {
+        display: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+</style>
+
+{% if not request.user.is_authenticated %}
+<div class="col-sm-4 col-lg-3" style="border: 1px solid black;border-radius:4px">
+    <table>
+        <tr height="16px"></tr>
+        <tr>
+            <td colspan="3"><b>เมื่อคุณเป็นสมาชิก คุณสามารถ</b></td>
+        </tr>
+        <tr>
+            <td colspan="3" style="font-size:14px">
+                <li>เก็บวิดีโอลงแชนแนลที่คุณสร้างขึ้นเอง</li>
+                <li>จดจำวิดีโอที่คุณชื่นชอบไว้ดูในภายหลัง</li>
+                <li>สร้างแชนแนลเพื่อใช้ร่วมกับ <a href="https://www.penta-tv.com/from-pentachannel">Penta TV</a></li>
+                <li>แบ่งปันแชนแนลกับเพื่อนๆในโซเชียล</li>
+            </td>
+        </tr>
+        <tr height="10px"></tr>
+        <tr>
+            <td align="right">
+                <a class="btn-login btn btn-primary"
+                       href="https://accounts.thevcgroup.com/login/facebook/?next=https://{{request.get_host}}/accounts/login/?next={{ request.get_full_path }}"
+                       data-loading-text="กำลัง Login...."
+                       style="background-color:#3b5998;">
+                      <image src="{% static 'images/facebook.png' %}" style="margin-top:-6px;padding-right:5px;width:24px;"></image>
+                    Login
+                </a>
+            </td>
+            <td width="50px" align="center"> หรือ </td>
+            <td align="left">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#guestModalRegister">สมัครฟรี</button>
+            </td>
+        </tr>
+        <tr height="6px"></tr>
+        <tr>
+            <td colspan="3" align="right">
+                <img src="{% static 'images/oklogo.png' %}" width="100px">
+            </td>
+        </tr>
+        <tr height="10px"></tr>
+    </table>
+</div>
+{% else %}
+<div class="col-sm-4 col-lg-3">
+    <a class="btn btn-default btn-lg glyphicon glyphicon-bookmark" id="bookmarkButton" style="width:100%;text-align:left;"> เก็บไว้ดูภายหลัง</a>
+    <div style="visibility:hidden;height:6px"></div>
+    <!-- <a class="btn btn-default btn-lg glyphicon glyphicon-th-large" id="newChannelButton" style="width:100%;text-align:left;"> เก็บลงแชนแนลใหม่</a> -->
+    {% if ownChannels|length > 0 %}
+    <hr style="margin-top:4px;margin-bottom:4px;border-color:lightgrey;">
+    <div style="font-size:18px;color:#06B1E3">เก็บลงแชนแนลของคุณ</div>
+    <div style="max-height:170px;overflow-y:auto;">
+        <table width="100%">
+        {% for c in ownChannels %}
+            <tr style="background:#E0E0E0;">
+                <td width="40px" style="background:white;" align="center">
+                    <img src="{{ c.thumb }}" width="36px">
+                </td>
+                <td>
+                    <a href="/th/channel/{{c.id}}/" style="font-size:14px;margin-left:4px;">{{ c.name }}</a>
+                </td>
+                <td width="36px" align="center">
+                    {% if c.added %}
+                    <div class="btn-success btn-sm glyphicon glyphicon-ok" title="เก็บแล้ว"></div>
+                    {% else %}
+                    <div class="btn btn-default btn-sm glyphicon glyphicon-plus" data-toggle="modal" data-target="#shareModal" data-playlistid="{{ playitem.id }}" data-channelid="{{ c.id }}" data-videoid="{{ playitem.video_id }}" data-videotype="{{ playitem.video_type }}" title="เก็บลงในแชนแนลนี้"></div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr height="2">
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% if relateditems|length > 0 %}
+<div class="col-sm-4 col-lg-3">
+    <hr style="margin-top:8px;margin-bottom:8px;border-color:lightgrey;">
+    <div style="font-size:18px;color:#06B1E3;">วิดีโออื่นๆที่เกี่ยวข้อง</div>
+    <table width="100%" style="border-collapse: separate; border-spacing: 0 2px;">
+    {% for item in relateditems %}
+        <tr style="background:#E0E0E0;">
+           <td>
+                <a href="/th/generalplay/{{item.video_type}}/{{item.video_id}}/">
+                    <img src="{{ item.snapshot }}" width="90">
+                </a>
+            </td>
+            <td>
+                <a href="/th/generalplay/{{item.video_type}}/{{item.video_id}}/">
+                    <div style="font-size:14px;margin-left:4px;">{{ item.name|truncatechars:80 }}</div>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+<div>
+{% endif %}
+
+{% endblock %}
+
+{% block mainpane %}
+
+<style type="text/css">
+
+#control-group> a {
+    width:60px;
+}
+
+#control-group> a >span.glyphicon {
+    font-size: 1.2em;
+}
+
+</style>
+
+<div class="col-sm-8 col-lg-9">
+    <div style="width:100%" valign="top">
+        <div id="player" style="background:#333; text-align:center;">
+            {% if playitem.snapshot %}<img class="video-image img-responsive" style="margin:0 auto; height:100%;" src="{{ playitem.snapshot }}"/>{% else %}<h3 style="color: white; padding-top:30px;">ไม่พบวิดีโอดังกล่าว</h3>{% endif %}
+        </div>
+
+        <table style="width:100%;  background: #fff; margin-bottom: 5px; margin-top: 5px;">
+            <tbody>
+                <tr>
+                    <div style="width=100%; height: 30px; border-bottom: 1px solid #EEE; background: #fff">
+                        <div id="control-group" class="btn-group pull-left" role="group">
+                            <a
+                             data-toggle="tooltip"
+                             data-placement="top"
+                             target="_self"
+                             title="Repeat:Off"
+                             id="repeatButton"
+                             data-type=""
+                             role="button"
+                             class="btn btn-default btn-md playback-control">
+                             <span class="glyphicon glyphicon-repeat"></span></a>
+                        </div>
+
+                        <span class="pull-right">
+                        <a id="fbShareVideo" class="btn btn-md btn-icon"
+                           ng-disabled="vm.disabled" ng-click='vm.shareToFacebook()'>
+                            <i class="fa fa-facebook fa-5"></i>&nbsp;
+                        </a>
+                        <a id="shareButton" class="btn btn-md btn-icon btn-share" style="width:50px;" data-toggle="modal" data-target="#shareModal" data-playlistid="{{ playitem.id }}" data-videoid="{{ playitem.video_id }}" data-videotype="{{ playitem.video_type }}">
+                            <i class="fa fa-plus"></i>&nbsp;
+                        </a>
+                    </span>
+                    </div>
+                </tr>
+                <tr>
+                    <td style="font-size:24px; font-weight:600; vertical-align:top; padding: 10px;">
+                        <div>{{ playitem.name }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom: 10px;">
+                        <div
+                         class="pull-left" style="font-size:14; color: #999; padding-left: 10px;"
+                         ng-if="playitem.provider_name">
+                            คลิปโดย: <a href="{{playitem.link}}" target="_blank">{{ playitem.provider_name }}</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-bottom:4px;" id="bottompanel">
+            <!--<a href="http://www.penta-tv.com/from-pentachannel" target="_blank" >-->
+            <a href="http://www.penta-tv.com/tvbox?s=pcenter" target="_blank" >
+                <img src="{% static 'images/banner_bottom.jpg' %}" width="100%" />
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+
+<!-- get channel to share -->
+<script>
+    $(document).ready(function() {
+        updateSideBar();
+    });
+    function updateSideBar(){
+        $.get('/api/v2/channel/').success(onUpdateSideBar);
+        function onUpdateSideBar(data) {
+            updateChannelSelectorForShare(data.own);
+        }
+    }
+    function updateChannelSelectorForShare(ownChannel) {
+        for(index in ownChannel){
+            var channel = ownChannel[index];
+            var channelDom = '<option value="'+channel.id+'">'+channel.name+'</option>'
+            $("#modal_channel_id").append(channelDom);
+        }
+    }
+</script>
+
+<script>
+    var player;
+    var needloginAfterPlay = false;
+    var didLogin = {{ request.user.is_authenticated|yesno:"true,false" }};
+
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    function playNextVideo() {
+        var mode = $(".playback-control.active").data("type");
+        if(mode){
+            if(mode=="one") {
+                {% if playitem.video_type == 'Y' %}
+                player.playVideo();
+                {% elif playitem.video_type == 'D' %}
+                player.load("{{playitem.video_id}}");
+                {% elif playitem.video_type == 'S' %}
+                player.play();
+                {% endif %}
+                return;
+            }
+        }
+    }
+
+    function setRepeatButtonState(state) {
+        var repeatButton = $("#repeatButton");
+        if(state=="one") {
+            repeatButton.data("type","one");
+            repeatButton.attr("title","Repeat:On").tooltip('fixTitle').tooltip('show');
+        } else {
+            repeatButton.data("type","");
+            repeatButton.children("sub").remove();
+            repeatButton.attr("title","Repeat:Off").tooltip('fixTitle').tooltip('show');
+        }
+    };
+
+    (function(){
+        var mode = getParameterByName("mode");
+        if(mode=="random"){
+            $("#shuffleButton").addClass("active");
+            $("#shuffleButton").attr("title","Shuffle:on").tooltip('fixTitle').tooltip('show');
+        } else if(mode){
+            $("#repeatButton").addClass("active");
+            setRepeatButtonState(mode);
+        }
+
+    }());
+
+</script>
+
+{% if playitem.video_type == 'Y' %}
+<script src="https://www.youtube.com/player_api"></script>
+<script>
+// Youtube Player
+function onYouTubePlayerAPIReady() {
+	//$("#player").html("Hello");
+	//setTimeout(function(){
+    player = new YT.Player('player', {
+      height: '500',
+      width: '800',
+      videoId: '{{ playitem.video_id }}',
+      playerVars: { 'autoplay': 1, 'controls': 1,'autohide':1,'wmode':'opaque' },
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
+    });
+    //}, 3000);
+}
+
+function onPlayerReady(event) {
+    event.target.playVideo();
+}
+
+function onPlayerStateChange(event) {
+    if (event.data === 0) {
+        playNextVideo();
+    }
+}
+
+</script>
+{% endif %}
+
+{% if playitem.video_type == 'D' %}
+<script>
+    // Daily motion player
+    window.dmAsyncInit = function()
+    {
+        DM.init({apiKey: 'ee760058651a7c5805a3', status: true, cookie: true});
+
+        var dom = document.getElementById('player');
+        player = DM.player(dom, {video: "{{ playitem.video_id }}" , params: {autoplay: "true"} });
+        // At the end of a video, load the next video if any
+        player.addEventListener("ended", function(e)
+        {
+            playNextVideo();
+        });
+    };
+    (function() {
+        var s, e = document.createElement('script');
+        e.async = true;
+        e.src = document.location.protocol + '//api.dmcdn.net/all.js';
+        s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+    }());
+</script>
+{% endif %}
+
+{% if playitem.video_type == 'S' %}
+<script>
+    (function(){
+        var playerDom = $('#player'),
+            domString = '<video id="html5video" width="100%" height="100%" controls autoplay>'+
+                        '<source src="{{playitem.video_id}}" type="video/mp4">'+
+                        'Your browser does not support the video tag.'+
+                        '</video>';
+        $(playerDom).empty();
+        $(playerDom).append(domString);
+
+        player = document.getElementById('html5video');
+        player.addEventListener('ended',myHandler,false);
+        function myHandler(e) {
+            if(!e) { e = window.event; }
+            // What you want to do after the event
+            playNextVideo();
+        }
+    }());
+</script>
+{% endif %}
+
+
+<script>
+function fb_share_this_video(){
+    var url = document.URL,
+        title = "{{ playitem.name|escapejs }}",
+        detail = "{{ playitem.detail|escapejs }}",
+        imgsrc = "{{ playitem.snapshot|escapejs }}";
+    fb_publish(title, detail, url , imgsrc)
+}
+
+function add_external_video_to_channel(channel_id) {
+    alert(channel_id+" {{ playitem.video_type }} {{ playitem.video_id }}");
+}
+
+$("#fbShareVideo").click(function(){
+    fb_share_this_video();
+});
+
+$(document).ready(function() {
+    $("#repeatButton").click(function (){
+        var isToggleOff;
+        if($(this).hasClass("active") && ($(this).data("type")=="one")) {
+            isToggleOff = true;
+            setRepeatButtonState();
+        } else {
+            isToggleOff = false;
+            setRepeatButtonState("one");
+        }
+        $(".playback-control").removeClass("active");
+        if(!isToggleOff) $(this).addClass("active");
+    });
+
+    $("#bookmarkButton").click(function (){
+        var target = $(this);
+        if(target.hasClass("active")) {
+            $.post('/api/v2/playlist/unsave_ex/{{ playitem.video_type}}/{{ playitem.video_id }}/').success(function(data) {
+                    target.removeClass("active");
+                    target.text(" เก็บไว้ดูภายหลัง");
+            });
+        } else {
+            $.post('/api/v2/playlist/save_ex/{{ playitem.video_type}}/{{ playitem.video_id }}/').success(function(data) {
+                    target.addClass("active");
+                    target.text(" เก็บไว้ดูภายหลังแล้ว");
+            });
+        }
+    });
+
+    {% if bookmarked %}
+        $("#bookmarkButton").addClass("active");
+        $("#bookmarkButton").text(" เก็บไว้ดูภายหลังแล้ว");
+    {% endif %}
+
+});
+
+</script>
+{% endblock %}

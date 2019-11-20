@@ -1,0 +1,15 @@
+<table border="1">
+    <tr>
+        <th>Prefix</th>
+        <th>Model</th>
+        <th>Field</th>
+    </tr>
+
+    {% for barcode in barcodes %}
+    <tr>
+        <td>{{ barcode.prefix }}</td>
+        <td>{{ barcode.model }}</td>
+        <td>{{ barcode.field }}</td>
+    </tr>
+    {% endfor %}
+</table>

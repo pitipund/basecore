@@ -1,0 +1,30 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    <a href="/curator/admin/main/" class="btn btn-warning pull-right">
+        <span class="glyphicon glyphicon-chevron-left"></span> {% trans "Back" %}
+    </a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Channel</th>
+            <th>Owner</th>
+            <th>Follower</th>
+            <th>Send mail</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for channel in channels %}
+            <tr>
+            <td><a href="/th/channel/{{ channel.id }}/">{{ channel.name }}</a></td>
+            <td>{{ channel.user.get_full_name }}</td>
+            <td>{{ channel.followers.count }}</td>
+            <td>{% if channel.user == request.user %} <a href="/th/channel/{{ channel.id }}/mail/">Send</a> {% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

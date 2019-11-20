@@ -1,0 +1,116 @@
+{% extends "channel/base_with_sidebar.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+    <style type="text/css">
+        .facebook_button{
+            background-color: #3b5998;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 4px 12px 3px 0px;
+        }
+        .penta_button{
+            background-color: #16c1f3;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 5px 12px;
+        }
+
+        li.listitem > a {
+            padding:10px 10px;
+            white-space:nowrap;
+            text-overflow:ellipsis;
+            overflow:hidden;
+        }
+    </style>
+    <script src="{% static 'scripts/libs/mustache.min.js' %}"></script>
+{% endblock %}
+
+{% block sidebar %}
+    <ul class="nav nav-sidebar">
+        <li><a class="listheader">{% trans "My Channel" %}</a></li>
+    {% for channel in mychannels %}
+        <li id="channel_{{ channel.id }}" class="listitem mychannel" title="{% if channel.isLive == True %}({% trans 'Live' %}){% endif %}{{channel}}">
+            <a class="mychannel_item" id="channel_title_{{ channel.id }}" onclick="select_channel('{% url 'channel:rest_allvideos_in_channel' channel.id %}'); updateActiveChannel('{{channel.id}}', false, true);">
+                <image width=40 height=40 src="{{channel.image}}" style="background:#fff;"/>
+                {% if channel.isLive == True %}<font style="color:red;">({% trans 'Live' %})</font>{% endif %}
+                {{channel}}
+                <span onclick="window.location = '/manage/?channel={{channel.id}}'" class="glyphicon glyphicon-pencil badge" style="background:#3fafff; visibility:hidden; position:absolute; top:10px; right:10px;">{% trans 'Edit' %}</span>
+                <span onclick="showPopUp(); event.stopPropagation();" class="glyphicon glyphicon-plus-sign badge" style="background:#5cb85c; visibility:hidden; position:absolute; top:30px; right:10px;">{% trans 'Add' %}</span>
+            </a>
+        </li>
+    {% endfor %}
+        <li><a href="{% url 'curator:site_curator_create_channel' user_url %}">+<span class='hidebtntext'>  {% trans "Create Channel" %}</span></a></li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+{% include 'channel/videoplayer_bottomplaylist.html' %}
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-xs-12">
+        <div id="title_row" class="row margin-side-0">
+            <div class="pull-right" style="padding:10px">
+                <a id="btn_unfollow" class="btn btn-sm btn-danger hidden">
+                    <span class="glyphicon glyphicon-warning-sign"></span><span class='hidebtntext'>  {% trans "Unfollow" %}</span>
+                </a>
+                <a id="btn_share" onclick="fb_share();" class="btn btn-sm facebook_button">
+                    <img src="{% static 'images/facebook.png' %}" width="20px" height="20px"> {% trans "Share" %}
+                </a>
+                <a id="btn_add_penta" onclick="penta('add');" class="btn btn-sm penta_button">
+                    <img src="{% static 'images/pentachannel-logo_white.png' %}" width="15px" height="15px"><span class='hidebtntext'>  {% trans "Add to Penta" %}</span>
+                </a>
+                <div id="btn_channel" class="btn-group btn-sm hidden">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                        <span class='glyphicon glyphicon-cog'></span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a id="btn_add_playlist" href="#"><span class='glyphicon glyphicon-plus'></span><span class='hidebtntext'> {% trans "Add playlist" %}</span></a>
+                        </li>
+                        <li>
+                            <a id="btn_edit_channel" href="#"><span class='glyphicon glyphicon-edit'></span><span class='hidebtntext'> {% trans "Edit channel" %}</span></a>
+                        </li>
+                        <li>
+                            <a id="btn_delete_channel" href ="#" onclick="return confirm('{% trans "Are you sure you want to delete channel?" %}');"><span class='glyphicon glyphicon-trash'></span><span class='hidebtntext'>  {% trans "Delete channel" %}</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <h3 id="videoplayer_title"></h3>
+            <h4 id="owner_title" style="color:#aaa;"></h4>
+        </div>
+    </div>
+</div>
+<div id="fb-root"></div>
+
+<script type="text/javascript">
+    var SUBSCRIBE_CHANNEL = "{% url 'curator:site_curator_subscribe_channel' %}";
+    var DELETE_CHANNEL_TEXT = '{% trans "Are you sure you want to delete channel?" %}';
+    var CHANNEL_ID = "";
+    var channel_name = "";
+
+    $(document).ready(function(){
+        {% if channel and current %}
+            var current = "{{current}}";
+            select_channel_id("{{channel}}");
+            updateActiveChannel("{{channel}}", true, false);
+        {% elif mychannels.0.id %}
+            select_channel_id("{{mychannels.0.id}}");
+            updateActiveChannel("{{mychannels.0.id}}", false, true);
+        {% else %}
+            document.getElementById('btn_share').className = document.getElementById('btn_share').className+' hidden';
+        {% endif %}
+        window.onresize = autoResizeDiv;
+        autoResizeDiv();
+
+        $(".listitem").click(function(){
+            toggleSideBar(false);
+        });
+
+    });
+</script>
+<script type="text/javascript" src="{% static 'scripts/home/home.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/curator/curator_playlist_list.js' %}"></script>
+{% endblock %}

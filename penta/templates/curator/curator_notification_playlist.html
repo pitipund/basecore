@@ -1,0 +1,59 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+    
+    <div class="col-xs-12 col-sm-12 col-md-12" style="padding-top:15px;">
+        <ol class="breadcrumb">
+            <li class="active">{% trans "Playlist not available" %}</li>
+        </ol>
+    </div>
+    </div>
+    {% if not object_list %}
+        <div class="col-xs-12 col-sm-12 col-md-12 text-center curator_nodata" >
+            <h3>{% trans "Not found Channel" %}</h3>
+        </div>
+    {% else %}
+        {% for playlist in object_list %}
+            <div class="col-xs-12 col-sm-12 col-md-12 alert alert-result">
+                <div class="row">
+                    <div class="col-xs-5 col-sm-3 col-md-2" style="padding:0px 10px 0px 0px;">
+                        <a href="{{playlist.channel.url}}">
+                            <img class="thumbnail" src="{{playlist.image}}" style="width:100%"/>
+                        </a>
+                    </div>
+                    <div class="col-xs-7 col-sm-9 col-md-10" style="padding:0px 10px 0px 0px;">
+                        <div class="col-xs-12 col-sm-12 col-md-12" style="padding:0px 10px 0px 0px;">
+                            <h4 class="pull-right">
+                                <a href="{% url 'site_notification_link' playlist.id %}"><font style="font-size: 14px;"><span class="glyphicon glyphicon-pencil"></span> {% trans "Edit Playlist" %}</font></a>
+                            </h4>
+                            <a href="{{playlist.channel.url}}">
+                                <h4>{{playlist.name}} <font style="color:red">({{playlist.notAvailable}})</font></h4>
+                            </a>
+                        </div>
+                        <a href="{{playlist.channel.url}}" style="color:#333">
+                            <div class="col-xs-12 col-sm-12 col-md-12" style="padding:0px 10px 0px 0px;">
+                                <h5>
+                                    Channel: {{playlist.channel.name}}
+                                    {% if playlist.channel.isLive == 'True' %}
+                                        <font style="color:red;">({% trans "Live" %})</font>
+                                    {% endif %}
+                                </h5>
+                            </div>
+                        </a>
+                        <div class="col-xs-12 col-sm-12 col-md-12" style="padding:10px 10px 0px 0px;">
+                            <a href="{% url 'curator:site_curator_delete_playlist' playlist.id %}" onclick="return confirm('Are you sure you want to delete?');" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> {% trans "Delete Playlist" %}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        {% include "curator/include/curator_pagination_bottom.html" %}
+        <a href="{{back_url}}" class="btn btn-warning" title="Back"><span class="glyphicon glyphicon-chevron-left"></span> {% trans "Back" %}</a>
+        <a href="#top" class="pull-right"><span class="glyphicon glyphicon-arrow-up"></span> {% trans "Back to top" %}</a>
+    </div>
+{% endblock %}

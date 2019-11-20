@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Data Dictionary: {{ app.label }}{% endblock %}
+{% block extrahead %}
+<style>
+    a:link { text-decoration: none; color: blue; }
+    a:visited { color: blue; }
+    table {
+        border-collapse: collapse;
+    }
+    thead tr {
+        background-color: #E1E1E1;
+    }
+    td, th {
+        padding: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>Data dictionary: {{ app.label }}</h1>
+<p>
+&gt; <a href="?">All apps</a> &gt; {{ app.label }}
+</p>
+<h2>Table List</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Table name</th><th>Description/Objective</th><th>Transaction/Master</th>
+            <th>Remarks</th>
+        </tr>
+    </thead>
+    {% for m in models %}
+        <tr>
+            <td><a href="#{{ m.model }}">{{ m.table_name }}</a></td>
+            <td>{{ m.description }}</td>
+            <td>{{ m.transaction_or_master }}</td>
+            <td>
+                {{ m.remark|linebreaksbr }}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<h2>Data Dictionary</h2>
+{% for m in models %}
+<h3><a id="{{ m.model }}">Table {{ m.table_name }} ({{ m.model }})</a></h3>
+{% include "table.html" %}
+
+{% endfor %}
+
+{% endblock content %}

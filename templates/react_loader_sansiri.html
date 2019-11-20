@@ -1,0 +1,25 @@
+{% load static %}
+{% load render_bundle from webpack_loader %}
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>V{{ version }} {{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% render_bundle path 'css' config=config %}
+
+  </head>
+
+  {% block body %}
+  <body style="margin: 0; pointer-events: auto !important;">
+
+    <div id="root" style="overflow: auto; height: 100%"></div>
+
+    {% render_bundle path config=config %}
+
+  </body>
+  {% endblock %}
+</html>

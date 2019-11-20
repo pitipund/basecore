@@ -1,0 +1,124 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Tagging Manager</title>
+    <link rel="stylesheet" href="{% static 'videos_tagging/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'videos_tagging/manage.css' %}">
+    <script src="{% static 'videos_tagging/js/vue.min.js' %}"></script>
+</head>
+<body>
+<div class="container-fluid" id="manager">
+    <div class="row">
+        <div id="sidebar" class="col-sm-4 col-md-3 col-lg-2">
+            <div class="row list-group">
+                <div class="list-group-item"><span class="h4">Tag decision list</span></div>
+                <a class="list-group-item" href="{% url 'management_site:videos_tagging_tagdecision_add' %}" target="_blank">
+                    <span class="glyphicon glyphicon-plus"></span> Add</a>
+                <a class="list-group-item" role="button" v-for="d in decisions" id="menu-${d.id}"
+                   v-on:click="select(d)">
+                    ${ d.id }: ${ d.target_tag_name }<span v-if="!d.enabled"> [Disabled]</span></a>
+            </div>
+        </div>
+        <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-8 col-md-9 col-lg-10 content">
+            <h1>Tag Decision Management</h1>
+            <div v-if="selecting">
+                <div class="col-xs-12" style="margin-bottom: 22px;">
+                    <a class="btn btn-default" v-bind:href="edit_url"
+                        target="_blank">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                    <div class="btn btn-info" data-toggle="modal" data-target="#helpModal">
+                        <span class="glyphicon glyphicon-question-sign"></span> Help</div>
+                </div>
+                <h2>${selecting.id}: ${selecting.target_tag_name}</h2>
+                <h3>Features</h3>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Type</th>
+                        <th>Argument</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="f in selecting.features">
+                            <td>${f.order}</td>
+                            <td>${f.feature_type_display}</td>
+                            <td>${f.argument}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Algorithm</h3>
+                <pre>${selecting.exec_function}</pre>
+                <hr>
+                <h2>Testing</h2>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="playlist-input">Playlist IDs</label>
+                        <input class="form-control" id="playlist-input" v-model="playlist_ids"
+                               placeholder="14254,21453,45687">
+                    </div>
+                    <div class="btn btn-primary" v-on:click="exec()">Exec</div>
+                </form>
+                <h4>Results</h4>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Playlist</th>
+                        <th>Return</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="r in results">
+                        <td>${r.id}</td>
+                        <td>${r.name}</td>
+                        <td>${r.return}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-else>
+                <h2><span class="glyphicon glyphicon-arrow-left"></span> Select one</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="helpModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="helpModalLabel"><span class="glyphicon glyphicon-question-sign"></span> Help</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#tab-decision" aria-controls="tab-decision" role="tab" data-toggle="tab">Tag Decision</a></li>
+          <li role="presentation"><a href="#match-text" aria-controls="match-text" role="tab" data-toggle="tab">Feature type: Match text</a></li>
+          <li role="presentation"><a href="#has-tag" aria-controls="messages" role="tab" data-toggle="tab">Feature type: Has Tag</a></li>
+        </ul>
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="tab-decision">
+              <pre>{{ help.tag_decision }}</pre>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="match-text">
+              <pre>{{ help.match_text }}</pre>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="has-tag">
+              <pre>{{ help.has_tag }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'videos_tagging/js/jquery.min.js' %}"></script>
+<script src="{% static 'videos_tagging/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'videos_tagging/js/axios.min.js' %}"></script>
+<script src="{% static 'videos_tagging/manage.js' %}"></script>
+</body>
+</html>

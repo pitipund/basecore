@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+
+{% block extrahead %}
+<style>
+    a:link { text-decoration: none; color: blue; }
+    a:visited { color: blue; }
+    table {
+        border-collapse: collapse;
+    }
+    thead tr {
+        background-color: #E1E1E1;
+    }
+    td, th {
+        padding: 4px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+{% include "report_fragment.html" %}
+
+{% endblock content %}

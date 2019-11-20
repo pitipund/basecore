@@ -1,0 +1,490 @@
+body {
+	visibility:hidden;
+	background-color:black;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+.absoluteCenter {
+	width: 90px;
+	height: 40px;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	position: absolute;
+	margin: auto;
+}
+
+.ninjaListItem {
+	width: 100%;
+	border-bottom: 1px solid rgb(139, 139, 139);
+	position: relative;
+	color: #222;
+	display: table;
+	min-height: 45px;
+	border-spacing: 5px;
+}
+
+.ninjaListItemDefaultStyle {
+	background-color: rgb(29, 29, 29);
+	color: white;
+}
+
+.ninjaListItemWhiteStyle {
+	background-color: white;
+	color: rgb(2, 2, 2);
+	border-bottom: 1px solid rgb(139, 139, 139);
+}
+
+.ninjaListItem_playing {
+	background-color: #BFF1FC;
+	border-bottom: 1px solid rgb(202, 202, 202);
+	color: #136576;
+}
+
+.ninjaListItem_Action {
+	background-color: white;
+	border-bottom: 1px solid #DDD;
+	color: black;
+}
+
+.ninjaListItem_watched {
+	background-color: rgb(240, 240, 240);
+	color: rgb(105, 105, 105);
+	border-bottom: 1px solid rgb(209, 209, 209);
+}
+
+.ninjaListItem_CancelAction {
+	background-color: white;
+	color: #222;
+	display: block;
+	text-align: center;
+	border-bottom: 1px solid #DDD;
+	position: static;
+}
+.ninjaListItem_CancelAction span {
+	margin-left: 0px !important;
+	position: static !important;
+}
+
+.ninjaListItem.selected {
+	background-color: #33B5E5;
+	color:white;
+}
+
+.ninjaListItemWhite.selected {
+	background-color: #33B5E5;
+}
+
+.rightImage.selected {
+	background-color: #33B5E5;
+	color:white;
+}
+
+.margin-rightImage.selected {
+	background-color: #33B5E5;
+}
+
+.ninjaListItem img {
+	position: absolute;
+	width: 40px;
+	display: none;
+	left: 0pt;
+	top:0px;
+	bottom: 0px;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.rightImage {
+	right: 10pt;
+}
+
+.ninjaListItemText {
+	display: table-cell;
+	padding-left: 50px;
+	font-size: 1em;
+	line-height: 25px;
+	word-break: break-all;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+.ninjaListItemOperationText {
+	position:absolute;
+	right:10pt;
+	width:90pt;
+	text-align: right;
+	display: none;
+}
+
+.backButton {
+	width:40px;
+	height:40px;
+	line-height:40px;
+}
+
+.dijitDialogUnderlayWrapper {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: none;
+	background: transparent !important;
+}
+.dijitDialogUnderlay {
+	background: black;
+	opacity: 0.7;
+}
+.dijitDialogTitleBar {
+	height: 40px;
+	line-height: 40px;
+	padding-left: 10px;
+	background-color: rgb(0, 120, 167);
+	color: white;
+}
+
+#queueEmptyMessage {
+	width:140px;
+	color:#222;
+	margin:auto;
+	margin-top: 50pt;
+	display: none;
+}
+
+.ninjaButton {
+	width: auto;
+	height: 60px;
+	line-height: 60px;
+	top: 0px;
+	bottom: 0px;
+	margin: auto;
+	background-size: contain;
+	display: inline-block;
+	/*border: 1px solid rgb(199, 199, 199);*/
+	overflow: hidden;
+}
+
+/*.ninjaButton:active {
+	opacity: 0.5;
+}*/
+
+.ninjaButtonImage {
+	background-size: contain;
+	width: auto;
+	height: auto;
+	vertical-align: middle;
+}
+
+.ninjaButtonText {
+	color: #222;
+	font-size: 0.7em;
+}
+
+.ninjaButtonHighlight {
+	background-color: white;
+	opacity: 0.5;
+}
+.ninjaButtonDehighlight {
+	-webkit-transition: background-color 0.5s;
+	background-color: transparent;
+}
+
+.ninjaButtonHighlight2 {
+	background-color: rgb(18, 208, 255) !important;
+	color: white !important;
+	opacity: 0.5;
+}
+
+.ninjaButtonDehighlight2 {
+	-webkit-transition: background-color 0.2s;
+	background-color: white !important;
+}
+
+.clearAllButton {
+	height: 20px;
+	margin-top:3pt;
+	line-height:35px;
+	font-weight: normal;
+	float:right;
+	color:#222;
+
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9) );
+	background:-moz-linear-gradient( center top, #f9f9f9 5%, #e9e9e9 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9');
+	background-color:#f9f9f9;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	color:#666666;
+	font-family:arial;
+	font-size: 1em;
+	font-weight:bold;
+	padding: 6px 10px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #ffffff;
+	line-height: 20px;
+	margin-right: 5px;
+}
+
+.durationText {
+	color: #222;
+	font-size: 0.7em;
+	line-height: 40px;
+}
+
+.languageSelect {
+	font-size: 0.8em;
+	width: 100%;
+	height: 40px;
+	margin-top: 10px;
+}
+
+.settingButton {
+	width: 40px;
+	height: 40px;
+	float: left;
+	margin-left: 5px;
+}
+
+.menuButtonHighlight {
+	background-image: url('../images/icons/60_menu.png');
+	opacity: 0.5;
+}
+
+.menuButtonDehighlight {
+	-webkit-transition: background-image 0.5s;
+	background-image: url('../images/icons/60_menu.png');
+}
+
+.actionButtonHighlight {
+	background-image: url('../images/icons/60_upload_line.png');
+	opacity: 0.5;
+}
+
+.actionButtonDehighlight {
+	-webkit-transition: background-image 0.5s;
+	background-image: url('../images/icons/60_upload_line.png');
+}
+
+.forwardButtonDarkGray {
+	background-image: url('../images/icons/60_rightarrow_darkgrey.png');
+}
+
+.forwardButtonLightGray {
+	background-image: url('../images/icons/60_rightarrow_lightgrey.png');
+}
+
+.forwardButtonHighlight {
+	background-image: url('../images/icons/60_rightarrow.png');
+	opacity: 0.5;
+}
+
+.forwardButtonDeHighlight {
+	-webkit-transition: background-image 0.5s;
+	background-image: url('../images/icons/60_rightarrow.png');
+}
+
+.backButtonHighlight {
+	background-image: url('../images/icons/60_leftarrow.png');
+	opacity: 0.5;
+}
+
+.backButtonDehighlight {
+	-webkit-transition: background-image 0.5s;
+	background-image: url('../images/icons/60_leftarrow.png');
+}
+
+.settingButtonHighlight {
+	background-position:center;
+	background-image: url('../images/icons/60_settings_line.png');
+	opacity: 0.5;
+}
+
+.settingButtonDehighlight {
+	background-position:center;
+	background-image: url('../images/icons/60_settings_line.png');
+}
+
+.clearQueueButtonHighlight {
+	background-position:center;
+	background-image: url('../images/icons/60_delete_line.png');
+	opacity: 0.5;
+}
+
+.clearQueueButtonDehighlight {
+	background-position:center;
+	background-image: url('../images/icons/60_delete_line.png');
+}
+
+.settingSelect {
+	width: 80pt;
+	right: 10pt;
+	position: absolute;
+	margin-top: auto;
+	margin-bottom: auto;
+	top: 0px;
+	bottom: 0px;
+	height: 60%;
+}
+
+.languageRoundRectList {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+}
+
+.playonStartupCheckbox {
+	width: 30px;
+	height: 30px;
+	margin-top: auto;
+	margin-bottom: auto;
+	top: 0px;
+	bottom: 0px;
+	position: absolute;
+	right: 15pt;
+}
+
+.touchArea {
+	display: table-cell;
+	vertical-align: middle;
+	height: 45px;
+}
+
+.smartremoteHeading {
+  position: fixed;
+  margin: 0;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  z-index: 1;
+  padding: 0;
+  height: 60px;
+  font-family: sans-serif;
+  font-size: 20px;
+  font-weight: normal;
+  text-align: center;
+  line-height: 60px;
+  border-top: 1px solid #00b8ef;
+  border-bottom: 1px solid #00b8ef;
+  background-color: rgb(22,193,243);
+  font-weight: bold;
+  color: white;
+}
+
+.smartremoteSubHeading {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  z-index: 1;
+  padding: 0;
+  height: 42px;
+  font-family: sans-serif;
+  font-size: 20px;
+  font-weight: normal;
+  text-align: center;
+  line-height: 44px;
+  background-color: rgb(56,56,56);
+  color: white;
+  top: 0px;
+}
+
+.volumeUpButtonHighlight {
+	background-repeat: no-repeat;
+	background-size: 45px;
+	background-position: center;
+	background-image: url("../images/icons/control_volup.png");
+	opacity: 0.5;
+}
+
+.volumeUpButtonDehighlight {
+	background-repeat: no-repeat;
+	background-size: 45px;
+	background-position: center;
+	background-image: url("../images/icons/control_volup.png");
+}
+
+.volumeDownButtonHighlight {
+	background-repeat: no-repeat;
+	background-size: 45px;
+	background-position: center;
+	background-image: url("../images/icons/control_voldown.png");
+	opacity: 0.5;
+}
+
+.volumeDownButtonDehighlight {
+	background-repeat: no-repeat;
+	background-size: 45px;
+	background-position: center;
+	background-image: url("../images/icons/control_voldown.png");
+}
+
+.playButtonHighlight {
+	background-repeat: no-repeat;
+	background-size: 35px;
+	background-position: center;
+	background-image: url("../images/icons/control_play.png");
+	opacity: 0.5;
+}
+
+.playButtonDehighlight {
+	background-repeat: no-repeat;
+	background-size: 35px;
+	background-position: center;
+	background-image: url("../images/icons/control_play.png");
+}
+
+.pauseButtonHighlight {
+	background-repeat: no-repeat;
+	background-size: 35px;
+	background-position: center;
+	background-image: url("../images/icons/control_pause.png");
+	opacity: 0.5;
+}
+
+.pauseButtonDehighlight {
+	background-repeat: no-repeat;
+	background-size: 35px;
+	background-position: center;
+	background-image: url("../images/icons/control_pause.png");
+}
+
+.languageButtonHighlight {
+	background-repeat: no-repeat;
+	background-size: 40px;
+	background-position: center;
+	background-image: url("../images/icons/control_language.png");
+	opacity: 0.5;
+}
+
+.languageButtonDehighlight {
+	background-repeat: no-repeat;
+	background-size: 40px;
+	background-position: center;
+	background-image: url("../images/icons/control_language.png");
+	opacity: 0.75;
+}
+
+.rotateButtonHighlight {
+	background-repeat: no-repeat;
+	background-size: 40px;
+	background-position: center;
+	background-image: url("../images/clockwise_black.png");
+	opacity: 0.5;
+}
+
+.rotateButtonDehighlight {
+	background-repeat: no-repeat;
+	background-size: 40px;
+	background-position: center;
+	background-image: url("../images/clockwise_black.png");
+	opacity: 0.75;
+}
+ 

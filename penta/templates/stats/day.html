@@ -1,0 +1,115 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<h2 id="greeting">Stat for {{ day }}</h2>
+<div class="col-lg-4">
+<h3>Users</h3>
+<ul>
+{% for user in users %}
+    <li>
+        <a href="{% url "site_profile" user.user %}">
+            {% if user.user__userprofile__image %}
+            <img src="{% static '{{ user.user__userprofile__image }}' %}" border="0" height="64" />
+            {% else %}
+            <img src="{{ user.user__userprofile__image_url }}" border="0" height="64" />
+            {% endif %}
+            {{ user.user__first_name }}
+            {{ user.user__last_name }}
+        </a>
+    </li>
+{% endfor %}
+</ul>
+</div>
+
+<div class="col-lg-8">
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#followed" data-toggle="tab">Followed today <span class="badge">{{ followed_channel|length}}</span></a></li>
+  <li><a href="#popular" data-toggle="tab">Popular videos</a></li>
+  <li><a href="#new" data-toggle="tab">New channels <span class="badge">{{ new_channels|length}}</span></a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="followed">
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th># Follows</th>
+            <th>Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for c in followed_channel %}
+    <tr>
+        <td align="center">{{ c.total }}</td>
+        <td>
+            <a href="{% url "channel_channel" c.ref_id %}">{{ c.detail|truncatechars:100 }}</a>
+        </a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+  </div>
+  <div class="tab-pane" id="popular">
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Hits</th>
+            <th>Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for c in popular_content %}
+    <tr>
+        <td align="center">{{ c.total }}</td>
+        <td>
+        {% if c.category == 'H' %}
+            <a href="{% url "channel_channel" c.ref_id %}">{{ c.detail }}</a>
+        {% elif c.category == 'P' %}
+            <a href="{% url "channel_redirect_playlist" c.ref_id %}">{{ c.detail|truncatechars:100 }}</a>
+        {% else %}
+            [Link] {{ c.detail }}
+        {% endif %}
+        </a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+  </div>
+  <div class="tab-pane" id="new">
+ <table class="table table-striped">
+    <thead>
+        <tr>
+            <th width="150">User</th>
+            <th>Icon</th>
+            <th>Channel</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for c in new_channels %}
+    <tr>
+        <td align="center">
+            <a href="{% url "site_profile" c.user.id %}">{{ c.user }}</a>
+        </td>
+        <td>
+            <img src="{{ c.real_icon }}" height="32" />
+        </td>
+        <td>
+            <a href="{% url "channel_channel" c.id %}">{{ c.name }}</a>
+        </a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+  </div>
+</div>
+
+</table>
+
+</div>
+
+{% endblock %}

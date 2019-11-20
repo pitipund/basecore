@@ -1,0 +1,32 @@
+<script>
+    // script to mock moment object with today
+    if(!window.hasOwnProperty('old_moment')) {
+        old_moment = moment;
+    }
+    moment = function()
+    {
+        if (arguments.length == 0)
+        {
+        return old_moment("{{ mock_datetime }}");
+        }
+        return old_moment.apply(null, arguments);
+    }
+    moment.version = old_moment.version;
+    moment.defaultFormat = old_moment.defaultFormat;
+    moment.ISO_8601 = old_moment.ISO_8601;
+    moment.momentProperties = old_moment.momentProperties;
+    moment.updateOffset = old_moment.updateOffset;
+    moment.relativeTimeThreshold = old_moment.relativeTimeThreshold;
+    moment.lang = old_moment.lang;
+    moment.locale = old_moment.locale;
+    moment.defineLocale = old_moment.defineLocale;
+    moment.langData = old_moment.langData;
+    moment.localeData = old_moment.localeData;
+    moment.isMoment = old_moment.isMoment;
+    moment.isDuration = old_moment.isDuration;
+    moment.normalizeUnits = old_moment.normalizeUnits;
+    moment.invalid = old_moment.invalid;
+    moment.parseZone = old_moment.parseZone;
+    moment.parseTwoDigitYear = old_moment.parseTwoDigitYear;
+    moment.isDate = old_moment.isDate;
+</script>

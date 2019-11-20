@@ -1,0 +1,101 @@
+{% extends "channel/base_with_sidebar.html" %}
+{% load i18n %}
+
+{% block head %}
+    <style>
+        .channel_title{
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            left:0px;
+            padding: 5px;
+            background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.75);
+            color: #ffffff;
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+        .sidebar{
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: block;
+            overflow-y: scroll;
+            padding-left:10px;
+            padding-right:10px;
+            margin-top: 15px;
+        }
+
+        .main{
+            margin-top: 15px;
+        }
+
+        .font_ask{
+            margin-top: 0px;
+            margin-bottom: 10px;
+            color: #aaa;
+        }
+        .font_ans{
+            word-wrap:break-word;
+            color:#6a6a6a;
+        }
+    </style>
+{% endblock %}
+
+{% block sidebar %}
+    <image id="ch_icon" class="sideBarThumbnail" src="{{owner_image}}" style="margin-bottom:20px;"></image>
+    <h5 class="font_ask sideBarText">{% trans "Firstname" %}: 
+        <font class="font_ans">{% if owner.first_name %}{{owner.first_name}}{% else %} - {% endif %}</font>
+    </h5>
+    <h5 class="font_ask sideBarText">{% trans "Lastname" %}: 
+        <font class="font_ans">{% if owner.last_name %}{{owner.last_name}}{% else %} - {% endif %}</font>
+    </h5>
+    <h5 class="font_ask sideBarText">Url: 
+        <font class="font_ans">https://penta.center/{{user_url}}/profile/</font>
+    </h5>
+    {% if owner_display_email == 'True' %}
+        <h5 class="font_ask sideBarText">{% trans "Email" %}: 
+            <font class="font_ans">{% if owner.email %}{{owner.email}}{% else %} - {% endif %}</font>
+        </h5>
+    {% endif %}
+    {% if user.id %}
+        {% if owner.id|slugify == user.id|slugify %}
+            <a href="{% url 'site_profile_update' user.id %}" class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span> {% trans "Edit Profile" %}</a>
+            <a href="{% url 'curator:site_curator_create_channel' user_url %}" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> {% trans "Add Channel" %}</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <a name="top"></a>
+    <div class="row" style="">
+    {% if not object_list %}
+        <div class="col-xs-12 col-md-12 text-center" style="margin-top:50px;margin-bottom:25px;">
+            <h3>Not found channel</h3>
+        </div>
+    {% else %}
+        {% for channel in object_list %}
+            <div class="col-xs-6 col-md-4 col-lg-3" style="opacity:1; padding:0px 5px 10px;">
+                <a class="thumbnail" style="margin-bottom:0px;" href="{{channel.url}}">
+                    <img class="image_index" style="height:200px;" src="{{channel.image}}" onmouseout="$('#hover{{channel.id}}').hide();" onmouseover="$('#hover{{channel.id}}').show();"/>
+                </a>
+                <div class="channel_title">
+                    {{channel.name}}
+                    {% if channel.isLive == "True" %}<font style="color:red;">({% trans 'Live' %})</font>{% endif %}
+                    {% if owner.id|slugify == user.id|slugify %}
+                        <div class="pull-right">
+                            <a href="{% url 'curator:site_curator_edit_channel' user_url channel.id %}" title="{% trans 'Edit channel' %}"><span class="glyphicon glyphicon-pencil" style="color:#ffffff"></span></a>
+                            <a href="{% url 'curator:site_curator_delete_channel' channel.id %}" onclick="return confirm('Are you sure you want to delete?');" title="{% trans 'Delete channel' %}"><span class="glyphicon glyphicon-trash" style="color:#ffffff"></span></a>
+                        </div>
+                    {% endif %}
+                    <div id="hover{{channel.id}}" style="display:none;">
+                        {% trans "Follows" %} : {{channel.subscribers_number}}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+    <a href="#top" class="pull-right"><span class="glyphicon glyphicon-arrow-up"></span> {% trans "Back to top" %}</a>
+{% endblock %}

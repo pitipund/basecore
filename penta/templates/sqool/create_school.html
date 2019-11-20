@@ -1,0 +1,15 @@
+{% csrf_token %}
+
+
+Hi {{request.user.username}},<br><br>
+Now we have {{groups.count}} schools list belows:
+{% for g in groups %}
+    <br>{{g}}
+{% endfor%}<br><br>
+
+You're SuperUser!! and has authorized to create new school group<br><br>
+
+<form method="post" action="/sqool/create_school">
+Your new school name:<input type="text" name="school_name"></input>
+<input type="submit"></input>{{msg}}
+</form>

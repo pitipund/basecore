@@ -1,0 +1,17 @@
+{% extends "qml_loader.html" %}
+
+{% block extrascript %}
+DJANGO.context.errors = {% autoescape off %}{{ form_errors }}{% endautoescape %};
+DJANGO.next = '{{ next }}'.replace(/&amp;/g, '&');
+{% if debug_login %}
+    // for easy login in development
+    DJANGO.debug_login = {% autoescape off %}{{ debug_login }}{% endautoescape %};
+{% endif %}
+
+{% endblock %}
+
+{% block body %}
+  {% with '/static/qml/MainLogin.qml' as path %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}

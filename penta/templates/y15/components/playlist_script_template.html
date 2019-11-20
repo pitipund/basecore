@@ -1,0 +1,326 @@
+{% load static %}
+
+<style type="text/css">
+
+	.user-detail {
+		padding: 5px 0px 10px 0px;
+	}
+	.video-container {
+        width:100%;
+        padding:0;
+		height: 360px;
+    	position: relative;
+    	display: inline-block;
+	}
+	.video-container * {
+    	-moz-box-sizing: border-box;
+    	-webkit-box-sizing: border-box;
+    	box-sizing: border-box;
+    	text-align: center;
+	}
+
+	.video-title {
+		padding-left: 10px;
+		font-size: 16;
+		margin-top: -360px;
+		color: white;
+		text-align: left;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		background-color: rgba(0,0,0,0.4);
+
+	}
+
+	.video-title-room { 
+		font-size: 16px;
+		font-weight: bold;
+		padding: 0px;
+	}
+
+	.video-image {
+    	z-index: 9;
+    	text-align: center;
+    	width: 550px;
+    	height: 360px;
+    	margin: 0 auto;
+	}
+
+	.video-play-btn {
+	    background: url('{% static '/images/a-media-play-btn.png') center center no-repeat;
+	    margin: -240px 10px 0 0;
+	    height: 140px;
+	    position: relative;
+	    z-index: 10;
+	    opacity: 0.7;
+	    cursor: pointer;
+	}
+
+	.video-play-btn:hover {
+		opacity: 1.0;
+	}
+
+	.like-wrapper {
+		padding-left: 0px;
+		margin-top: 5px;
+	}
+
+	.likestatus {
+		margin-top: 10px;
+		cursor: pointer;
+		font-size: 16px;
+	}
+
+	.likestatus.like {
+		/*color: #666;*/
+	}
+
+	.likecount {
+		color: #666;
+		font-size: 15px;
+		font-weight: 600;
+	}
+
+	.postitem {
+		margin-bottom: 10px;
+		padding: 0px;
+		/*-webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+		-moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+		box-shadow: 2px 2px 5px rgba(0,0,0,0.5);*/
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		border-radius: 4px;
+	}
+
+	.descriptionItem {
+		padding: 0px 0px 5px 0px;
+	}
+
+	.spoiler {
+		margin-top: 10px;
+		color: #999;
+	    display: table;
+	    position: relative;
+	    background-color: #fefefe;
+	    margin-bottom: 10px;
+	    padding: 0px;
+	}
+
+	.spoiler-btn {
+	    padding: 2px 6px;
+	    cursor: pointer;
+	}
+
+	.spoiler-body {
+		font-size: 14px;
+	    padding: 6px;
+	    max-height: 105px;
+	    overflow: scroll;
+	}
+
+	a.btn-delete, a.btn-edit {
+		cursor: pointer;
+	}
+</style>
+
+<script>
+
+	$(document).ready(function() {
+	    $(' %}"body").on("click",".video-play-btn",function() {
+	    	var video_type = $(this).data('videoType'),
+			    video_id = $(this).data('videoId'),
+	    	    iframeString;
+	    	if(video_type=="Y") {
+	    		iframeString = '<iframe title="YouTube video player" width="600" height="360" frameborder="0" allowfullscreen src="//www.youtube.com/embed/'+video_id+'?autoplay=1" ></iframe>'
+	    	} else if(video_type=="D") {
+	    		iframeString = '<iframe title="Daily Motion" width="600" height="360" frameborder="0" allowfullscreen src="//www.dailymotion.com/embed/video/'+video_id+'?autoplay=1"></iframe>'
+	    	} else if(video_type=="S") {
+	    		iframeString = '<video width="600" height="360" controls autoplay>'+
+  							   '<source src="'+video_id+'" type="video/mp4">'+
+							   'Your browser does not support the video tag.'+
+							   '</video>'
+				var parent = $(this).parent();
+				parent.empty()
+				parent.prepend(iframeString);
+				return;
+	    	} else {
+	    		alert("ไม่สามารถเล่นวิดีโอนี้ได้");
+	    	}
+	    	
+	    	$(this).replaceWith(iframeString);
+	    });	
+
+
+	    function updatePlaylistLikeCount(playlist_id, method) {
+	    	var likeCountDom = $(".count-"+playlist_id)[0],
+	    	    like_count = parseInt($(likeCountDom).text().split(" ")[0])
+	    	if(isNaN(like_count))
+	    		like_count = 0;
+	    	if(method=="up") {
+	    		like_count+=1;
+	    	} else if(method=="down") {
+	    		like_count-=1;
+	    	}
+
+	    	var countString = "";
+	    	if(like_count==1) {
+	    		countString = "1 Like";
+	    	} else if(like_count>1) {
+	    		countString = like_count+" Likes";
+	    	} 
+	    	console.log(countString);
+	    	$(likeCountDom).text(countString);
+	    }
+
+	    $("a.likestatus").click(function() {
+	    	var playlist_id = $(this).attr("value"),
+	    	    method = "unlike";
+	    	console.log($(this).parent().children());
+	    	if($(this).hasClass("liked")) {
+	    		$(this).addClass("like");
+	    		$(this).removeClass("liked")
+	    		$(this).text("Like");
+	    		// decrease like number
+	    		updatePlaylistLikeCount(playlist_id,"down");
+	    	} else if($(this).hasClass("like")) {
+	    		method = "like";
+	    		$(this).addClass("liked");
+	    		$(this).removeClass("like")
+	    		$(this).text("Unlike");
+	    		// increase like number
+	    		updatePlaylistLikeCount(playlist_id,"up");
+	    	}
+
+	    	$.post("/feed/playlist/"+playlist_id+"/"+method+"/",function(result){ console.log(result)}).fail(
+	    		function(){
+	    			if(method=="unlike"){
+	    				updatePlaylistLikeCount(playlist_id,"up");
+	    			} else if(method=="like") {
+	    				updatePlaylistLikeCount(playlist_id,"down");
+	    			}
+	    		}
+	    	);
+	    });
+
+	    $("a.btn.savestatus").click(function() {
+	    	var temp = parseInt($("#savecount").text());
+			temp++;
+			$("#savecount").text(temp);
+	    	if($(this).hasClass("saved")) {
+                // YOU SHALL NOT PASS!
+                return;
+	    		// $(this).addClass("save");
+	    		// $(this).removeClass("saved")
+	    		// $(this).text("save");
+	    		// alert("post remove save");
+	    		// ** waiting for unsaved the playlist
+	    	} else if($(this).hasClass("save")){
+				$(this).addClass("saved");
+				$(this).removeClass("save");
+				$(this).addClass("btn-success");
+				$(this).removeClass("btn-warning");
+                $(this).attr("disabled","disabled");
+	    	}
+
+	    	var playlist_id = $(this).attr("value");
+	    	$.post("/save/channel/saved/"+playlist_id+"/",
+                    function(result){
+                        console.log("save "+" "+result)
+                        updateSideBar();
+                    }
+            );
+	    });
+
+	    $("a.btn-delete").click(function (){
+	    	var obj = $(this);
+	    	if(confirm("ต้องการลบวิดีโอนี้เลยใช่ไหม?")) {
+		    	var video_id = $(this).data("id"),
+		    	    url = "/api/v2/playlist/"+video_id+"/",
+		    	    request = $.ajax({
+				  url: url,
+				  method: "DELETE"
+				});
+				 
+				request.done(function( msg ) {
+					$(obj).fadeOut(300,function(){ $(obj).remove();});
+					var wrapper = $("#playlist-item-"+video_id).closest(".playlist-item-wrapper")[0];
+				  	$("#playlist-item-"+video_id).fadeOut(300,function(){ 
+				  		$(this).remove(); 
+				  		
+					  	if($(wrapper).find("div[id^='playlist-item-']").length==0) {
+							$(wrapper).remove();
+						}
+					})
+				});
+				 
+				request.fail(function( jqXHR, textStatus ) {
+				  //alert( "Request failed: " + textStatus );
+					console.log("Delete Failed");
+				});
+			}
+	    });
+
+        $(document).on('click', '.spoiler-btn', function (e) {
+        	e.preventDefault()
+        	$(this).parent().children('.spoiler-body').collapse('toggle')
+        	$(this).parent().children('.spoiler-body').scrollTop(1).scrollTop(0);
+    	});
+
+        $(".postitem").on("click", ".cancel-edit-button", function() {
+			var id = $(this).data("id");
+        	$("#detail-"+id).show();
+        	$("#detail-editing-"+id).remove();
+        });
+
+        $(".postitem").on("click", ".submit-edit-button", function() {
+        	var id = $(this).data("id");
+
+            $("#detail-editing-"+id).ajaxSubmit({
+                url: "/api/v2/playlist/"+id+"/",
+                type: 'POST',
+                success: onDone,
+                error: onFail
+            });
+
+            function onDone(data) {
+                console.log("on edit success");
+                var newText = $("#detail-editing-"+id+" > textarea").val();
+                console.log(newText);
+                $("#detail-"+id).text(newText);
+                if(newText.length>0){
+	                $("#detail-"+id).show()
+                }
+                $("#detail-editing-"+id).remove();
+            }
+            function onFail(data) {
+                console.log("fail!" + data.detail);
+                alert("ไม่สามารถแก้ไขข้อมูลได้ในขณะนี้ กรุณาทดลองใหม่ภายหลัง")
+            }
+
+            return false;
+        });
+
+
+        $("a.btn-edit").click(function(){
+        	var id = $(this).data("id");
+        	if($("#detail-editing-"+id).length>0)
+        		return;
+        	var text = $("#detail-"+id).text(),
+        	    htmlString = '<form class="detail-editing" id="detail-editing-'+id+'" enctype="multipart/form-data">'+
+                				'<textarea type="textarea" name="detail" class="form-control editing-textarea">'+text.trim()+'</textarea>'+
+                				'<div class="pull-right" style="margin-top:5px;">'+
+                    				'<button class="btn btn-sm btn-danger cancel-edit-button" type="button" data-id="'+id+'" style="margin-left:5px">Cancel</button>'+
+                    				'<button class="btn btn-sm btn-primary submit-edit-button" type="button" data-id="'+id+'" style="margin-left:5px">Done Editing</button>'+
+                				'</div>'+
+        					  '</form>'
+		  	$("#detail-"+id).hide()
+        	$("#detail-wrapper-"+id).append(htmlString);
+
+        });
+
+        
+
+    	
+	 });
+
+</script>

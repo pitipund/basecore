@@ -1,0 +1,340 @@
+<style type="text/css">
+    .form-create {
+        margin-bottom: 5px;
+    }
+</style>
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="vm.dismiss()" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">{{ vm.mode }}แชนแนล</h4>
+</div>
+
+<div class="modal-body">
+    <alert style="margin:0 15px 15px"
+           ng-repeat="alert in vm.alerts" type="{{ alert.type }}" close="vm.closeAlert($index)">{{ alert.msg }}</alert>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li style="cursor: pointer;" role="presentation" class="active"><a data-target="#general"
+                                                                           aria-controls="general" role="tab"
+                                                                           data-toggle="tab"
+                                                                           style="padding-top: 5px; padding-bottom:0px;">ทั่วไป</a>
+        </li>
+        <li style="cursor: pointer;" role="presentation"><a data-target="#advance" aria-controls="advance" role="tab"
+                                                            data-toggle="tab"
+                                                            style="padding-top: 5px; padding-bottom:0px;">เพิ่มวิดีโออัตโนมัติ</a>
+        </li>
+        <li style="cursor: pointer;" role="presentation"><a data-target="#sorting" aria-controls="advance" role="tab"
+                                                            data-toggle="tab"
+                                                            style="padding-top: 5px; padding-bottom:0px;">การจัดเรียงวีดีโอ</a>
+        </li>
+        <li style="cursor: pointer;" role="presentation"><a data-target="#permission" aria-controls="advance" role="tab"
+                                                            data-toggle="tab"
+                                                            style="padding-top: 5px; padding-bottom:0px;">การเข้าถึง</a>
+        </li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="general">
+            <form action="/api/v2/channel/" enctype="multipart/form-data">
+                <div class="form-group" style="margin-top:8px">
+                    <label for="create-name">ชื่อแชนแนล*</label>
+                    <input ng-disabled="vm.isSubmitting" type="text" class="form-control" id="create-name" name="name"
+                           ng-model="vm.channelName" autocomplete="off" data-provide="typeahead" autofocus required>
+                </div>
+                <div class="form-group">
+                    <label for="create-detail">รายละเอียด</label>
+                    <textarea ng-disabled="vm.isSubmitting" id="create-detail" class="form-control" name="detail"
+                              rows="3" ng-model="vm.detail"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="create-url">Icon URL</label>
+                    <input ng-disabled="vm.isSubmitting" type="text" class="form-control" id="create-url"
+                           name="icon_url" ng-model="vm.icon_url">
+                </div>
+                <div class="form-group">
+                    <label for="create-icon">Icon
+                        <small>200x200px</small>
+                    </label>
+                    <input ng-disabled="vm.isSubmitting" type="file" id="create-icon" ngf-select name="icon"
+                           accept="image/*" ng-model="vm.icon">
+                    <img width=100 height=100 ng-src="{{ vm.current_icon }}" ng-show="vm.current_icon"/>
+                    <a ng-disabled="vm.isSubmitting" class="btn btn-sm btn-danger btn-default" ng-show="vm.current_icon"
+                       ng-click="vm.removeIcon()" style="cursor: pointer">
+                        Remove&nbsp;<span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </div>
+                <div class="form-group" ng-if="vm.env == 'create'">
+                    <label for="create-url">First Video URL ตัวอย่าง <font color="grey">https://www.youtube.com/watch?v=JUQlOkdUxhc</font></label>
+                    <input ng-disabled="vm.isSubmitting" type="text" class="form-control" id="first-video"
+                           name="first_video" ng-model="vm.first_video">
+                </div>
+                <div class="clearfix form-group">
+                    <tag-editor ng-disabled="vm.isSubmitting" tags="vm.tags"></tag-editor>
+                </div>
+            </form>
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="advance">
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="vm.enable_auto" name="enable_auto"/> เปิดใช้งาน
+                    </label>
+                </div>
+            </div>
+            <div class="form-inline">
+                <div class="dropdown">
+                    เพิ่มวิดีโอจาก:&nbsp;
+                    <button
+                            ng-disabled="vm.isSubmitting || !vm.enable_auto"
+                            class="btn btn-xs btn-default dropdown-toggle" type="button" id="selectSource"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        {{ vm.auto_source_text[vm.auto_source] }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="selectSource">
+                        <li><a href="#" ng-click="vm.auto_source=0">{{ vm.auto_source_text["0"] }}</a></li>
+                        <li><a href="#" ng-click="vm.auto_source=1">{{ vm.auto_source_text["1"]}}</a></li>
+                        <li><a href="#" ng-click="vm.auto_source=2">{{ vm.auto_source_text["2"] }}</a></li>
+                        <li><a href="#" ng-click="vm.auto_source=3">{{ vm.auto_source_text["3"] }}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group"
+                 ng-show="vm.auto_source==1"
+                 ng-class="{'has-error': !vm.youtube_channel_id_auto.valid&&vm.enable_auto&&vm.youtube_channel_id_auto.text.length>0, 
+                            'has-success': vm.youtube_channel_id_auto.valid }"
+            >
+                <p class="help-block" class="danger">
+                    Youtube Channel ID*
+                    <i ng-class="{'fa-times': !vm.youtube_channel_id_auto.valid&&vm.enable_auto&&vm.youtube_channel_id_auto.text.length>0,
+                              'fa-check': vm.youtube_channel_id_auto.valid }" class="fa"></i>
+                </p>
+                <input ng-disabled="vm.isSubmitting || !vm.enable_auto" type="text" class="form-control input-sm"
+                       id="ychannel_id" name="ychannel_id" ng-model="vm.youtube_channel_id_auto.text"
+                       ng-change="vm.onChannelIdChange()" placeholder="เช่น UCG9gfnA5UDoLvz-tC9B-HKw">
+            </div>
+            <div class="form-group"
+                 ng-show="vm.auto_source==2"
+                 ng-class="{'has-error': !vm.youtube_playlist_id_auto.valid&&vm.enable_auto&&vm.youtube_playlist_id_auto.text.length>0, 
+                            'has-success': vm.youtube_playlist_id_auto.valid }"
+            >
+                <p class="help-block">
+                    Youtube Playlist ID*
+                    <i ng-class="{'fa-times': !vm.youtube_playlist_id_auto.valid&&vm.enable_auto&&vm.youtube_playlist_id_auto.text.length>0,
+                              'fa-check': vm.youtube_playlist_id_auto.valid }" class="fa"></i>
+                </p>
+                <input ng-disabled="vm.isSubmitting || !vm.enable_auto" type="text" class="form-control input-sm"
+                       id="yplaylist_id" name="yplaylist_id" ng-model="vm.youtube_playlist_id_auto.text"
+                       ng-change="vm.onPlaylistIdChange()" placeholder="เช่น PL0X-JpLCn4aNSznnfLfFGkNlkcCMkZ2tq">
+            </div>
+            <div class="form-group"
+                 ng-show="vm.auto_source==3"
+                 ng-class="{'has-error': !vm.youtube_user_id_auto.valid&&vm.enable_auto&&vm.youtube_user_id_auto.text.length>0, 
+                            'has-success': vm.youtube_user_id_auto.valid }"
+            >
+                <p class="help-block">
+                    Youtube User ID*
+                    <i ng-class="{'fa-times': !vm.youtube_user_id_auto.valid&&vm.enable_auto&&vm.youtube_user_id_auto.text.length>0,
+                              'fa-check': vm.youtube_user_id_auto.valid }" class="fa"></i>
+                </p>
+                <input ng-disabled="vm.isSubmitting || !vm.enable_auto" type="text" class="form-control input-sm"
+                       id="yuser_id" name="yuser_id" ng-model="vm.youtube_user_id_auto.text"
+                       ng-change="vm.onUserIdChange()" placeholder="เช่น gmmgrammyofficial">
+            </div>
+            <div class="form-group">
+                <p class="help-block">คำที่เกี่ยวข้องขั้นด้วยเครื่องหมาย <code>,</code> <br>
+                    เช่น ใส่คำว่า <code>ข่าวข้น,full</code> คือ สนใจเฉพาะวิดีโอที่มีคำว่า
+                    <code>ข่าวข้น</code> และ <code>full</code> เท่านั้น
+                </p>
+                <input ng-disabled="vm.isSubmitting || !vm.enable_auto " type="text" class="form-control input-sm"
+                       id="include_text" name="include_text" ng-model="vm.rule_include.text"
+                       placeholder="เว้นว่างหากไม่ต้องการระบุ">
+            </div>
+            <div class="form-group">
+                <p class="help-block">คำที่ไม่เกี่ยวข้องขั้นด้วยเครื่องหมาย <code>,</code></p>
+                <input ng-disabled="vm.isSubmitting || !vm.enable_auto " type="text" class="form-control input-sm"
+                       id="exclude_text" name="exclude_text" ng-model="vm.rule_exclude.text"
+                       placeholder="เว้นว่างหากไม่ต้องการระบุ">
+            </div>
+            <div class="form-group">
+                <p class="help-block">ช่วงเวลาที่ต้องการ</p>
+                เฉพาะที่เผยแพร่หลังจากเวลา
+                <div class='input-group date'>
+                    <input datetimepicker class="form-control input-sm"
+                           ng-disabled="vm.isSubmitting || !vm.enable_auto " placeholder="เว้นว่างหากไม่ต้องการระบุ"
+                           ng-model="vm.publish_after" id='publish_after' name="publish_after"/>
+                </div>
+                เฉพาะที่เผยแพร่ก่อนเวลา
+                <div class='input-group date'>
+                    <input datetimepicker class="form-control input-sm"
+                           ng-disabled="vm.isSubmitting || !vm.enable_auto " placeholder="เว้นว่างหากไม่ต้องการระบุ"
+                           ng-model="vm.publish_before" id='publish_before' name="publish_before"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input ng-disabled="vm.isSubmitting || !vm.enable_auto" type="checkbox"
+                               ng-model="vm.instant_add" name="instant_add"/> เพิ่มวิดีโอลงแชนแนลทันที(ไม่ผ่านระบบแนะนำ)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group" ng-show="vm.auto_source==0">
+                <div class="checkbox">
+                    <label>
+                        <input ng-disabled="vm.isSubmitting || !vm.enable_auto" type="checkbox"
+                               ng-model="vm.latest_first" name="latest_first"/> เลือกวิดีโอใหม่ล่าสุดก่อน
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="sorting">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="vm.sorting.enable_sort_pattern" name="enable_sorting"/>
+                    เปิดใช้งานการจัดเรียงแบบพิเศษ
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="episode_pattern">Regular Expression เลขตอนจากชื่อวีดีโอ</label>
+                <p class="help-block">
+                    ใช้พจน์ <code>(?P&lt;ep&gt;\d+)</code> สำหรับการระบุตำแหน่งเลขตอน
+                </p>
+                <input ng-disabled="vm.isSubmitting || !vm.sorting.enable_sort_pattern || vm.sorting.use_date_pattern"
+                       type="text" class="form-control input-sm"
+                       id="episode_pattern" name="episode_pattern" ng-model="vm.sorting.episode_pattern"
+                       placeholder="Episode (?P&lt;ep&gt;\d+) สำหรับพจน์ Episode 1">
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" ng-model="vm.sorting.use_date_pattern"
+                           ng-disabled="vm.isSubmitting || !vm.sorting.enable_sort_pattern">
+                    ใช้วันที่ในชื่อวีดีโอแทน Regular Expression
+                </label>
+                <p class="help-block">
+                    สนับสนุนเฉพาะวันที่แบบไทย (วัน เดือน ปี)<br>
+                    ใช้ได้ทั้ง พ.ศ. และ ค.ศ.<br>
+                    ตัวอย่าง 13 เม.ย. 59, 13-4-16<br>
+                    ในกรณีที่ไม่สามารถอ่านวันที่จากชื่อวิดีโอได้<br>
+                    ระบบจะใช้<b>วันที่นำเข้าวีดีโอ</b>แทน
+                </p>
+            </div>
+            <div class="form-group">
+                <label for="video_part_pattern">Regular Expression เลขวีดีโอจากชื่อวีดีโอ</label>
+                <p class="help-block">
+                    ใช้พจน์ <code>(?P&lt;part&gt;\d+)</code> สำหรับการระบุตำแหน่งเลขวีดีโอ
+                </p>
+                <input ng-disabled="vm.isSubmitting || vm.sorting.episode_pattern.length==0 && !vm.sorting.use_date_pattern"
+                       type="text" class="form-control input-sm"
+                       id="video_part_pattern" name="video_part_pattern" ng-model="vm.sorting.video_part_pattern"
+                       placeholder="\[(?P&lt;part&gt;\d+)/\d+\] สำหรับพจน์ [1/5]">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="vm.sorting.desc_sort" name="desc_sort"
+                           ng-disabled="vm.isSubmitting || !vm.sorting.enable_sort_pattern"/>
+                    เรียงจากวีดีโอใหม่ไปเก่า <span class="text-muted">(จากตอนมากไปน้อย)</span>
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="vm.sorting.auto_sort" name="auto_sort"
+                           ng-disabled="vm.isSubmitting || !vm.sorting.enable_sort_pattern"/>
+                    จัดเรียงอัตโนมัติ <span class="text-muted">เรียงวีดีโอใหม่ทุกครั้งที่ระบบนำเข้าวีดีโอ</span>
+                </label>
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="permission">
+            <div class="form-group">
+
+            </div>
+            <div class="form-inline">
+                <div class="dropdown">
+                    อนุญาตให้เข้าถึง:&nbsp;
+                    <button
+                            class="btn btn-xs btn-default dropdown-toggle" type="button" id="selectPermission"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        {{ vm.permission_group_text[vm.permission_group] }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="selectSource">
+                        <li><a href="#" ng-click="vm.permission_group=1">{{ vm.permission_group_text[1] }}</a></li>
+                        <li><a href="#" ng-click="vm.permission_group=2">{{ vm.permission_group_text[2] }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button ng-disabled="vm.isSubmitting" type="button" class="btn btn-default" data-dismiss="modal"
+            ng-click="vm.dismiss()">ยกเลิก
+    </button>
+    <button ng-disabled="vm.isSubmitting" type="button" class="btn btn-primary"
+            ng-click="vm.createClicked()">{{ vm.mode }}</button>
+</div>
+
+<script type="text/javascript">
+    $('#publish_after').datetimepicker({
+        format: 'DD/MM/YYYY HH:mm:ss',
+    });
+    $('#publish_before').datetimepicker({
+        format: 'DD/MM/YYYY HH:mm:ss',
+    });
+</script>
+
+<script type="text/javascript" ng-if="vm.env == 'create'">
+    function highlightText(item, query) {
+        if (query.length == 0)
+            return item;
+        var tokens = query.trim().split(/\s+/).sort(function (a, b) {
+            return b.length - a.length;
+        });
+        var highlight = "<font color='red'>$1</font>";
+        var regex = new RegExp('(' + tokens.join('|') + ')', 'gi');
+        return item.replace(regex, highlight);
+    }
+    $('#create-name').typeahead({
+        source: function (query, process) {
+            if (query.length < 3) {
+                return false;
+            }
+            var widget = this;
+            return $.ajax({
+                url: "/api/v2/search_channel/?q=" + query + "&page=1&per_page=12",
+                dataType: 'json',
+                success: function (data) {
+                    var result = [];
+                    for (var i in data.channels) {
+                        var ch = data.channels[i]
+                        result.push({
+                            'name': ch.name,
+                            'thumb': ch.real_icon,
+                            'link': '/th/channel/' + ch.id + '/'
+                        });
+                    }
+                    return typeof data == 'undefined' ? false : process(result);
+                },
+            });
+        },
+        matcher: function (obj) {
+            return true;
+        },
+        highlighter: function (obj) { // must modified argument from bootstrap3-typehead
+            var query = this.query;
+            var name = highlightText(obj.name, query);
+            return "<img src='" + obj.thumb + "' width='30px'>&nbsp;&nbsp;<font size='4'>" + name + "</font></img>";
+        },
+        afterSelect: function (obj) {
+            window.open(obj.link, "_blank");
+        },
+        delay: 500,
+        autoSelect: false,
+        items: 12
+    });
+</script>

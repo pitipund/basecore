@@ -1,0 +1,86 @@
+<style type="text/css">
+    .editing-textarea{
+        width: 100%;
+        font-size: 18px;
+    }
+</style>
+<div class="col-md-12 postitem panel panel-default" id="playlist-item-{{p.id}}">
+
+    <div class="panel-body">
+        <div class="my-panel-head clearfix" style="margin-bottom: 10px;">
+            <img src="{{ p.channel.image }}" width="50" height="50" style="float:left; margin-right: 5px;"/>
+            <div style="float:left;">
+                <div><a href="/th/channel/{{ p.channel.id }}">{{ p.channel.name }}</a></div>
+                <div>{{ p.create_at }}</div>
+            </div>
+            <div style="float:right;">            
+    	            <a onclick='fb_share("/th/channelplay/{{ p.channel.id }}/{{ p.id }}/", "{% if p.detail %}{{p.detail|escapejs}}{% else %}{{p.name|escapejs}}{% endif %}", "{% if p.upload_description %}{{p.upload_description|escapejs }}{% else %}{{p.name|escapejs}}{% endif %}", "{{p.video_id}}");' class="btn-fb-share btn btn-sm btn-primary" style="margin-left:5px;"><img src="/media/images/facebook.png" height="16" align="middle" />&nbsp;</a>
+                    <a class="btn btn-sm btn-primary btn-share" data-toggle="modal" data-target="#shareModal"
+                   data-playlistid="{{ p.id }}">แชร์</a>
+                {% if p.saved %}
+                    <a class="btn btn-sm btn-success savestatus saved btn-save" value={{ p.id }} disabled="disabled"><span class="glyphicon glyphicon-bookmark"></span> เก็บ</a>
+                {% else %}
+                    <a class="btn btn-sm btn-success savestatus save btn-save" value={{ p.id }}><span class="glyphicon glyphicon-bookmark"></span> เก็บ</a>
+                {% endif%}
+                {% if p.own %}
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    แก้ไข <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a class="btn-edit" data-id="{{p.id}}"><span class="glyphicon glyphicon-edit"></span> แก้ไข</a></li>
+                    <li class="divider"></li>
+                    <li><a class="btn-delete" data-id="{{p.id}}"><span class="glyphicon glyphicon-trash"></span> ลบ</a></li>
+                  </ul>
+                </div>
+                {% endif %}
+                <a class="play-btn btn btn-sm btn-danger" href="/th/channelplay/{{ p.channel.id }}/{{ p.id }}/"
+                   target="_blank"><span class="glyphicon glyphicon-play"></span> เล่น</a>
+            </div>
+        </div>
+
+        
+        <div class="user-detail col-md-12 clearfix" id="detail-wrapper-{{p.id}}">
+            <span id="detail-{{p.id}}" style="word-wrap: break-word;">{% if p.detail %}{{ p.detail }}{% endif %}</span>
+        </div>
+
+        <div class="video-wrapper clearfix">
+            <div class="video-container">
+                <div style="margin:auto;">
+                    <img class="video-image img-responsive" style="" src="{{ p.image }}"/>
+                </div>
+                <div class="video-title col-md-12">
+                    {{ p.name }}
+                </div>
+                <div class="center video-play-btn" data-video-id='{{ p.video_id }}' data-video-type="{{ p.video_type }}"></div>
+                
+            </div>
+            {% if p.upload_description %}
+            <div class="spoiler col-md-12">
+                <div class="spoiler-btn">Show detail</div>
+                <div class="col-md-12 spoiler-body collapse">
+                    <blockquote>
+                        <p class="" style="white-space:pre-wrap;">{{ p.upload_description }}</p>
+                    </blockquote>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="like-wrapper col-md-12">
+            <span class="likecount count-{{p.id}}">
+                {% if p.like_count == 1 %}
+                {{ p.like_count }} Like
+                {% elif p.like_count > 1 %}
+                {{ p.like_count }} Likes
+                {% endif %}
+            </span>
+            {% if p.liked %}
+                <a class="likestatus liked" value={{ p.id }}>Unlike</a>
+            {% else %}
+                <a class="likestatus like" value={{ p.id }}>Like</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+

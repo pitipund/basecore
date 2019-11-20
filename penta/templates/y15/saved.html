@@ -1,0 +1,175 @@
+{% extends "y15/base.html" %}
+{% load static %}
+
+{% block header %}
+<title>{{ c.name }} - Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+{% endblock %}
+
+{% block leftbar %}
+
+<div style="width:100%; height:100%; background-color:grey;">
+
+<div class="channel">{{ c.name }}</div>
+<div class="channel"><a href="/th/follower/{{ c.id }}">Follower {{ follower }}</a></div>
+<div class="channel">จำนวนวิดีโอ {{ c.video_count }}</a></div>
+
+<div id="channel_playlist" style="height:650px; width:100%; overflow-y:scroll;">
+<table>
+{% for p in P %}
+<tr>
+
+<td valign="top"><img src="{{ p.image }}" style="width:80px;"/></td>
+
+<td valign="top" ><span style="width:120px; font-size:10px;"><a href="{{ p.playurl }}">{{ p.name }}</a></span></td>
+
+<td style="width:30px;">
+<div title="Up" class="up">
+<input class="playlist_id" type="hidden" name="id" value="{{ p.id }}" />
+<img align="center" width="15" height="15" src="https://cdn2.iconfinder.com/data/icons/picol-vector/32/arrow_full_up-128.png"/>
+</div>
+<div title="Down" class="down">
+<input class="playlist_id" type="hidden" name="id" value="{{ p.id }}" />
+<img align="center" width="15" height="15" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR546HHd8pGyvCpcaDGHpuUv2LBfGsmTEo1q3vMAIW3CHhV03Y0"/>
+</div>
+<div title="Remove" class="remove">
+<input class="playlist_id" type="hidden" name="id" value="{{ p.id }}" />
+<img align="center" width="15" height="15" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Delete-icon.png"/>
+</div>
+</td>
+
+</tr>
+{% endfor %}
+</table>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block mainpane %}
+
+<td style="width:650px;" valign="top">
+
+<div id="player"></div>
+<div>{{ playitem.name }}</div>
+
+<div>
+<button style="width:100px; height:20px;">Next</button>
+<button style="width:100px; height:20px;">Delete</button>
+<button style="width:100px; height:20px;">Share</button>
+</div>
+
+<div>คำบรรยายวิดีโอจากการแชร์</div>
+
+<div style="height:150px; max-width:650px; overflow:scroll; background-color:cyan;">
+<table style="max-width:750px;">
+{% for p in Pl %}
+<tr>
+<td style="vertical-align:top;">
+<div><img width="50" height="50" src="{{ p.channel.image }}"/></div>
+</td>
+<td style="vertical-align:top;">
+<div>{{ p.channel.name }}</div>
+<div>{{ p.create_at }}</div>
+</td>
+<td style="vertical-align:top;">{{ p.detail }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+</td>
+
+<td style=" width:120px; background-color:grey; vertical-align:top;">
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/01.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/02.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/03.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/04.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/05.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/06.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/07.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/08.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/09.jpg"/>
+<img style="width:100%; max-height:72px; clear:both;" src="{% get_media_prefix %}snapshot/{{ playitem.thumbnail }}/10.jpg"/>
+</td>
+
+{% endblock %}
+
+{% block footer %}
+
+<script src="https://www.youtube.com/player_api"></script>
+
+<script>
+
+// Youtube Player
+
+var player;
+function onYouTubePlayerAPIReady() {
+    player = new YT.Player('player', {
+      height: '500',
+      width: '650',
+      videoId: '{{ playitem.video_id }}',
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
+    });
+}
+
+function onPlayerReady(event) {
+    event.target.playVideo();
+}
+
+function onPlayerStateChange(event) {
+    if (event.data === 0) {
+        if ({{ nextindex }}) {
+            window.location.href="/th/saved/{{ nextindex }}/";
+        }
+    }
+}
+
+// Playlist management
+
+$( ".remove" ).click(function() {
+    var currentlink = $(this),
+        success;
+    $.post("/th/removePlaylist/", { playlist_id: currentlink.find(".playlist_id").val() }, function( data ) {
+        success = $.parseJSON(data);
+        if (success) {
+            //currentlink.closest("tr").css("background-color", "grey");
+            setTimeout(function() { currentlink.closest("tr").remove(); }, 200);
+            //alert(currentlink.find(".playlist_id").val());
+        }
+    });
+});
+
+$( ".up" ).click(function() {
+    var currentlink = $(this),
+        currentrow = $(this).closest("tr");
+    $.post("/th/swapPlaylistUp/", { playlist_id: currentlink.find(".playlist_id").val() }, function( data ) {
+        var success = $.parseJSON(data);
+        if (success) {
+            currentrow.prev().insertAfter(currentrow);
+        }
+    });
+});
+
+$( ".down" ).click(function() {
+    var currentlink = $(this),
+        currentrow = $(this).closest("tr");
+    $.post("/th/swapPlaylistDown/", { playlist_id: currentlink.find(".playlist_id").val() }, function( data ) {
+        var success = $.parseJSON(data);
+        if (success) {
+            currentrow.insertAfter(currentrow.next());
+        }
+    });
+});
+
+$(document).ready(function() {
+    var channel_playlist = $("#channel_playlist");
+	channel_playlist.scrollTop(channel_playlist[0].scrollHeight * {{ sh }});
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Import Export Data Dictionary</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'lib/semantic/dist/semantic.css' %}" />
+</head>
+<style>
+table{
+    table-layout: fixed;
+}
+th:nth-child(1), td:nth-child(1) {
+    width: 180px;
+}
+th:nth-child(2), td:nth-child(2) {
+    width: 180px;
+}
+th:nth-child(3), td:nth-child(3) {
+    width: 80px;
+}
+td:nth-child(4) {
+    white-space: pre-wrap;
+}
+</style>
+<body>
+    {% for table in tables %}
+    <div class="ui medium header">
+        Data Dictionary For {{table.name}}
+    </div>
+    <table class="ui blue compact celled table">
+        <thead>
+            <tr>
+                <th>Field name</th>
+                <th>Data type</th>
+                <th>Required</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in table.fields %}
+            <tr>
+                <td>{{field.name}}</td>
+                <td>{{field.type}}</td>
+                <td>{{field.required}}</td>
+                <td>{{field.description}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+</body>
+</html>

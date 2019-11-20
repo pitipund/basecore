@@ -1,0 +1,47 @@
+{% extends "channel/base_with_sidebar.html" %}
+{% load thumbnail %}
+{% load i18n %}
+
+{% block sidebar %}
+    <ul class="nav nav-sidebar">
+        <li><a class="listheader">{% trans "Search" %}</a></li>
+        <li class="following active">
+            <a>
+                {% if word == "" %}{% trans "Search all" %}
+                {% else %}{{word}}{% endif %}
+            </a>
+        </li>
+        <li class="following">
+            <a href="{% url 'channel:channel_browse' %}"><span class="glyphicon glyphicon-search"></span> {% trans "Search by category" %}</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+
+{% with "//penta.center/media/snapshot/a52bb8f75f477bf0d3521cb2ed2f6104/01.jpg" as path %}
+    {% thumbnail path "100x100" as im %}
+        <a href="#" class="image">
+            <img alt="" src="{{im.url}}" class="frame2"></a>
+    {% endthumbnail %}
+{% endwith %}
+
+    {% include "channel/include/channel_gridview.html" %}
+    <div id="alertMessage" class="alert alert-warning" style="margin:20px -10px 0px;">{% trans "Channel not found" %}.</div>
+    <script type="text/javascript">
+        var LIVE_TEXT = "{% trans 'Live' %}";
+        var GET_SEARCH_URL = "{% url 'channel:channel_apis_search' 'WORD' %}";
+        var page_header = '{{nav_values.page_header}}';
+        var word = '{{word}}';
+        $(document).ready(function(){
+            $("#alertMessage").hide();
+            channelList.setSelectedSearch(word);
+        });
+
+        $('#channelList').on('searchCompleted',function(event,channels){
+            if(channels.length == 0){
+                $("#alertMessage").show();
+            }
+        });
+    </script>
+{% endblock %}

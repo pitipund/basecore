@@ -1,0 +1,56 @@
+{% block extrahead %}
+<style>
+    a:link { text-decoration: none; color: blue; }
+    a:visited { color: blue; }
+    table {
+        margin: 50px;
+        border-collapse: collapse;
+        position:relative;
+    }
+    thead, tfoot {
+        background-color: #E1E1E1;
+    }
+    td, th {
+        max-width: 70%;
+        padding: 4px;
+        align : right;
+        vertical-align: top;
+    }
+    body {
+        /* to centre page on screen*/
+        margin-left: auto;
+        margin-right: auto;
+    }
+    td {
+        font-family: "TH Sarabun New";
+        font-size: 16pt;
+    }
+    h1{
+        margin: 50px;
+    }
+</style>
+{% endblock %}
+
+<h1>Excluded Features</h1>
+{% block content %}
+<table border="1">
+    <thead>
+    <td>No.</td>
+    <td>Features</td>
+    <td>Use case</td>
+    <td>Usecase name</td>
+    <td>Remark</td>
+    </thead>
+    <tbody>
+    {% for  feature in missing_features %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td><a href="http://redmine.thevcgroup.com/issues/{{feature.id}}/">{{feature.name}}</a></td>
+            <td>{{feature.usecase}}</td>
+            <td>{{feature.usecase_name}}</td>
+            <td>{{feature.remark}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

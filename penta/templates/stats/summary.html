@@ -1,0 +1,92 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+
+{% block head %}
+<!-- <link rel="stylesheet" href="../dojo/dijit/themes"> -->
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.9.2/dijit/themes/soria/soria.css" media="screen">
+<script>var dojoConfig =  {async: true, packages: [{name: "livestat", location: "/static/auto/js/livestat"}]};</script>
+<script src="//ajax.googleapis.com/ajax/libs/dojo/1.9.2/dojo/dojo.js"></script>
+
+<script language="javascript">
+require(["dojox/charting/Chart",
+        "dojox/charting/plot2d/Columns",
+        "dojox/charting/plot2d/Markers",
+        "dojox/charting/plot2d/StackedAreas",
+        "dojox/charting/action2d/Tooltip",
+        "dojox/charting/themes/Shrooms",
+        "dojox/charting/widget/Legend",
+        "dojox/charting/plot2d/Markers",
+        "dojox/charting/axis2d/Default"
+        ], function(Chart, Columns, Markers, StackedAreas, Tooltip, theme, Legend) {
+
+function draw_chart1() {
+    // chart 1
+    var daily_active = {{ daily_active|safe }};
+
+    var chart = new Chart("activeuserChart");
+    chart.setTheme(theme);
+    chart.addPlot("default", {
+        type: Markers,
+        gap: 1
+    });
+
+    chart.addAxis("x", { labels: daily_active.date, dropLabels: true, rotation: 270 });
+    chart.addAxis("y", { vertical: true, min: 0 });
+    chart.addSeries("Active users", daily_active.unique_user_count);
+    chart.addSeries("Average action per users", daily_active.average_action_per_user);
+
+    var tip = new Tooltip(chart, "default");
+    chart.render();
+    var legend = new Legend({ chart: chart }, "legend1");
+
+    chart.connectToPlot(
+        "default",
+        function(e) {
+            if(e.type == "onclick") {
+                console.log(e);
+                window.open('/stats/?date='+daily_active.date[e.index].text, '_blank');
+            }
+        }
+    );
+}
+function draw_chart2() {
+    // // chart 2
+    var action_break_down = {{ action_break_down|safe }};
+
+    var chart = new Chart("actionBDChart");
+    chart.setTheme(theme);
+    chart.addPlot("default", {
+        type: StackedAreas,
+        gap: 1
+    });
+
+    chart.addAxis("x", { labels: action_break_down.date, dropLabels: true, rotation: 270 });
+    chart.addAxis("y", { vertical: true, min: 0 });
+
+    for(var key in action_break_down.series) {
+        chart.addSeries(action_break_down.series[key], action_break_down[key]);
+    }
+
+    chart.render();
+    var legend = new Legend({ chart: chart }, "legend2");
+}
+
+draw_chart1();
+draw_chart2();
+
+});
+</script>
+{% endblock %}
+{% block content %}
+
+<h2 id="greeting">Daily active users of Penta Channel</h2>
+<p>(Excluding guest, anyone with @thevcgroup email, PentaTV)</p>
+<p>(click on marker to see detail for that day)</p>
+<div id="activeuserChart" style="width:1000px;height:400px;"></div>
+<div id="legend1"></div>
+
+<h1 id="greeting">Actions (stacked)</h1>
+<div id="actionBDChart" style="width:1000px;height:400px;"></div>
+<div id="legend2"></div>
+
+{% endblock %}

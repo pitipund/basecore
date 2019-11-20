@@ -1,0 +1,38 @@
+{% extends "extension_support/base.html" %}
+{% load i18n %}
+
+{% block head %}
+    
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% for i in result %}
+                <div class="col-md-4">
+                <!--Card-->
+                <div class="card" style="width:70%">
+
+                    <!--Card image-->
+                    <div class="text-center">
+                        <a href="{{ i.url }}">
+                        <img class="card-img-top" src="{{ i.icon }}" class="img-fluid" alt="">
+                        </a>
+                    </div>
+
+                    <!--Card content-->
+                    <div class="card-block">
+                        <!--Title-->
+                        <h3 class="card-title">{{ i.name }}</h3>
+                        <!--Text-->
+                        <p class="card-text">{{ i.description }}</p>
+                    </div>
+
+                </div>
+                <!--/.Card-->
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

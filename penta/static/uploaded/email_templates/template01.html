@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>{{ mail.subject }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ </head>
+<body>
+
+<table style="border: solid 1px #06b1e3;width: 750px; border-spacing: 0; color:#333; padding: 0; font-family:Helvetica, Arial, sans-serif" align="center"
+       border="0" cellspacing="0">
+    <tr bgcolor="#06B1E3">
+        <td>
+            <table style="border: 0;width: 100%; border-spacing: 0; padding: 0" border="0" cellspacing="0">
+                <tr>
+                    <td style="height: 46px;width: 46px">
+                        <a href="http://www.pentachannel.com/th/channel/{{ c.id }}/?utm_source=newsletter&utm_medium=email&utm_content={{ mail.id }}&utm_campaign=email_follow">
+                        <img height="40px" width="40px" style="padding: 3px;" src="{{c.real_icon}}" alt=""/>
+                        </a>
+                    </td>
+                    <td style="vertical-align: middle; font-size: 1.4em">
+                        <a href="http://www.pentachannel.com/th/channel/{{ c.id }}/?utm_source=newsletter&utm_medium=email&utm_content={{ mail.id }}&utm_campaign=email_follow" style="color:#333; text-decoration: none">
+                        {{ c.name }}
+                        </a>
+                    </td>
+                    <td align="right">
+                        <a href="http://www.pentachannel.com/?utm_source=newsletter&utm_medium=email&utm_content={{ mail.id }}&utm_campaign=email_follow">
+                            <img src="http://www.pentachannel.com/media/images/pentachannel-row.png" alt="Penta Channel">
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    {% if images.0 %}
+    <tr>
+        <td style="padding:0;">
+        	{% if images.0.type == 'video' %}
+                <a href="http://www.pentachannel.com/th/channelplay/{{c.id}}/{{mail.playlist.id}}/?utm_source=newsletter&utm_medium=email&utm_content={{ mail.id }}&utm_campaign=email_follow">
+            {% endif %}
+            <img height="300px" width="750px" src="{{ images.0.url }}" alt="" />
+        	{% if images.0.type == 'video' %}</a>{% endif %}
+        </td>
+    </tr>
+    {% endif %}
+
+    {% if mail.subject %}
+    <tr>
+        <td style="font-size:2em;padding: 30px 20px;">{{mail.subject}}</td>
+    </tr>
+    {% endif %}
+
+    {% if mail.message %}
+    <tr>
+        <td><p style="font-size:16px;text-indent: 30px;padding: 0 30px 30px;word-wrap:break-word;white-space:pre-wrap;">{{mail.message}}</p></td>
+    </tr>
+    {% endif %}
+
+    {% if images.1 %}
+    <tr>
+        <td>
+	        {% if images.1.type == 'video' %}
+                <a href="http://www.pentachannel.com/th/channelplay/{{c.id}}/{{mail.playlist.id}}/?utm_source=newsletter&utm_medium=email&utm_content={{ mail.id }}&utm_campaign=email_follow">
+            {% endif %}
+            <img height="300px" width="750px" src="{{ images.1.url }}" alt="" />
+        	{% if images.1.type == 'video' %}</a>{% endif %}
+        </td>
+    </tr>
+    {% endif%}
+</table>
+</body>
+</html>

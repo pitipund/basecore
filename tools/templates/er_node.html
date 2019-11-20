@@ -1,0 +1,14 @@
+{% if orientation == "vertical" %}{{% endif %}
+<table border="0" align="center" cellspacing="0.5" cellpadding="0" width="{{ node_width|add:4 }}">
+  <tr><td align="center" valign="bottom" width="{{ node_width }}"><font face="Arial Bold" point-size="11">{{ name }}</font></td></tr>
+</table>
+|
+{% if fields %}
+<table border="0" align="left" cellspacing="2" cellpadding="0" width="{{ node_width|add:4 }}">
+{% for field in fields %}
+  <tr><td align="left" width="{{ node_width }}" port="{{ field.field_name }}">{{ field.field_name }} <font face="Arial Italic" color="grey60">{{ field.data_type }}</font></td></tr>
+{% endfor %}
+</table>
+{% else %}
+{% endif %}
+{% if orientation == "vertical" %}}{% endif %}

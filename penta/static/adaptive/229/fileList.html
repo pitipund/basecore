@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html manifest="homerun.appcache">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <link rel="stylesheet" href="css/blackberry.css"></link>
+        <link rel="stylesheet" href="css/custom.css"></link>
+
+        <title>File List</title>
+        <script type="text/javascript" src="dojox/mobile/deviceTheme.js"></script>
+        <script src="dojo/dojo.js" data-dojo-config="async:true, parseOnLoad:false, locale:'en-us', mblThemeFiles: ['base','IconMenu']"></script>
+
+    </head>
+
+    <body style="background-color: rgb(255, 255, 255);">
+        <div id="fileListView">
+           <!-- <div class="smartremoteHeading" id="heading" style="z-index:1000;">
+                 <div id="main_filelist_label" style="width:100%" class="absoluteCenter">File List</div>
+                <div data-dojo-id="sidebarMenu_button" data-dojo-type="ninja.mobile.Button"
+                    highlightClass="menuButtonHighlight" dehighlightClass="menuButtonDehighlight"
+                    style="position:absolute; left:2pt; width:30px; height:30px; border-top:0px;">
+                </div>
+            </div> -->
+            <div class="smartremoteSubHeading" id="subheading" style="top:0px;">
+                <div data-dojo-id="actionButton" data-dojo-type="ninja.mobile.Button"
+                    highlightClass="actionButtonHighlight" dehighlightClass="actionButtonDehighlight"
+                    style="position:absolute; right:2pt; width:30px; height:30px; border-top:0px; display: none;">
+                </div>
+
+                <div data-dojo-id="filelist_back_button" data-dojo-type="ninja.mobile.Button"
+                    highlightClass="backButtonHighlight" dehighlightClass="backButtonDehighlight"
+                    style="position:absolute; left:2pt; width:30px; height:30px; border-top:0px;">
+                </div>
+
+                <div data-dojo-id="filelist_fwd_button" data-dojo-type="ninja.mobile.Button"
+                    highlightClass="forwardButtonLightGray" dehighlightClass="forwardButtonLightGray"
+                    style="position:absolute; left:60pt; width:30px; height:30px; border-top:0px;">
+                </div>
+
+            </div>
+
+            <div data-dojo-type="dojox.mobile.Container">
+                <div data-dojo-id="fileList" data-dojo-type="ninja.mobile.List" style="padding-top:42px"></div>
+            </div>
+
+        </div>
+
+        <div id="tutorialView" style="color:#000; height:200px; width:85%; display:none;" class="absoluteCenter">
+            <div style="width:128px; margin-left:auto; margin-right:auto; margin-bottom: 20px;">
+                <img src="images/icons/flashdrive.png" width="188" height="63">
+            </div>
+            Connect your Flash Drive, Harddisk or SD Card to PentaTV and enjoy your movie and music.
+        </div>
+
+        <div data-dojo-id="dlg_login" data-dojo-type="dojox.mobile.SimpleDialog" class="mblSimpleDialog mblSimpleDialogDecoration" role="dialog"
+            aria-labelledby="dojo_mobile_mblSimpleDialogTitle_2" aria-describedby="dojo_mobile_mblSimpleDialogText_2"
+                style="display:none; position:absolute; top:20px;">
+                <div class="mblSimpleDialogContainer">
+                    <div class="mblSimpleDialogTitle" data-dojo-id="dojo_mobile_mblSimpleDialogTitle_2">Authentication</div>
+                    <div class="mblSimpleDialogText" data-dojo-id="dojo_mobile_mblSimpleDialogText_2">Enter your Username and Password</div>
+
+                    <input data-dojo-type="dojox.mobile.TextBox" class="mblTextBox mblSimpleDialogInput" type="text" data-dojo-props="selectOnClick:true, placeHolder:&quot;username&quot;" style="margin-bottom: 5px; width:90%" id="dlg_login_username" placeholder="username" >
+                    <input data-dojo-type="dojox.mobile.TextBox" class="mblTextBox mblSimpleDialogInput" type="password" data-dojo-props="selectOnClick:true, placeHolder:&quot;password&quot;" style="margin-top: 0px; width:90%;" id="dlg_login_password" placeholder="Password" value="">
+
+                    <button data-dojo-id="dlg_login_ok_btn" data-dojo-type="dojox.mobile.Button" class="mblButton mblBlueButton"
+                    style="-webkit-user-select: none; margin-top: 8px;" >
+                        OK
+                    </button>
+                    <button data-dojo-id="dlg_login_cancel_btn" data-dojo-type="dojox.mobile.Button" class="mblButton mblSimpleDialogButton2l"
+                    style="-webkit-user-select: none; margin-top: 8px;">
+                        Cancel
+                    </button>
+
+                </div>
+            </div>
+
+        <script>
+            document.addEventListener("onsmartremoteready", onSmartRemoteReady);
+
+            require(["dojo/io-query", "ninja/service/test/mockSmartRemote2"], function(ioQuery, mockStartRemote) {
+                var query = window.location.search.substring(1);
+                var queryObject = ioQuery.queryToObject(query);
+
+                //if query parameter contain pentaIp then initialize mockSmartRemote2
+                if("pentaIp" in queryObject) {
+                    mockStartRemote.initialize(queryObject.pentaIp);
+                }
+            });
+
+            function onSmartRemoteReady() {
+                WebRemote.setMessageListener("messageHandler");
+                startDojo();
+            }
+
+            function messageHandler(sender, message) {
+                //alert('this should not popup');
+            }
+
+            function startDojo() {
+                require(["dojo/parser",
+                         "dojo/on",
+                         "ninja/service/homerunProtocol",
+                         "ninja/FileListController",
+                         "ninja/mobile/List",
+                         "dojox/mobile/Container",
+                         "dojox/mobile/Heading",
+                         "dojox/mobile/parser",
+                         "dojox/mobile",
+                         "dojox/mobile/SimpleDialog",
+                         "dojox/mobile/Button",
+                         "dojox/mobile/TextBox",
+                         "dojox/mobile/IconMenu",
+                         "ninja/mobile/Button"
+
+                ],
+                function(parser, on, homerunProtocol, FileListController) {
+                    parser.parse();
+
+                    var rootPath = "~";
+                    var fileListController = new FileListController(homerunProtocol, fileList, rootPath);
+
+                    // function updateHeader() {
+
+                    // }
+                    // on(window, "resize", updateHeader)
+
+                    fileListController.start();
+                })
+            }
+
+            function shortenPath(path, maxLength) {
+                if(path.length <= maxLength) {
+                    return path;
+                }
+
+                var remainPath = path.substring(path.length - maxLength);
+                if(remainPath.indexOf("/") == -1) {
+                    return ".." + remainPath;
+                }
+                else {
+                    return ".." + remainPath.substring(remainPath.indexOf("/"));
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,130 @@
+{% load i18n %}
+{% load static %}
+
+<style type="text/css">
+    #selectItem {
+        border: 2px solid #9ecaed;
+        box-shadow: 0 0 10px #9ecaed;
+        opacity: 1.0;
+    }
+    .playlist_image{
+        cursor: pointer;
+        opacity: 0.5;
+    }
+    .editmodebtn{
+        visibility: hidden;
+    }
+    .text_box{
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        padding: 5px;
+        background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.75);
+        color: #ffffff;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+</style>
+
+<!-- Content for browser with Javascript Disabled -->
+<noscript>
+    <h3 style="color:#DDD;">{{noscript_video_name}}</h3>
+    <img src="{{noscript_video_thumbnail_url}}" title="{{noscript_video_name}}" />
+</noscript>
+<script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/swfobject/swfobject/master/swfobject/swfobject.js"></script>
+
+<div class="" style="padding:0px; margin-top:10px;">
+    <div id="del_spinnerbar" align="center"></div>
+    <div id="video-container" class="video-container" style="background-color:#000; background-repeat:no-repeat; background-size:contain; background-position:center center;" title="{{ first_video.name }}">
+        <div id="div_container"></div>
+        <a id="play_btn" class="btn btn-danger btn-lg" style="position:absolute; top:45%; left:48%;">
+            <span class="glyphicon glyphicon-play"></span>
+        </a>
+    </div>
+    <div id="video_message" class="col-xs-12 col-md-12" style="padding:0px;">
+        <h4>
+        <font color="#333">{% trans 'Video not found on this channel.' %}</font>
+        <button class="btn btn-primary" onclick="showPopUp();">
+            <span class="glyphicon glyphicon-plus-sign"></span> {% trans "Create video" %}
+        </button>
+        </h4>
+    </div>
+</div>
+
+<div class="row margin-side-0" style="overflow:auto;">
+    <div id="bottom_playlist" class="" style="height:120px; white-space:nowrap; display: inline-block; background-color:#aaa; padding:0px;"></div>
+</div>
+
+<form id="create_video_form" class="form-horizontal" method="post" enctype="multipart/form-data" action="{% url 'channel:channel_apis_create_video' %}">{% csrf_token %}
+    <div class="modal" id="create_video_dialog">
+        <div class="modal-dialog" style="margin-top:100px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closePopUp();">&times;</button>
+                    <h4 id="create_h4" class="modal-title"></h4>
+                </div>
+                <div class="modal-body">{% csrf_token %}
+                    <div class="row" style="margin:0px;">
+                        <div id="create_spinnerbar" align="center"></div>
+                        <div id="link_container">
+                            <div id="link_div1" class="form-group" style="margin:0px; padding-bottom: 20px;">
+                                <label class="col-xs-4 col-sm-3 col-md-2 control-label">{% trans "Link" %}:</label>
+                                <div class="col-xs-8 col-sm-9 col-md-10" style="padding:0px;">
+                                    <input id="video_link1" name="video_link1" onblur="validate_link(1);" class="form-control" style="margin-bottom:5px;"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12" style="padding:0px;">
+                            <div class="pull-right" style="padding:0px;">
+                                <button type="button" class="btn btn-info" onclick="create_link_input();">
+                                    <span class="glyphicon glyphicon-plus"></span> {% trans "Add" %}
+                                </button>
+                            </div>
+                            <input type="hidden" id="channelId_hid" name="channelId_hid"/>
+                        </div>
+                        <div class="form-group" style="padding:0px;">
+                            <label class="col-xs-4 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-xs-8 col-sm-9 col-md-10">
+                                <input id="isPin" name="isPin" type="checkbox"/> {% trans "Pin this" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-right">
+                    <button type="button" class="btn btn-success" onclick="post_create_video();">
+                        <span class="glyphicon glyphicon-ok-circle"></span> {% trans "OK" %}
+                    </button>
+                    <button type="button" class="btn btn-default" onclick="closePopUp('dialog');">
+                        <span class="glyphicon glyphicon-remove-circle"></span> {% trans "Cancel" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{% static 'jwplayer/jwplayer.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/home/videoplayer_bottomplaylist.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/home/create_video.js' %}"></script>
+<script src="{% static 'scripts/libs/mustache.min.js' %}"></script>
+<script type="text/javascript" src="https://www.youtube.com/player_api"></script>
+<script type="text/javascript">
+    var REST_ALL_VIDEO_URL  = "{% url 'channel:rest_allvideos_in_channel' %}";
+{#    var EDIT_PLAYLIST_URL = "{% url 'curator:site_curator_update_playlist' 'user_id' 'playlist_id' %}";#}
+    var DELETE_VIDEO_URL = "{% url 'channel:channel_apis_delete_video' 'videoId' %}";
+    var SAVE_LINK_LOG_URL = "{% url 'channel:channel_apis_save_link_log' 'link_id' %}";
+    var PROFILE_URL  = "{% url 'curator:site_profile' 'user_url' %}";
+    var HLS_PLAYER_URL = "{% static 'jwplayer/HLSProvider6.swf' %}";
+    var by_text = "{% trans 'by' %}";
+    var create_video_for_text = "{% trans 'Create video for channel' %}";
+    var create_video_text = "{% trans 'Create video' %}";
+    var confirm_delete_video_text = "{% trans 'Are you sure you want to delete video?' %}";
+    var videoPlayer;
+    var user_id = "{{user.id}}";
+    var current = '{{current}}'
+    $(document).on("videoChanged",function(event){
+        select_channel_id(event.channel_id);
+    });
+</script>

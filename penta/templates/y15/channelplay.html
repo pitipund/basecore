@@ -1,0 +1,124 @@
+{% extends "channel/base_with_sidebar.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+    <style type="text/css">
+        .facebook_button{
+            background-color:#3b5998;
+            color:#ffffff;
+            background-image:url('{% static 'images/facebook.png');
+            font-weight:bold;
+            background-repeat:no-repeat;
+            background-position:left;
+            padding-top:4px;
+            padding-bottom:3px;
+        }
+        .penta_button{
+            background-color: #16c1f3;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 5px 12px;
+        }
+        .sidebar{
+            padding-left:10px;
+            padding-right:10px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block sidebar %}
+    <h4 id=' %}"chname" style="color:#aaa; padding:10px; margin:0px;">
+        {{name}}
+        {% if isLive == True %}<font style="color:red;">({% trans 'Live' %})</font>{% endif %}
+    </h4>
+    <image id="ch_icon" class="responsive" style="" src="{{icon}}"/>
+    <h5 style="color:#3adafa;">{% trans "Follows" %}: <span id="subscribers_number{{id}}">{{subscribers_number}}</span></h5>
+    <a href="{% url 'site_profile' owner_url %}"><h5>{% trans "By" %}: {{owner}}</h5></a>
+    <h5 id="chdetail" style="color:#aaa;">{{detail}}</h5>
+    
+    <div class="row margin-side-0" style="overflow:auto;">
+    	<div id="bottom_playlist" class="" style="height:600px; width:100px; white-space:nowrap; display: inline-block; background-color:#aaa; padding:0px;"></div>
+	</div>
+	
+{% endblock %}
+
+{% block content %}
+    {% include 'y15/videoplayer_bottomplaylist.html' %}
+    <div class="row margin-side-0">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div id="title_row" class="row margin-side-0">
+                <div class="pull-right" style="padding:10px">
+                    <a id="subscription_button{{id}}" style="font-weight:bold;"
+                        {% if user.id %}
+                            onclick="subscribeChannel(
+                            {% if isSubscribe %}
+                                1, '{{id}}')" class="btn btn-sm btn-danger"><span class='glyphicon glyphicon-warning-sign'></span><span class="hidebtntext"> {% trans "Unfollow" %}</span>
+                            {% else %}
+                                0, '{{id}}')" class="btn btn-sm btn-info"><span class='glyphicon glyphicon-star'></span><span class="hidebtntext"> {% trans "Follow" %}</span>
+                            {% endif %}
+                        {% else %}
+                            data-toggle="modal" href="#loginModal" class="btn btn-sm btn-info"><span class='glyphicon glyphicon-warning-star'></span><span class="hidebtntext"> {% trans "Follow" %}</span>
+                        {% endif %}
+                    </a>
+                    <a  class="btn btn-sm facebook_button"
+                        {% if user.id %}
+                            onclick="fb_share();"
+                        {% else %}
+                            data-toggle="modal" href="#loginModal"
+                        {% endif %}
+                        >
+                        <p style="margin-bottom:0px; padding:2px 0px 4px 15px;" width="20" height="20"> {% trans "Share" %}</p>
+                    </a>
+                    <a onclick="penta('add');" class="btn btn-sm penta_button">
+                        <img src="{% static 'images/pentachannel-logo_white.png' %}" width="15px" height="15px"><span class="hidebtntext"> {% trans "Add to Penta" %}</span>
+                    </a>
+                    {% if isOwner %}
+                        <button type="button" class="btn btn-sm btn-success" style="font-weight:bold;" onclick="toggleEditMode(this);">
+                            <span class='glyphicon glyphicon-pencil'></span><span class="hidebtntext"> {% trans "Edit" %}</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-info" style="font-weight:bold;" onclick="showPopUp();">
+                            <span class='glyphicon glyphicon-plus-sign'></span><span class="hidebtntext"> {% trans "Add" %}</span>
+                        </button>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
+                                <span class='glyphicon glyphicon-cog'></span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="{% url 'curator:site_curator_edit_channel' user.id id %}"><span class='glyphicon glyphicon-edit'></span> {% trans "Edit channel" %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'curator:site_curator_delete_channel' id %}" onclick="return confirm('{% trans "Are you sure you want to delete channel?" %}');"><span class='glyphicon glyphicon-trash'></span> {% trans "Delete channel" %}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                <h3 id="videoplayer_title">{{name}}</h3>
+                <h4 id="owner_title" style="color:#aaa;"></h4>
+            </div>
+
+        </div>
+    </div>
+    <div id="fb-root"></div>
+
+    <script type="text/javascript">
+        var subscribe_text = '{% trans "Follow" %}',
+            unsubscribe_text = '{% trans "Unfollow" %}',
+            id = "{{id}}",
+            channel_name = '{{name}}',
+            channel_icon = '{{icon}}',
+            channel_isLive='{{isLive}}';
+        $(document).ready(function(){
+            videoPlayerAutoPlay = true;
+            select_channel_id(id);
+            window.onresize = autoResizeDiv();
+        });
+    </script>
+
+    <script type="text/javascript" src="{% static 'scripts/curator/curator_playlist_list.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/channel/channel.js' %}"></script>
+{% endblock %}

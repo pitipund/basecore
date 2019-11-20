@@ -1,0 +1,969 @@
+{% load static %}
+{% load truncatechartrue %}
+{% load static_withquery %}
+<html ng-app="player">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ playitem.name }} - ดู ซีรีย์ ละคร รายการทีวี บันเทิง ตลก ย้อนหลัง ง่ายๆ ออนไลน์ | PentaChannel</title>
+
+    {% if not debug and not request.GET.no_analytic %}
+        <script>
+            {% if request.user.is_authenticated %}
+                {% if request.user.is_staff %}
+                    var lstatus = 'Staff';
+                {% else %}
+                    var lstatus = 'Member';
+                {% endif %}
+            {% else %}
+                var lstatus = 'Guest';
+            {% endif %}
+
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments);
+                }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m);
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-11452091-11', 'auto');
+            ga('send', 'pageview', {
+                'dimension1': lstatus,
+            });
+        </script>
+    {% endif %}
+
+    {% if optimize %}
+        <link href="{% static_withquery 'dist/css/app.min.css' %}" rel="stylesheet" type="text/css"/>
+        <link href="{% static_withquery 'dist/css/player.min.css' %}" rel="stylesheet" type="text/css"/>
+    {% else %}
+        <link href="{% static 'feed/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'feed/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'feed/css/angular-tooltips.min.css' %}" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'feed/css/feeditem.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'feed/css/ngToast.min.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'feed/css/ngToast-animations.min.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'feed/css/bootstrap-datetimepicker.css' %}" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'player/css/ng-sortable.min.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'player/css/ng-sortable.style.min.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'player/css/angular-awesome-slider.min.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+        <link href="{% static 'player/css/player.css' %}?v=1.1" rel="stylesheet" type="text/css"/>
+    {% endif %}
+
+    <meta name="fragment" content="!">
+    <meta name="description" content="
+        {% if playitem.detail %}{{ playitem.detail }}{% elif playitem.link.payload %}{{ playitem.link.payload }}{% else %}{{ playitem.name }}{% endif %}">
+    <meta property="og:title" content="
+        {% if playitem.detail %}{{ playitem.detail|truncatechartrue:80 }}{% else %}{{ playitem.name|truncatechartrue:80 }}{% endif %}"/>
+    <meta property="og:type" content="video.movie"/>
+    <meta property="og:url" content="https://{{ request.get_host }}/th/channelplay/{{ c.id }}/{{ playitem.id }}/"/>
+    <meta property="og:image" content="
+        {% if playitem.snapshot %}{{ playitem.snapshot }}{% else %}https://www.penta-tv.com/en/site_media/images/family.png{% endif %}"/>
+    <meta property="og:image:width" content="1280"/>
+    <meta property="og:image:height" content="720"/>
+    <meta property="og:site_name" content="Penta Channel"/>
+    <meta property="og:description"
+          content="{% if playitem.detail %}{{ playitem.name|truncatechartrue:250 }}{% endif %}"/>
+</head>
+
+<body
+    ng-controller="playerController"
+    ng-init="playlistId='{{ playitem.id }}';
+             currentIndex={% if indexpos %}{{ indexpos }}{% else %}0{% endif %};
+             count={% if count %}{{ count }}{% else %}0{% endif %};
+             channelId='{{ c.id }}';
+             channel.name = '{{ c.name|escapejs }}';
+             channel.real_icon = '{{ c.real_icon }}';
+             channel.follower = {{ follower }};
+             channelUrl = '{{ channel_url }}';
+             nextIndex={{ nextindex }};
+             nextIndexUrl='{{ nextindex_url }}';
+             randomIndex={{ randomindex }};
+             firstIndex= {{ firstindex }};
+             accessLevel={% if playitem.sub_access_level %}{{ playitem.sub_access_level }}{% else %}1{% endif %};
+             openQuestion={{ question|yesno:'true,false' }};
+             perm_group_text={{ access_level_choices|safe }};">
+
+{% if optimize %}
+    <script async src="{% static_withquery 'dist/js/app.min.js' %}"></script>
+    <script src="{% static 'heatmap/js/utils.js' %}"></script>
+{% else %}
+    <script src="{% static 'feed/js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'feed/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular.min.js' %}"></script>
+    <script src="{% static 'feed/js/jquery.form.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-cookies.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-inview.js' %}"></script>
+    <script src="{% static 'feed/js/angular-sanitize.min.js' %}"></script>
+    <script src="{% static 'feed/js/angular-tooltips.min.js' %}"></script>
+    <script src="{% static 'feed/js/ui-bootstrap-tpls-0.13.0.min.js' %}"></script>
+    <script src="{% static 'feed/js/ng-file-upload.min.js' %}"></script>
+    <script src="{% static 'feed/js/ngToast.min.js' %}"></script>
+    <script src="{% static 'feed/js/moment.min.js' %}"></script>
+    <script src="{% static 'feed/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'player/app/player.js' %}"></script>
+    <script src="{% static 'player/app/player.service.js' %}"></script>
+    <script src="{% static 'player/app/player.config.js' %}"></script>
+    <script src="{% static 'player/app/directives/ng-sortable.min.js' %}"></script>
+    <script src="{% static 'player/app/directives/angular-awesome-slider.min.js' %}"></script>
+    <script src="{% static 'feed/app/layout/layout.module.js' %}"></script>
+    <script src="{% static 'feed/app/layout/services/post.service.js' %}"></script>
+    <script src="{% static 'feed/app/layout/services/usersuggestion.service.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/lazysrc.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/facebookbutton.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/savebutton.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/controllers/facebookbutton.controller.js' %}"></script>
+    <script src="{% static 'feed/app/layout/controllers/savebutton.controller.js' %}"></script>
+    <script src="{% static 'feed/app/layout/modals/createchannel.modal.js' %}"></script>
+    <script src="{% static 'feed/app/layout/modals/postbox.modal.js' %}"></script>
+    <script src="{% static 'feed/app/layout/modals/editpost.modal.js' %}"></script>
+    <script src="{% static 'feed/app/layout/modals/suggestionbox.modal.js' %}"></script>
+    <script src="{% static 'feed/app/browse/browse.module.js' %}"></script>
+    <script src="{% static 'feed/app/browse/services/browse.service.js' %}"></script>
+    <script src="{% static 'feed/app/account/account.module.js' %}"></script>
+    <script src="{% static 'feed/app/account/services/account.service.js' %}"></script>
+    <script src="{% static 'scripts/feed/fb_script.js' %}"></script>
+    <script src="{% static 'scripts/libs/bootstrap3-typeahead-mod.js' %}"></script>
+    <script src="{% static 'feed/app/layout/controllers/tageditor.controller.js' %}"></script>
+    <script src="{% static 'feed/app/layout/directives/tageditor.directive.js' %}"></script>
+    <script src="{% static 'feed/app/layout/services/tag.service.js' %}"></script>
+    <script src="{% static 'scripts/feed/tag_editor.js' %}"></script>
+    <script src="{% static 'heatmap/js/utils.js' %}"></script>
+{% endif %}
+{% include "channel/include/header2.html" %}
+<toast></toast>
+
+{% verbatim %} <!-- Angular Start here -->
+<div class="container ng-cloak"
+     style="margin-top: 70px;">
+    <div class="col-md-8">
+        <div class="embed-responsive embed-responsive-16by9">
+            <div id="player" class="embed-responsive-item" style="width:100%"></div>
+        </div>
+        {% endverbatim %}
+        {% if 'PentaRemote' in request.META.HTTP_USER_AGENT %}
+            <table width="100%" style="margin:2px 0; background: #fff; border-bottom: 1px solid #EEE;">
+                <tr>
+                    <td align="right">
+                        <button
+                            onclick="window.open('penta://channel?action=add&channel_id='+encodeURIComponent('channel_{{ c.id }}')+'&name='+encodeURIComponent('{{ c.name }}')+'&type=queue'+'&icon='+encodeURIComponent('{{ c.real_icon }}'), '_self', false);"
+                            class="btn btn-sm btn-info"><span class="glyphicon glyphicon-share-alt"></span> ติดตาม
+                        </button>
+                        <button
+                            onclick="window.open('penta://{% if playitem.video_type == 'Y' %}youtube{% elif playitem.video_type == 'D' %}dailymotion{% else %}stream_url{% endif %}?1='+encodeURIComponent('{{ playitem.video_id }}')+'&title='+decodeURIComponent('{{ playitem.name }}'), '_self', false);"
+                            class="btn btn-sm btn-info"><span class="glyphicon glyphicon-list"></span> เพิ่มในคิว
+                        </button>
+                        <button
+                            onclick="window.open('penta://{% if playitem.video_type == 'Y' %}youtube{% elif playitem.video_type == 'D' %}dailymotion{% else %}stream_url{% endif %}?1='+encodeURIComponent('{{ playitem.video_id }}')+'&current='+encodeURIComponent('{{ playitem.video_id }}')+'&title='+decodeURIComponent('{{ playitem.name }}'), '_self', false);"
+                            class="btn btn-sm btn-info"><span class="glyphicon glyphicon-play"></span> เล่นบนเพนต้า
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+        {% verbatim %}
+        <div style="width=100%; height: 30px; border-bottom: 1px solid #EEE; background: #fff">
+            <div id="control-group" class="btn-group pull-left" role="group">
+                <a
+                    tooltips tooltip-title="Repeat {{ repeatModeText }}" tooltip-size="small" tooltip-side="bottom"
+                    tooltip-speed="0"
+                    ng-click="repeatMode()"
+                    ng-class="{'btn-primary': isRepeatOn}"
+                    id="repeatButton"
+                    data-type=""
+                    role="button"
+                    class="btn btn-default">
+                    <span class="glyphicon glyphicon-repeat"></span><sub ng-if="repeatModeText=='one'">1</sub></a>
+                <a
+                    tooltips tooltip-title="Shuffle {{shuffleModeText}}" tooltip-size="small" tooltip-side="bottom"
+                    tooltip-speed="0"
+                    ng-click="shuffleMode()"
+                    ng-class="{'btn-primary': isShuffleOn}"
+                    id="shuffleButton"
+                    data-type="random"
+                    role="button"
+                    class="btn btn-default">
+                    <span class="glyphicon glyphicon-random"></span></a>
+                <a
+                    tooltips tooltip-title="วิดีโอถัดไป" tooltip-size="small" tooltip-side="bottom" tooltip-speed="0"
+                    onClick="playNextVideo()"
+                    class="btn btn-default btn-next">
+                    <span class="glyphicon glyphicon-fast-forward"></span></a>
+
+                <a class="btn btn-default" style="font-size: 14px;" ng-click="isShowSeekbar=!isShowSeekbar"
+                   ng-show="isOwnChannel() || isAdmin" ng-disabled="!channel" tooltips
+                   tooltip-title="ตั้งค่าตำแหน่งที่เล่น" tooltip-size="small" tooltip-side="bottom" tooltip-speed="0"><i
+                    class="fa fa-clock-o"></i></a>
+
+                <a class="btn btn-default" style="font-size: 14px;" ng-click="toggleOpenForQuestion()" ng-show="isAdmin"
+                   ng-disabled="!channel" ng-class="{'btn-success': openQuestion}" tooltips
+                   tooltip-title="เปิดรับความคิดเห็น" tooltip-size="small" tooltip-side="bottom" tooltip-speed="0"><i
+                    class="fa fa-comment-o"></i></a>
+            </div>
+            <!-- permission list should sync with server by get config from server -->
+            <save-button playlist="playlistItem" class="pull-right" hideSaved="channelId==saved.id"></save-button>
+            <facebook-button playlist="playlistItem" class="pull-right"></facebook-button>
+        </div>
+        <div class="col-xs-12" ng-show="isShowSeekbar"
+             style="border-bottom: 1px solid #EEE; background: #fff; padding: 10px;">
+            <h4>ปรับช่วงเวลาแนะนำสำหรับผู้ชม</h4>
+            <input ng-model="seekbarValue" type="text" slider options="seekbarOptions"/>
+            <div class="clearfix"></div>
+            <a
+                style="margin: 20px 2px 0px 2px;"
+                class="btn btn-xs btn-primary pull-right"
+                ng-click="cancelPlaylistStartEnd()">ยกเลิกช่วงเวลา</a>
+            <a
+                style="margin: 20px 2px 0px 2px;"
+                class="btn btn-xs btn-primary pull-right"
+                ng-click="setPlaylistStartEnd()">บันทึกช่วงเวลา</a>
+            <a
+                style="margin: 20px 2px 0px 2px;"
+                class="btn btn-xs btn-primary pull-right"
+                ng-click="setEndAtCurrentTime()">จบที่ตรงนี้</a>
+            <a
+                style="margin: 20px 2px 0px 2px;"
+                class="btn btn-xs btn-primary pull-right"
+                ng-click="setStartAtCurrentTime()">เริ่มที่ตรงนี้</a>
+
+        </div>
+        <div class="col-xs-12" style="width: 100%;background: #fff; padding: 0 2px">
+            <div class="pull-right dropdown" style="margin: 3px;" ng-show="isOwnChannel() || isAdmin">
+                การเข้าถึง:
+                <button
+                    class="btn btn-xs btn-default dropdown-toggle" type="button" id="selectPermissionForVideo"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    {{ perm_group_text[accessLevel] }}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="selectSource">
+                    <li><a href="#" ng-click="setVideoPermission(1)">{{perm_group_text[1]}}</a></li>
+                    <li><a href="#" ng-click="setVideoPermission(2)">{{perm_group_text[2]}}</a></li>
+                </ul>
+            </div>
+        </div>
+        {% endverbatim %}
+        {% if playitem %}
+            <table class="col-xs-12" style="width:100%;  background: #fff; margin-bottom: 2px; margin-top: 2px;">
+                <tbody itemscope itemtype="https://schema.org/VideoObject">
+                <tr>
+                    <td style="font-size:24px; font-weight:600; vertical-align:top; padding: 10px;">
+                        <div itemprop="name"><span>{{ ng_playlist_name }}</span>
+                            <span ng-show="isAdmin">
+                                <button class="btn btn-sm btn-default" ng-click="editPlaylist()">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                </button></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom: 10px;">
+                        <div
+                            class="pull-left" style="font-size:14; color: #999; padding-left: 10px;">
+                            คลิปโดย: <a itemprop="url" href="{{ playitem.link.url }}"
+                                        target="_blank">{{ playitem.link.provider_name }}</a>
+                            <span>เมื่อ {{ playitem.create_at | date }}</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="background: red; display:none; height:0px;">
+                            {% if playitem.detail %}
+                                <div itemprop="caption">{{ playitem.detail }}</div>{% endif %}
+                            <div itemprop="duration">{{ playitem.link.duration_s }}</div>
+                            <div itemprop="thumbnail">{{ playitem.link.real_thumbnail }}</div>
+                            <div itemprop="author">{{ playitem.link.provider_name }}</div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        {% endif %}
+        {% if question %}
+            {% if request.user.is_authenticated %}
+                <div class="col-xs-12"
+                     style="background: white; width:100%; margin-bottom: 4px; margin-top: 2px; padding-left: 10px; padding-top:2px; padding-bottom:8px; ">
+                    {% if request.user.is_staff %}
+                        {% verbatim %}
+                        <div style="width:100%; overflow-x:scroll; white-space: nowrap;" ng-hide="true">
+                            <div ng-repeat="q in questionerList track by $index"
+                                 style="display:inline-block; margin: 2px; border: 2px solid; padding:2px; border-radius: 4px; cursor: pointer;"
+                                 ng-style="q.id == currentQuestioner.id ? {'border-color':'orange'} : {'border-color':'#BBB'}"
+                                 ng-click="listQuestionMessageFromOwner(q);" title="{{q.name}}">
+                                <img ng-src="{{q.avatar}}" style="width:32px; height:32px; border-radius: 50%;">
+                                <div style="float:right;background:red;width:8px;height:8px;border-radius:50%"
+                                     ng-show="{{q.c_unread>0}}"></div>
+                            </div>
+                        </div>
+                        <div style="width: 100%; height:auto;" ng-show="currentQuestioner != null">
+                            <span style="font-size:18px;">ตอบคุณ {{currentQuestioner.name}}</span>
+                            <textarea ng-model="qMessage" style="width:100%"></textarea>
+                            <table style="width:100%">
+                                <tr>
+                                    <td style="width:100%"></td>
+                                    <td>
+                                        <div class="btn btn-xs btn-info" style="margin-top:4px;"
+                                             ng-click="sendQuestionMessage(currentQuestioner.id)"
+                                             ng-disabled="qMessage.trim()==''">
+                                            ส่งข้อความ
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="font-size:18px;">คำถาม ความสนใจ และข้อเสนอแนะจากผู้ชม</div>
+                        <hr style="margin: 4px 0 0 0">
+                        <div ng-hide="qMessageList.length>0">ยังไม่มีความคิดเห็นจากผู้ชม</div>
+                        <table width="100%">
+                            <tr ng-repeat="m in qMessageList" style="border-bottom: 1px solid #CCC; height: 40px"
+                                ng-style="!m.isNew ? {'background-color':'white'} : {'background-color':'#ddf0f0'}">
+                                <td style="padding-left: 4px; padding-right: 8px; vertical-align: top; padding-top:2px; width:32px;">
+                                    <img ng-src="{{m.avatar}}" style="width:32px; height:32px; border-radius: 50%">
+                                </td>
+                                <td style="vertical-align: top;">
+                                    <div style="white-space: pre-wrap;margin-bottom: 4px;">{{m.message}}</div>
+                                    <div style="font-size:12px;color:#999;margin-bottom: 4px">
+                                        เมื่อ {{m.created|date:'dd/MM/yyyy HH:mm:ss'}}
+                                    </div>
+                                    <div style="margin-bottom:4px">
+                                        <button style="margin-bottom:4px" ng-init="isReplyFormOpen = false"
+                                                class="btn btn-xs btn-primary"
+                                                ng-click="isReplyFormOpen=!isReplyFormOpen;">แนะนำวิดีโอ
+                                        </button>
+                                        <span ng-show="isReplyFormOpen">
+                                <input type="text" placeholder="playlist id" ng-init="pl_id=''" ng-model="pl_id"
+                                       style="width:80px">
+                                <button class="btn btn-xs btn-success" ng-click="addSuggestPlaylistById(m.id, pl_id)"
+                                        ng-disabled="pl_id.trim()==''">ตกลง</button>
+                            </span>
+                                        <span ng-repeat="s in m.suggest track by $index">
+                                <div class="btn-group" role="group" ng-show="s">
+                                <a href="{{s.link}}" class="btn btn-xs btn-default" target="_self"
+                                   style="margin-bottom:4px">{{s.name}}</a>
+                                <button class="btn btn-xs btn-default" style="margin-bottom:4px"
+                                        ng-click="removeSuggestById(s, m, $index)">x</button>
+                                </div>
+                            </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        {% endverbatim %}
+                    {% else %}
+                        {% verbatim %}
+                        <div style="font-size:18px;">ฝากข้อความถึงผู้เชี่ยวชาญ</div>
+                        <textarea ng-model="qMessage" style="width:100%"
+                                  placeholder="ต้องการคำอธิบายเพิ่มเติมเกี่ยวกับ... / อยากให้มีวิดีโอเกี่ยวกับ... / มีข้อเสนอแนะว่า..."></textarea>
+                        <table style="width:100%">
+                            <tr>
+                                <td style="width:100%"></td>
+                                <td>
+                                    <div class="btn btn-xs btn-info" style="margin-top:4px;"
+                                         ng-click="sendQuestionMessage()" ng-disabled="qMessage.trim()==''">
+                                        ส่งข้อความ
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr style="margin: 4px 0 0 0">
+                        <table width="100%">
+                            <tr ng-repeat="m in qMessageList" style="border-bottom: 1px solid #CCC"
+                                ng-style="m.isNew ? {'background-color':'#ddf0f0'} : {'background-color':'white'}">
+                                <td style="padding-left: 4px; padding-right: 8px; vertical-align: top; padding-top:2px; width:32px;">
+                                    <img src="{{m.avatar}}" style="width:32px; height:32px; border-radius: 50%">
+                                </td>
+                                <td style="vertical-align: top;">
+                                    <div style="white-space: pre-wrap;">{{m.message}}</div>
+                                    <div style="font-size:12px;color:#999">
+                                        เมื่อ {{m.created|date:'dd/MM/yyyy HH:mm:ss'}}
+                                    </div>
+                                    <div style="margin-bottom:4px;font-size:12px;color:#999"
+                                         ng-show="m.suggest.length>0">
+                                        วิดีโอแนะนำ
+                                        <span ng-repeat="s in m.suggest">
+                                <a ng-href="{{s.link}}"><button class="btn btn-xs btn-default">{{s.name}}</button></a>
+                            </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        {% endverbatim %}
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="col-xs-12"
+                     style="background: white; width:100%; margin-bottom: 4px; margin-top: 2px; padding-left: 10px; padding-top:2px; padding-bottom:8px; ">
+                    <div style="font-size:18px;">ฝากข้อความถึงผู้เชี่ยวชาญ</div>
+                    <textarea style="width:100%" placeholder=" กรุณาล็อกอินเข้าสู่ระบบก่อนส่งข้อความ"></textarea>
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:100%"></td>
+                            <td>
+                                <div class="btn btn-xs btn-info" style="margin-top:4px;"
+                                     onclick='$("#guestModal").modal("show")'>
+                                    ส่งข้อความ
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+        <div style="width:100%; margin-bottom:4px ;overflow:auto; padding:0;" id="bottompanel">
+            <!-- left outer div to prevent text overlap on small screen -->
+            {% if not 'PentaRemote' in request.META.HTTP_USER_AGENT %}
+                <!--<a ng-href="https://www.penta-tv.com/from-pentachannel" target="_blank" >-->
+                <a ng-href="https://www.penta-tv.com/tvbox?s=pcenter" target="_blank">
+                    <img src="{% static 'images/banner_bottom.jpg' %}" width="100%"/>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-4" ng-if="!didLogin" style="margin-bottom:2px;">
+        <div id="invite1" style="padding:10px 50px 5px">
+            <p><b>เมื่อคุณเป็นสมาชิก คุณสามารถ</b></p>
+            <p class="col-12" style="padding-left:10px">
+                ☛ เก็บวิดีโอลงแชนแนลที่คุณสร้างขึ้นเอง<br/>
+                ☛ จดจำวิดีโอที่คุณชื่นชอบไว้ดูในภายหลัง<br/>
+                ☛ สร้างแชนแนลเพื่อใช้ร่วมกับ <a href="https://www.penta-tv.com/from-pentachannel">Penta TV</a><br/>
+                ☛ แบ่งปันแชนแนลกับเพื่อนๆในโซเชียล<br/>
+            </p>
+        </div>
+        <div id="invite2" class="text-center">
+            <p>
+                <a class="btn-login btn btn-primary"
+                   href="https://accounts.thevcgroup.com/login/facebook/?next=https://{{ request.get_host }}/accounts/login/?next={{ request.get_full_path }}"
+                   data-loading-text="กำลัง Login...."
+                   style="background-color:#3b5998;">
+                    <image src="{% static 'images/facebook.png' %}"
+                           style="margin-top:-6px;padding-right:5px;width:24px;"></image>
+                    Login
+                </a>
+                <span> หรือ </span>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#guestModalRegister">
+                    สมัครฟรี
+                </button>
+            </p>
+            <p><a href="/th/" class="btn btn-lg btn-success" style="width:64%;">แวะชมหน้าแรก</a></p>
+        </div>
+    </div>
+    {% verbatim %}
+    <div class="col-md-4">
+        <div id="channelInfo" style="height: 70px;">
+            <div id="channelLogoSection">
+                <a ng-href="{{channelUrl}}"><img class="channelLogoPl pull-right" ng-src="{{ channel.real_icon }}"/></a>
+            </div>
+
+            <div id="channelDetailSection">
+                <div id="channelTitle">
+                    <a ng-href="{{channelUrl}}">{{ channel.name }}</a>
+                </div>
+                <div
+                    class="btn btn-xs btn-default"
+                    style="margin-top: 3px; position: absolute; top: 30px; right: 20px;"
+                    ng-class="{'btn-success':channelArrayContains(channelId,follow)}"
+                    ng-click="followChannel(channelArrayContains(channelId,follow))"
+                    ng-hide="channelId==saved.id">
+                    {{ channelArrayContains(channelId,follow)?"กำลังติดตาม":"ติดตาม"}}
+                </div>
+                <div class="btn-group" style="top:0; right:15px; position: absolute;">
+                    <button type="button" class="btn btn-icon dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h" style="color: #666;"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li><a href="#"
+                               ng-show="channelArrayContains(channelId,own)|| channelId==saved.id || channelId==share.id || isAdmin"
+                               ng-click="openPostbox()"><i class="fa fa-plus"></i> &nbsp;เพิ่มวิดิโอ</a></li>
+                        <li><a href="#"
+                               ng-show="(!channelArrayContains(channelId,own) && channelId!=share.id || isAdmin) && channelId!=saved.id"
+                               ng-click="openSuggestionBox()"><i class="fa fa-plus"></i> &nbsp;แนะนำวิดีโอ</a></li>
+                        <li><a href="#" ng-show="channelId!=saved.id"
+                               ng-click="shareChannel()"><i class="fa fa-facebook"></i> &nbsp;&nbsp;แชร์แชนแนล</a></li>
+                        <li><a href="#"
+                               ng-show="(channelArrayContains(channelId,own) || isAdmin) && channelId!=saved.id"
+                               ng-click="editChannel(vm.channel_id)"><i class="fa fa-pencil"></i> &nbsp;แก้ไขแชนแนล</a>
+                        </li>
+                        <li><a href="#"
+                               ng-show="(channelArrayContains(channelId,own) || isAdmin) && channelId!=saved.id"
+                               ng-click="deleteChannel(vm.channel_id)"><i class="fa fa-trash"></i> &nbsp;ลบแชนแนล</a>
+                        </li>
+                        <li><a
+                            ng-show="(channelArrayContains(channelId,own)||channelId==share.id) && channelId!=saved.id"
+                            ng-href="/th/channel/{{channel.id}}/mail/" target="_self"><i class="fa fa-envelope"></i>
+                            &nbsp;ส่งmail</a></li>
+                    </ul>
+                </div>
+                <div ng-if="false" id="editbutton" class="btn btn-default btn-xs" data-is-editing="false">แก้ไข</div>
+                <div id="channelFollower"><a href="/th/follower/{{ channelId }}/" target="_self">จำนวนผู้ติดตาม {{
+                    channel.follower }}</a>
+                </div>
+                <div id="channelVideoCount">จำนวนวิดิโอทั้งหมด {{ count }}</div>
+                <div class="clearfix" style="clear:both"></div>
+            </div>
+        </div>
+        <div style="background: #fefefe; height: 23px; width: 100%; padding-top: 2px; border-bottom: 1px solid #eee;">
+            <div class="pull-left" style="color: #999; padding-left: 5px;">{{currentIndex}}/{{count}}</div>
+            <a
+                ng-show="channelArrayContains(channelId,own)|| channelId==saved.id || channelId==share.id || isAdmin "
+                class="btn btn-default btn-xs pull-right" ng-click="isEditing=!isEditing" style="margin-left:3px;">{{
+                isEditing? "เสร็จ":"แก้ไข"}}</a>
+            <a class="btn btn-danger btn-xs pull-right" ng-click="deleteAll()" style="margin-left:3px;"
+               ng-show="isEditing"> ลบทั้งหมด</a>
+            <a class="btn btn-danger btn-xs pull-right" ng-click="deleteSelected()" style="margin-left:3px;"
+               ng-show="isEditing" ng-disabled="selectedPlaylist.length === 0">ลบวีดีโอที่เลือก</a>
+            <a class="btn btn-default btn-xs pull-right" ng-click="onSelectAllClick()" style="margin-left:3px;"
+               ng-show="isEditing">
+                <span ng-hide="isSelectedAll">เลือกวีดีโอทั้งหมด</span>
+                <span ng-show="isSelectedAll">ยกเลิกการเลือก</span>
+            </a>
+            <a class="btn btn-default btn-xs pull-right"
+               ng-show="isEditing && !enable_sort_pattern"
+               ng-click="inversePlaylistOrder()" style="margin-left:3px;"> เรียงย้อนกลับ</a>
+            <a class="btn btn-default btn-xs pull-right"
+               ng-show="isEditing && enable_sort_pattern"
+               ng-click="sortPlaylistByPattern()" style="margin-left:3px;"> เรียงใหม่</a>
+        </div>
+        <div style="background: #fefefe; width: 100%; height:20px" ng-show="isEditing">
+            <div class="dropdown pull-right">
+                การเข้าถึงของทุกวิดีโอ:
+                <button
+                    class="btn btn-xs btn-default dropdown-toggle" type="button" id="selectPermissionForAll"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    {{ perm_group_text[perm_group] }}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="selectSource">
+                    <li><a href="#" ng-click="setAllVideosPermission(1)">{{perm_group_text[1]}}</a></li>
+                    <li><a href="#" ng-click="setAllVideosPermission(2)">{{perm_group_text[2]}}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="channelPlaylist">
+            <div class="sortable-row" as-sortable="dragControlListeners" is-disabled="!isEditing"
+                 ng-model="channelPlaylistItems">
+                <div ng-show="minPage>1" class=" loadmore loadmore-after" id="lastListItem" ng-click="loadPrevious();">
+                    <span class="btn" style="width: 100%;"><a>วิดีโอก่อนหน้า</a></span>
+                </div>
+
+                <div
+                    ng-repeat="item in channelPlaylistItems"
+                    ng-style="isEditing? {'border-color':'lightblue'} : {'border-width':'#fff'}"
+                    as-sortable-item="">
+                    <div
+                        class="listitem"
+                        ng-class="{'currentplay': playlistId==item.id}"
+                        ng-style="isEditing? {'cursor':'move'} : {'cursor':'default'}"
+                        as-sortable-item-handle="">
+                        <div class="listItemImage">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <a class="listItemLink" id="title-{{item.id}}" ng-href="{{item.play_url}}">
+                                    <div class="center-cropped"
+                                         style="background-image: url('{{ item.link.real_thumbnail.replace('0.jpg', 'default.jpg') }}');">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="listItemTitle" style="">
+                            <a ng-disableclass="listItemLink" id="title-{{item.id}}" ng-href="{{item.play_url}}">
+                                {{ item.name }}
+                            </a>
+                        </div>
+                        <div class="listItem-del-btn" style="color:black; font-size:1em; font-weight: 500"
+                             ng-show="isEditing">
+                            <label>ลบ
+                                <input type="checkbox" class="playlist-checkbox"
+                                       ng-click="selectPlaylistChange($event, item.id)">
+                            </label>
+                        </div>
+                        <save-button
+                            playlist="item"
+                            hideSaved="channelId==saved.id"
+                            ng-show="!isEditing"
+                            class="listItem-del-btn"></save-button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div ng-show="maxPage<pagingInfo.num_page" class=" loadmore loadmore-before" id="firstListItem"
+                     ng-click="loadNext()">
+                    <span class="btn" style="width: 100%;"><a>วิดีโอต่อไป</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endverbatim %} <!-- Angular End here -->
+
+
+<script>
+    var player;
+    var needloginAfterPlay = false;
+    var didLogin = {{ request.user.is_authenticated|yesno:"true,false" }};
+
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    function playNextVideo() {
+        if (needloginAfterPlay && !didLogin) {
+            $('#guestModal').modal('show');
+            return;
+        }
+        {%if nextindex %}
+            var next_index = {{nextindex}};
+            var new_next_url = "{{ nextindex_url }}";
+        {% else %}
+            var next_index = -1;
+            var new_next_url = "{{ firstindex_url }}";
+        {% endif %}
+
+        var mode = getUrlVars()['mode'];
+        if (mode) {
+            if (mode == 'one') {
+                {% if playitem.video_type == 'Y' %}
+                    player.seekTo({{playitem.play_start_at|default_if_none:0}}, true);
+                    {% if playitem.play_end_at %}
+                        monitorPlayNextVideo({{playitem.play_end_at}});
+                    {% endif %}
+                {% elif playitem.video_type == 'D' %}
+                    player.seek({{playitem.play_start_at|default_if_none:0}});
+                    player.play();
+                {% elif playitem.video_type in "'S','F'" %}
+                    player.currentTime = {{playitem.play_start_at|default_if_none:0}}
+                        player.play();
+                {% endif %}
+                return;
+            } else if (mode == 'all') {
+                if (next_index == -1) {
+                    //get first index
+                    {% if firstindex %}
+                        next_index = {{ firstindex }};
+                        window.location.href = "{{ firstindex_url }}#?mode=" + mode;
+                        return;
+                    {% endif %}
+                }
+            } else if (mode == 'random') {
+                {% if randomindex %}
+                    next_index = {{ randomindex }};
+                    new_next_url = "{{ randomindex_url }}";
+                {% else %}
+                    // set next_index by random
+                    var items = $('.listItem:not(.currentplay)');
+                    var item = items[Math.floor(Math.random() * items.length)];
+                    next_index = $(item).data('index');
+                {% endif %}
+            }
+            window.location.href = new_next_url + '#?mode=' + mode;
+        } else {
+            window.location.href = new_next_url;
+        }
+    }
+
+
+</script>
+
+{% if playitem.video_type == 'Y' %}
+
+    <script async>
+        var tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        tag.type = 'text/javascript';
+        tag.async = true;
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        var player;
+        var playerVar = { 'autoplay': 1, 'controls': 1, 'autohide': 1, 'wmode': 'opaque' };
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                videoId: '{{ playitem.video_id }}',
+                playerVars: playerVar,
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                },
+            });
+        }
+
+        function monitorPlayNextVideo(end_at) {
+            setTimeout(function () {
+                if (player.getCurrentTime() > end_at) {
+                    playNextVideo();
+                } else {
+                    monitorPlayNextVideo(end_at);
+                }
+            }, 1000);
+        }
+
+        function onPlayerReady(event) {
+            {% if playitem.play_start_at %}
+                player.seekTo({{playitem.play_start_at|default_if_none:0}});
+            {% endif %}
+            {% if playitem.play_end_at %}
+                monitorPlayNextVideo({{playitem.play_end_at}});
+            {% endif %}
+
+            var updateTime = 600000;
+            if (player.getDuration() > 0 && player.getDuration() < 660) {
+                updateTime = player.getDuration() * 600;
+                console.log(updateTime);
+            }
+            setInterval(function () {
+                if (isPlaying) {
+                    heatmap_log('playlist', {{ playitem.id }}, 'play', player.getCurrentTime());
+                }
+            }, updateTime);
+        }
+
+        var lastState = null,
+            isSeeking = false,
+            isPlaying = false;
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                if (!lastState != YT.PlayerState.BUFFERING) {
+                    heatmap_log('playlist', {{ playitem.id }}, 'play', player.getCurrentTime());
+                }
+                isPlaying = true;
+            }
+            if (event.data === YT.PlayerState.BUFFERING) {
+                if (lastState === YT.PlayerState.PAUSED) {
+                    isSeeking = true;
+                    heatmap_log('playlist', {{ playitem.id }}, 'seek', player.getCurrentTime());
+                }
+            }
+            if (event.data === YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                setTimeout(function () {
+                    if (!isSeeking) {
+                        heatmap_log('playlist', {{ playitem.id }}, 'pause', player.getCurrentTime());
+                    } else {
+                        isSeeking = false;
+                    }
+                }, 500);
+            }
+            if (event.data === YT.PlayerState.ENDED) {
+                heatmap_log('playlist', {{ playitem.id }}, 'end', player.getCurrentTime());
+                playNextVideo();
+            }
+            lastState = event.data;
+        }
+    </script>
+{% endif %}
+
+
+{% if playitem.video_type == 'D' %}
+    <script>
+        // Daily motion player
+        window.dmAsyncInit = function () {
+            DM.init({ apiKey: 'ee760058651a7c5805a3', status: true, cookie: true });
+
+            var dom = document.getElementById('player');
+            player = DM.player(dom, {
+                video: "{{ playitem.video_id }}",
+                params: { autoplay: 'true', start: {{playitem.play_start_at|default_if_none:0 }} },
+            });
+            // At the end of a video, load the next video if any
+
+            player.addEventListener('video_start', videoStart);
+            player.addEventListener('play', videoPlay);
+            player.addEventListener('pause', videoPause);
+            player.addEventListener('seeking', videoSeeking);
+            player.addEventListener('video_end', function (e) {
+                setTimeout(videoEnd, 1000);
+            });
+
+            var lastState = null,
+                videoStarted = false,
+                isSeeking = false,
+                isPlaying = false;
+
+            function videoStart(e) {
+                videoStarted = true;
+                var updateTime = 600000;
+                if (player.duration > 0 && player.duration < 660) {
+                    updateTime = player.duration * 600;
+                }
+                setInterval(function () {
+                    if (isPlaying) {
+                        heatmap_log('playlist', {{ playitem.id }}, 'play', player.currentTime);
+                    }
+                }, updateTime);
+            }
+
+            function videoPlay(e) {
+                if (videoStarted) {
+                    if (lastState !== 'seeking') {
+                        heatmap_log('playlist', {{ playitem.id }}, 'play', player.currentTime);
+                    }
+                }
+                lastState = 'play';
+            }
+
+            function videoPause(e) {
+                if (videoStarted) {
+                    setTimeout(function () {
+                        if (!isSeeking) {
+                            heatmap_log('playlist', {{ playitem.id }}, 'pause', player.currentTime);
+                        } else {
+                            isSeeking = false;
+                        }
+                    }, 500);
+                }
+                lastState = 'pause';
+            }
+
+            function videoSeeking(e) {
+                if (videoStarted) {
+                    isSeeking = true;
+                    heatmap_log('playlist', {{ playitem.id }}, 'seek', player.currentTime);
+                }
+                lastState = 'seeking';
+            }
+
+            function videoEnd(e) {
+                heatmap_log('playlist', {{ playitem.id }}, 'end', player.currentTime);
+                playNextVideo();
+            }
+
+            {% if playitem.play_end_at %}
+                player.addEventListener('timeupdate', timeListener);
+
+                function timeListener(e) {
+                    var curTime = player.currentTime;
+                    if (Math.floor(curTime) === {{playitem.play_end_at}}) {
+                        videoEnd(e);
+                    }
+                }
+            {% endif %}
+            // player.addEventListener("ad_end", function(e) {
+            //     ;
+            // });
+        };
+        (function () {
+            var s, e = document.createElement('script');
+            e.async = true;
+            e.src = document.location.protocol + '//api.dmcdn.net/all.js';
+            s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(e, s);
+        }());
+    </script>
+{% endif %}
+
+{% if playitem.video_type in "'S','F'" %}
+    <script>
+        (function () {
+            var playerDom = $('#player'),
+                domString = '<video id="html5video" width="100%" height="100%" controls autoplay>' +
+                    '<source src="{{playitem.video_id}}" type="video/mp4">' +
+                    'Your browser does not support the video tag.' +
+                    '</video>';
+            $(playerDom).empty();
+            $(playerDom).append(domString);
+
+            player = document.getElementById('html5video');
+            player.addEventListener('canplay', videoStart);
+            player.addEventListener('play', videoPlay);
+            player.addEventListener('pause', videoPause);
+            player.addEventListener('seeking', videoSeeking);
+            player.addEventListener('ended', playerEnded, false);
+
+            var lastState = null,
+                videoStarted = false,
+                isSeeking = false,
+                isPlaying = false;
+
+            function videoStart(e) {
+                videoStarted = true;
+                var updateTime = 600000;
+                if (player.duration > 0 && player.duration < 660) {
+                    updateTime = player.duration * 600;
+                }
+                setInterval(function () {
+                    if (isPlaying) {
+                        heatmap_log('playlist', {{ playitem.id }}, 'play', player.currentTime);
+                    }
+                }, updateTime);
+            }
+
+            function videoPlay(e) {
+                if (videoStarted) {
+                    if (lastState !== 'seeking') {
+                        heatmap_log('playlist', {{ playitem.id }}, 'play', player.currentTime);
+                    }
+                }
+                lastState = 'play';
+            }
+
+            function videoPause(e) {
+                if (videoStarted) {
+                    setTimeout(function () {
+                        if (!isSeeking) {
+                            heatmap_log('playlist', {{ playitem.id }}, 'pause', player.currentTime);
+                        } else {
+                            isSeeking = false;
+                        }
+                    }, 1000);
+                }
+                lastState = 'pause';
+            }
+
+            function videoSeeking(e) {
+                if (videoStarted) {
+                    isSeeking = true;
+                    heatmap_log('playlist', {{ playitem.id }}, 'seek', player.currentTime);
+                }
+                lastState = 'seeking';
+            }
+
+            function playerEnded(e) {
+                if (!e) {
+                    e = window.event;
+                }
+                heatmap_log('playlist', {{ playitem.id }}, 'end', player.currentTime);
+                playNextVideo();
+            }
+
+            {% if playitem.play_start_at %}
+                player.addEventListener('loadedmetadata', function (e) {
+                    player.currentTime = {{playitem.play_start_at}};
+                }, false);
+            {% endif %}
+
+            {% if playitem.play_end_at %}
+                function timeListenerStream(e) {
+                    var curTime = player.currentTime;
+                    if (Math.floor(curTime) === {{playitem.play_end_at}}) {
+                        playerEnded(e);
+                    }
+                }
+                player.addEventListener('timeupdate', timeListenerStream, false);
+            {% endif %}
+        }());
+    </script>
+{% endif %}
+
+
+{% include 'y15/components/sign_in_register_modal.html' %}
+
+<noscript>penta channel tv video clip movie music เพนต้า แชนแนล ทีวี วิดีโอ ดูหนัง ดูซีรี่ย์ ฟังเพลง ออนไลน์ คลิป ใหม่
+    ย้อนหลัง
+</noscript>
+</body>
+
+
+</html>

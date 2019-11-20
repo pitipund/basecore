@@ -1,0 +1,30 @@
+<center><form method='get'> <select id='channel_id' name='channel_id'>
+    {% for live_ch in live_list %}
+        <option style='font-weight:bold;color:{% if live_ch.id%}color:green{% else %}color:red{% endif %}' value='%s' {% if live_ch.id==int(channel_id) %}selected{% endif %}>[%s] %s</option> % channel_count_per_live_dict.get(live_ch.id,0) , live_ch.name
+    {% endfor %}
+</select>
+<input type='submit'></input>
+</form>
+
+<table width='100%' ><tr align='right'><td><form method='post' action='/show_programguide/' enctype='multipart/form-data'>
+<input type='hidden' name='channel_id' id='channel_id' value='{{channel_id}}'></input>
+<b>UPLOAD PROGRAM GUIDE (EXCEL)</b><br><br><input type='file' name='docfile' id='filename'></input>
+<input type='submit'></input>
+</form></td></tr></table>
+
+<a href='/show_programguide?channel_id={{channel_id}}&export=True'>Export this table to excel</a><center>
+<table border=1 width='100%'><tr> <th></th> 
+        <th width='13%'>Monday</th> 
+        <th width='13%'>Tuesday</th> 
+        <th width='13%'>Wednesday</th> 
+        <th width='13%'>Thursday</th> 
+        <th width='13%'>Friday</th> 
+        <th width='13%'>Saturday</th> 
+        <th width='13%'>Sunday</th> 
+        </tr>
+    <tr><td align='center'><b>{{channel}}</b></td>
+{% if channel_onair_dict[i][t] %} <td align='center'><a target='_blank' href='/th/channelplay/%s/'>%s</a></td> % (channel_onair_dict[i][t][0].id , channel_onair_dict[i][t][0].name)
+            {% else %} <td></td> {% endif %}
+        </tr>
+    </table>
+

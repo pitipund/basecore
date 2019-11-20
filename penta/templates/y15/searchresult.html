@@ -1,0 +1,79 @@
+{% extends "y15/base_browse.html" %}
+
+{% block header %}
+
+<title>{{ t.name }} - Penta Channel รายการดีๆ ที่ไม่ต้องตามหา</title>
+
+{% endblock %}
+
+{% block middlepane %}
+
+<table width="100%">
+
+<tr><td colspan="3">&nbsp;</td></tr>
+
+<tr><td colspan="3">ผลลัพธ์จากการค้นหา:&nbsp;{{ q }}</td></tr>
+
+<tr><td colspan="3">&nbsp;</td></tr>
+
+</table>
+
+{% include "y15/components/playlist_script_template.html" %}
+
+{% for p in P %}
+{% include "y15/components/room_playlist_template.html"%}
+{% endfor %}
+
+<nav>
+  <ul class="pagination">
+    {% if P.has_previous %}
+    <li><a href="?q={{q}}&page={{ P.previous_page_number }}" aria-label="Previous">
+    {% else %}
+    <li class="disabled"><a aria-label="Previous">
+    {% endif %}
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+
+    {% for page in page_nums %}
+      {% if page == current_page %}
+        <li class="active">
+      {% else %}
+        <li>
+      {% endif %}
+          <a href="?q={{q}}&page={{ page }}">{{ page }}</a>
+        </li>
+    {% endfor %}
+
+    {% if P.has_next %}
+    <li><a href="?q={{q}}&page={{ P.next_page_number }}" aria-label="Next">
+    {% else %}
+    <li class="disabled"><a aria-label="Next">
+    {% endif %}
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+  </ul>
+</nav>
+
+
+{% endblock %}
+
+{% block footer %}
+
+<script>
+
+$( ".savebutton" ).click(function() {
+    var currentlink = $(this);
+    $.post("/th/channeladd/1051/", { link: $(this).attr("name"), tag: 0 }, function( data ) {
+        var savecount = $.parseJSON(data);
+        currentlink.html("Saved");
+        currentlink.css("background-color", "cyan");
+        currentlink.attr("disabled", "disabled");        
+        $( "#savecount" ).html(savecount.toString());
+    });
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,242 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+/* wider for higher resolution */
+.container { 
+    width: 100%; 
+    max-width: 1280px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.col-md-8, .col-md-4 {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.as-sortable-item{
+    -ms-touch-action: auto;
+    touch-action: auto;
+}
+
+#channelLogo {
+    width: 50px;
+    height: 50px;
+    float: left;
+    margin: 5px;
+}
+
+img.channelLogoPl {
+    width: 60px;
+    height: 60px;
+    float: left;
+    vertical-align: middle;
+    border: 1px solid #eee;
+    border-radius: 15%;
+}
+
+.channel {
+    font-size: 12px;
+    float: left;
+    margin-top:5px; margin-right:5px;
+}
+
+.listItemImage {
+    width:125px; 
+    float: left;
+    padding-right: 3px;
+}
+
+.listItemTitle {
+    height: 80%;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 3px;
+}
+
+.listItem {
+    width: 100%;
+    border-bottom: 1px solid #cecece;
+    height: 74px;
+    position: relative;
+}
+
+.listItem-del-btn {
+    position: absolute; 
+    right:0; 
+    bottom:0; 
+    color: #d9534f; 
+    font-size:20; 
+    cursor: pointer;
+}
+
+.currentplay {
+    background: #9FDBE9;
+}
+
+tr.currentplay > td > span.listItemTitle > a {
+    color: white;
+}
+
+.editMode {
+    display: none;
+}
+
+.loadmore , .loadmore>td>span>a{
+    background-color: #EEE;
+    color: #999;
+}
+
+#player {
+    /*height: 500px;*/
+    background: #333; 
+    text-align: center;
+}
+
+#bottompanel, #player {
+    width:100%; 
+}
+
+#invite1, #invite2 {
+    width: 100%;
+    /*max-width: 342px;*/
+    display: inline-block;
+    background: white;
+    vertical-align: top;
+}
+
+/*@media only screen and (min-width : 991px) {
+    #invite1, #invite2 {
+        width: 100%;
+        max-width: 342px;
+        display: inline-block;
+        background: white;
+        vertical-align: top;    
+    }
+}*/
+
+@media only screen and (min-width: 640px) and (max-width: 991px) {
+    #invite1, #invite2 {
+        width: 49.7%;
+        /*max-width: 342px;*/
+        display: inline-block;
+        background: white;
+        vertical-align: top;    
+    }
+}
+
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px)  { 
+    /* iPad STYLES GO HERE */
+    #bottompanel, #player {
+        width:600px; 
+    }
+
+    a.btn {
+        margin-bottom: 5px;
+    }
+}
+
+#channelLogoSection, #channelDetailSection, #channelPlaylist, #suggestChannelList{
+    float: left;
+    padding: 5px;
+}
+
+#suggestChannelList{
+    width: 100%;
+    height: 0;
+    margin-top: 5px;
+    overflow-y:scroll; 
+}
+
+#channelPlaylist {
+    height:595px; 
+    width:100%; 
+    overflow-y: scroll;
+    overflow-x: hidden; 
+    -webkit-overflow-scrolling: touch;
+    float:left;
+}
+
+#channelInfo, #channelPlaylist {
+    background-color:#fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+
+#channelInfo {
+    border-bottom: solid 1px #999;
+    min-height: 70px;
+}
+
+#channelLogoSection {
+    width: 20%;
+}
+
+#channelDetailSection {
+    width: 80%;
+}
+
+.channelLogo {
+    width: 100%;
+}
+
+#channelTitle {
+    width: 90%;
+    float: left;
+    font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+
+#editbutton, #channelShare{
+    width: 20%;
+    float:left;
+}
+
+#channelShare {
+    padding-left:5px;
+}
+
+#channelFollower, #channelVideoCount{
+    width: 100%;
+    float: left;
+}
+
+#channelVideoCount {
+    color: #999;   
+}
+
+#channelAddVideo, #follow-button{
+    width: 100%;
+    float: left;
+}
+
+.playback-control#shuffleButton.active, .playback-control#repeatButton.active{
+    background-color: #0A81D7;
+    color: #fff;
+    font-weight: 600;
+}
+
+#postbox {
+    display: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.center-cropped {
+    margin-top: 2px;
+    width: 120px;
+    height: 65px;
+    vertical-align: middle;
+    background-position: center center;
+    background-repeat: no-repeat;
+}

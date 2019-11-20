@@ -1,0 +1,24 @@
+{% extends 'agreement/base.html' %}
+{% load i18n %}
+
+{% block content %}
+  <div class="container">
+    <h2 class="mt-5">{% blocktrans %}Deactivate or remove user{% endblocktrans %}</h2>
+    <ul class="mt-5 mb-5">
+      <li>{% trans 'Username' %}: {{ user.username }}</li>
+      <li>{% trans 'Name' %}: {{ user.profile.get_full_name }}</li>
+    </ul>
+    <form method="post" class="d-inline-block">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="deactivate">
+      <input type="submit" value="{% trans 'Deactivate' %}" class="btn btn-warning">
+    </form>
+    <form method="post" class="d-inline-block">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="remove">
+      <input type="submit" value="{% trans 'Remove User Account' %}" class="btn btn-danger">
+    </form>
+    <a href="{% url 'PRX:user_agreement' user.username %}" class="btn btn-link">{% trans 'Cancel' %}</a>
+  </div>
+{% endblock %}
+

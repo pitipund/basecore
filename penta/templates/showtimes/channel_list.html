@@ -1,0 +1,121 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Power-All Showtime</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% include "showtimes/include/config_style.html" %}
+        <script>
+            delete_link = "{% url 'site_channel_delete' 'ling' %}";
+            list_link = "{% url 'site_channel_list' %}";
+        </script>
+        <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/channel_list.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+    </head>    
+    <body>
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% include "showtimes/include/header.html" %} 
+                    <div style="padding:0px 20px 0px 20px;">
+                        <h3>Channel List </h3>
+                        <div class="row-fluid">                            
+                            <div class="span6">
+                                <p style="margin-left:30px;">
+                                    <a id="createChannelBtn" href="{% url 'site_channel_create' %}" class="btn btn-success" title="Create channel"><i class="icon-plus icon-white"></i></a>
+                                    <a id="deleteChannelBtn" href="#" class="btn btn-danger disabled" title="Delete channels" onclick="delete_channel();"><i class="icon-trash icon-white"></i></a>
+                                </p>
+                            </div>
+                            <div class="span6">
+                                <div class="my_pagination pagination-right">
+                                    {% include "showtimes/include/generic_pagination.html" %}
+                                </div>
+                            </div>
+                            <div class="span11">
+                                <p>Total : {{total}}</p>
+                                {% if messages %}
+                                <div class="alert alert-error" style="padding:10px;">
+                                    {% for message in messages %}
+                                        {{message}}
+                                    {% endfor %}
+                                </div>
+                                {% endif %} 
+                            </div>                                                       
+                        </div>
+                        <div id="spinnerbar" align="center"></div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:15%">
+                                        <input type="checkbox" id="channel_all" onclick="checkAll();enable_btn();" style="float:left;" title="cheak all"/>
+                                        {% if sort == 'channel' %}
+                                        <a href="?sort=channel_d">Channel  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'channel_d' %}
+                                        <a href="?sort=channel">Channel  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=channel">Channel  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                    </th>
+                                    <th style="width:60%">
+                                        {% if sort == 'username' %}
+                                        <a href="?sort=username_d">Host  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'username_d' %}
+                                        <a href="?sort=username">Host  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=username">Host  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                    </th>
+                                    <th style="width:10%">
+                                        {% if sort == 'start_time' %}
+                                        <a href="?sort=start_time_d">Start time  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'start_time_d' %}
+                                        <a href="?sort=start_time">Start time  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=start_time">Start time  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                    </th>
+                                    <th style="width:10%">
+                                        {% if sort == 'end_time' %}
+                                        <a href="?sort=end_time_d">End time  <i class="icon-chevron-down"></i></a>
+                                        {% elif sort == 'end_time_d' %}
+                                        <a href="?sort=end_time">End time  <i class="icon-chevron-up"></i></a>
+                                        {% else %}
+                                        <a href="?sort=end_time">End time  <i class="icon-chevron-down"></i></a>
+                                        {% endif %}
+                                    </th>
+                                    <th style="width:5%">Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for channel in object_list %}  
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="channel_check" value="{{channel.id}}" onclick="enable_btn();"/>&nbsp;&nbsp;&nbsp;<image src="{{MEDIA_URL}}{{channel.icon}}" width="50"/>&nbsp;&nbsp;&nbsp;&nbsp;{{channel.name}}
+                                    </td>
+                                    <td>{{channel.username}}@{{channel.ip}}</td>
+                                    <td>{{channel.start_time}}</td>
+                                    <td>{{channel.end_time}}</td>
+                                    <td><a class="btn btn-info" href="{% url 'site_channel_update' channel.id %}"><i class="icon-pencil icon-white"></i></a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination" align="center">
+                            <ul>
+                                {% for i in paginator.page_range %}
+                                    <li><a href="?page={{i}}">{{i}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div><!--end style padding-->
+                </div>
+            </div>
+        </div><!--end container -->
+        {% include "showtimes/include/footer.html" %}      
+    </body>
+</html>

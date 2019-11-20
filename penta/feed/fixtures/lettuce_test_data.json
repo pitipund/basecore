@@ -1,0 +1,227 @@
+[
+  {
+    "pk": 39,
+    "model": "curator.curatortag",
+    "fields": {
+      "show_in_listpage": false,
+      "show_in_listpage_index": 0,
+      "name": "เพลง/ดนตรี",
+      "curatorPlaylist": [],
+      "curatorChannel": [],
+      "channel_show": []
+    }
+  },
+  {
+    "pk": 111,
+    "model": "curator.curatortag",
+    "fields": {
+      "show_in_listpage": false,
+      "show_in_listpage_index": 1,
+      "name": "ข่าว",
+      "curatorPlaylist": [],
+      "curatorChannel": [],
+      "channel_show": []
+    }
+  },
+  {
+    "pk": 1,
+    "model": "curator.user",
+    "fields": {
+      "username": "dev4",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2014-02-19T08:50:03Z",
+      "groups": [],
+      "user_permissions": [],
+      "password": "dev",
+      "email": "dev4@test.com",
+      "date_joined": "2014-02-19T08:50:03Z"
+    }
+  }, {
+    "pk":1,
+    "model": "curator.userprofile",
+    "fields": {
+      "facebook_access_token": null,
+      "url_name": null,
+      "image": "uploaded/profile/no_user.png",
+      "facebook_expires": null,
+      "image_url": null,
+      "user": 1,
+      "facebook_id": null,
+      "isDisplay_email": false
+    }
+  },
+  {
+    "pk": 2,
+    "model": "curator.user",
+    "fields": {
+      "username": "dev5",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2014-02-19T08:50:03Z",
+      "groups": [],
+      "user_permissions": [],
+      "password": "dev",
+      "email": "dev5@test.com",
+      "date_joined": "2014-02-19T08:50:03Z"
+    }
+  }, {
+    "pk": 2,
+    "model": "curator.userprofile",
+    "fields": {
+      "facebook_access_token": null,
+      "url_name": null,
+      "image": "uploaded/profile/no_user.png",
+      "facebook_expires": null,
+      "image_url": null,
+      "user": 2,
+      "facebook_id": null,
+      "isDisplay_email": false
+    }
+  },
+  {
+    "pk": 3,
+    "model": "curator.user",
+    "fields": {
+      "username": "chevavan",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2014-02-19T08:50:03Z",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$10000$demMQ8aKUKdo$HRAszGWN3fP0IgGmVt5llN1dkr55TRRoxQJom13omKM=",
+      "email": "chevavan@thevcgroup.com",
+      "date_joined": "2014-02-19T08:50:03Z"
+    }
+  }, {
+    "pk": 3,
+    "model": "curator.userprofile",
+    "fields": {
+      "facebook_access_token": "CAAIIFVuFIlwBAOBU37516HfZCMtuZAZBh9xQKNXDBN8ocawR2xEz1KC9wpWDJ7P5wB7WDQSHWq7gJv82mb6FZBcg3ZAHzTUxZClL2mMZCvt5eWwa1dZBaFFxRdxQl3zQXZBPkbCZC64ZCDihtBTidi9l44H9hZBlZBcWV1lCRHsjhUZCs1dZB3n6KDuE5In",
+      "url_name": null,
+      "image": "",
+      "facebook_expires": 5180834,
+      "image_url": "http://graph.facebook.com/787344842/picture?width=240&height=240",
+      "user": 3,
+      "facebook_id": "787344842",
+      "isDisplay_email": false
+    }
+  },
+
+  {
+    "pk": 1,
+    "model": "curator.curatorchannel",
+    "fields": {
+      "pin_queue": null,
+      "url_name": null,
+      "name": "Channel_A",
+      "icon_url": "",
+      "update_at": "2014-02-19T09:02:15Z",
+      "detail": "",
+      "create_at": "2014-02-19T08:54:53Z",
+      "isPrivate": false,
+      "user": 1,
+      "isLive": false,
+      "isDefault": false,
+      "icon": "uploaded/icon/playstore-icon.png"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "curator.curatorchannel",
+    "fields": {
+      "pin_queue": null,
+      "url_name": null,
+      "name": "Channel_B",
+      "icon_url": "",
+      "update_at": "2014-02-19T08:54:53Z",
+      "detail": "",
+      "create_at": "2014-02-19T08:55:27Z",
+      "isPrivate": false,
+      "user": 2,
+      "isLive": false,
+      "isDefault": false,
+      "icon": "uploaded/icon/playstore-icon_1.png"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "curator.curatorchannel",
+    "fields": {
+      "pin_queue": null,
+      "url_name": null,
+      "name": "Channel_C",
+      "icon_url": "",
+      "update_at": "2014-02-19T08:55:55Z",
+      "detail": "",
+      "create_at": "2014-02-19T08:55:55Z",
+      "isPrivate": false,
+      "user": 2,
+      "isLive": false,
+      "isDefault": false,
+      "icon": "uploaded/icon/playstore-icon_2.png"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "curator.userhavechannel",
+    "fields": {
+      "user": 1,
+      "curatorChannel": 2,
+      "follow_at": "2014-02-19T10:01:20Z"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "curator.curatorlink",
+    "fields": {
+      "name": "Ievan Polkka",
+      "url": "https://www.youtube.com/watch?v=kbbA9BhCTko",
+      "video_id": "kbbA9BhCTko",
+      "video_type": "Y",
+      "duration_s": 147,
+      "thumbnail_url": "http://img.youtube.com/vi/kbbA9BhCTko/0.jpg"
+    }
+  }, {
+    "pk": 1,
+    "model": "curator.curatorplaylist",
+    "fields": {
+      "name": "Miku Ievan Polkka",
+      "link": 1,
+      "channel": 2,
+      "create_at": "2014-02-19T08:54:53Z",
+      "update_at": "2014-02-19T08:54:53Z"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "curator.curatorlink",
+    "fields": {
+      "name": "【VOCALOID MUSICAL】Music Wizard of OZ",
+      "url": "https://www.youtube.com/watch?v=IEMDJfIjge8",
+      "video_id": "IEMDJfIjge8",
+      "video_type": "Y",
+      "duration_s": 147,
+      "thumbnail_url": "http://img.youtube.com/vi/IEMDJfIjge8/0.jpg"
+    }
+  }, {
+    "pk": 2,
+    "model": "curator.curatorplaylist",
+    "fields": {
+      "name": "Music Wizard of OZ",
+      "link": 2,
+      "channel": 3,
+      "create_at": "2014-02-19T08:54:53Z",
+      "update_at": "2014-02-19T08:54:53Z"
+    }
+  }
+]

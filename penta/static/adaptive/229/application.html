@@ -1,0 +1,62 @@
+<html>
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <script type="text/javascript" src="./channel/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="./boostrap/js/bootstrap.min.js"></script>
+    <link href="./boostrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./boostrap/css/bootstrap-theme.min.css" rel="stylesheet">
+
+</head>
+
+ <body>
+    <div class="container" style="margin-top:10px;">
+        <div class="row" id="applist">
+            <div class="col-md-4"><span class="glyphicon glyphicon-cloud"></span></div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function (){        
+            document.addEventListener("onsmartremoteready", onSmartRemoteReady);
+            document.documentElement.style.webkitUserSelect='none';
+            document.documentElement.style.webkitTouchCallout='none';
+        });
+
+        // add message listener
+        function onSmartRemoteReady() {
+            WebRemote.setMessageListener("onMessage");
+            WebRemote.sendMessageToHome("application get");
+        }
+
+        // got message from application in pentabox
+        function onMessage(sender, message)
+        {
+            var messageObject = JSON.parse(message);
+            if(messageObject['request']=='application get'){
+                loadAppList(messageObject.response.applications);
+            }
+        }
+
+        // send message to connected pentabox
+        function sendMsg(word) {
+            WebRemote.sendMessageToHome(word);    
+        }
+
+        function openApp(package) {
+            WebRemote.sendMessageToHome('application open '+package);
+        }
+
+        function loadAppList(appList)
+        {
+            var appListElement = $("#applist");
+            appListElement.empty();
+            var htmlTemp = "";
+            for(var index = 0 ; index<appList.length ;index++)
+            {
+                var appObject = appList[index];
+                htmlTemp+= '<div class="col-xs-6 col-md-4 col-lg-4" onclick="openApp(\''+appObject['id']+'\')"><div class="thumbnail" style="border: 3px solid #00BFFF;"><img  src="./images/'+appObject['icon']+'"><div class="caption"><span>'+appObject['name']+'</span></div></div></div>'
+            }
+            appListElement.html(htmlTemp);
+        }
+    </script>
+ <body>
+ </html>

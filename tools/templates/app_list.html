@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Data Dictionary{% endblock %}
+
+{% block content %}
+<h1>Data dictionary</h1>
+<p>
+&gt; <a href="?">All apps</a>
+</p>
+<h3>Apps</h3>
+    <ul>
+    {% for app in apps %}
+        <li><a href="?app={{ app.label}}">{{ app.label }}</a></li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'tools:refresh_model' %}">Refresh models</a>
+{% endblock content %}

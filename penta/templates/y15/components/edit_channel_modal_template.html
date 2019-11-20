@@ -1,0 +1,65 @@
+
+<div class="modal" id="editChannelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit channel</h4>
+            </div>
+            <div class="modal-body">
+                <form id="edit-channel-form" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="channel-edit-name">Channel name*</label>
+                        <input type="text" class="form-control" id="channel-edit-name" name="name" value="{{ c.name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="channel-edit-detail">Detail</label>
+                        <textarea id="channel-edit-detail" class="form-control" name="detail" rows="3">{{ c.detail|default_if_none:"" }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="channel-edit-url">Icon URL</label>
+                        <input type="text" class="form-control" id="channel-edit-url" name="icon_url" value="{{ c.icon_url|default_if_none:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="channel-edit-icon">Icon <small>200x200px</small></label>
+                        <input type="file" id="channel-edit-icon" name="icon">
+                    </div>
+                    <div class="clearfix form-group edit-tag-form">
+                        {% include "y15/components/tag_editor.html" with env="edit" %}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="edit-channel-button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready( function() {
+
+        $("#edit-channel-button").click(function() {
+            $("#edit-channel-form").ajaxSubmit({
+                url: "/feed/channel/{{ c.id }}/",
+                type: 'POST',
+                success: onDone,
+                error: onFail
+            });
+
+            function onDone(data) {
+                console.log("on edit success");
+                $("#editChannelModal").modal("hide");
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+                location.reload();
+            }
+            function onFail(data) {
+                console.log("fail!" + data.detail);
+            }
+
+            return false;
+        });
+    });
+</script>

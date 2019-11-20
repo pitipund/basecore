@@ -1,0 +1,65 @@
+{% extends "channel/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <script type="text/javascript" src="{% static 'scripts/curator/curator_admin_updatetag.js' %}"></script>
+
+    <div class="row" style="padding-bottom:20px;">
+        <div class="col-xs-12 col-sm-12 col-md-12" style="padding-top:15px;">
+            <ol class="breadcrumb">
+                <li class="active">{% trans "Admin Tools" %}</li>
+            </ol>
+        </div>
+        {% if messages %}
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="alert alert-success" style="padding:10px;">
+                    {% for message in messages %}
+                        {{message}}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}<!-- end error alert -->
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div ><h4>{% trans "Select Tags to show in List page, drag each Tag up/down to arrange order" %}</h4></div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <form id="tags_form" class="form-horizontal" method="post" enctype="multipart/form-data" action="{% url 'curator:site_admin_tag_edit' %}">{% csrf_token %}
+                <ul id="sortable" style="padding-left:0px;">
+                    {% for tag in tags %}
+                        <li class="ui-state-default" style="list-style-type:none; cursor:move; padding:0px 10px 10px 0px;">
+                            <h4>
+                                <div class="col-xs-12 col-sm-12 col-md-12"> 
+                                    <input type="checkbox" id="tag_{{forloop.counter}}" value="{{tag.id}}" {% if tag.show_in_listpage %}checked{% endif %}> Tag - {{tag.name}} ({{tag.curatorChannel.count}} channels)</input>
+                                </div>
+                            </h4>
+                            <ul>
+                                {% for channel in tag.channel %}
+                                    <li class="ui-state-default" style="list-style-type: none;cursor: move;">
+                                        <input type="checkbox" id="channel_{{tag.id}}_{{forloop.counter}}" value="{{channel.id}}" {% if channel.isChannel_show == 'True' %}checked{% endif %}>{{channel.name}}</input>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div type="hidden" id="master_hid" name="master_hid"></div>
+            </form>
+        </div><!--end col-xs-12 col-sm-12 col-md-12-->
+        <div align="center">
+            <button onclick="arrangeAndSubmit()" class="btn btn-success">{% trans "Save" %}</button>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div>
+                <a class="btn btn-warning" href="{{back_url}}"><span class="glyphicon glyphicon-chevron-left"></span> {% trans "Back" %}</a>
+            </div>
+        </div>
+    </div><!--end row-->
+                    
+    <script>
+        $(function() {
+            $( "#sortable" ).sortable();
+            $( "#sortable" ).disableSelection();
+        });
+    </script>
+{% endblock %}

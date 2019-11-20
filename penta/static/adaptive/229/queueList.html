@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html manifest="homerun.appcache">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <link rel="stylesheet" href="css/blackberry.css"></link>
+        <link rel="stylesheet" href="css/custom.css"></link>
+
+        <title>Queue</title>
+
+        <script src="dojo/dojo.js" data-dojo-config="async:true, parseOnLoad:false, locale:'en-us' "></script>
+    </head>
+
+    <body style="background-color: rgb(255, 255, 255);">
+
+        <div data-dojo-type="ninja.widget.MainWidget" >
+
+        </div>
+
+
+        <script>
+            var refTime = new Date();
+            document.addEventListener("onsmartremoteready", onSmartRemoteReady);
+
+            require(["dojo/io-query", "ninja/service/test/mockSmartRemote2"], function(ioQuery, mockStartRemote) {
+                var query = window.location.search.substring(1);
+                var queryObject = ioQuery.queryToObject(query);
+
+                //if query parameter contain pentaIp then initialize mockSmartRemote2
+                if("pentaIp" in queryObject) {
+                    mockStartRemote.initialize(queryObject.pentaIp);
+                }
+            });
+
+            function onSmartRemoteReady() {
+                console.log("smartremoteReady:" + (new Date() - refTime));
+                WebRemote.setMessageListener("messageHandler");
+                startDojo();
+            }
+
+            function messageHandler(sender, message) {
+                console.warn("adaptive control miss some message");
+            }
+
+            function startDojo() {
+                refTime = new Date();
+
+                require(["dojo/parser",
+                         "ninja/widget/MainWidget"
+                ],
+                function(parser) {
+                    console.log("require:" + (new Date() - refTime));
+                    refTime = new Date();
+
+                    parser.parse();
+                    console.log("parse:" + (new Date() - refTime));
+                    refTime = new Date();
+                })
+            }
+        </script>
+    </body>
+</html>

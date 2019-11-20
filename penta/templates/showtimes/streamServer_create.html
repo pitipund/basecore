@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Power-All Showtime</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% include "showtimes/include/config_style.html" %}
+        <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/streamServer_create.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% include "showtimes/include/header.html" %} 
+                    <div style="padding:0px 20px 0px 20px;">
+                        {% if action == 'create' %}<h3>Create Stream Server</h3>
+                        {% else %}                 <h3>Update Stream Server</h3>
+                        {% endif %}
+                        <hr/>
+                    </div> 
+                    {% if messages %}
+                    <div class="alert alert-error" style="margin:20px; padding:10px;">
+                        {% for message in messages %}
+                            {{message}}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <form id="stream_create_form" class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+                        <div id="spinnerbar" align="center"></div>
+                        {% if form.name.errors %}<div class="control-group error">
+                        {% else %}               <div class="control-group">
+                        {% endif %}
+                            <label for="name" class="control-label">Name {% if form.name.field.required %}*{% endif %}</label>
+                            <div class="controls">
+                                <div class="clearfix">
+                                    <div class="input">
+                                        {{form.name}}<p class='text-warning'>Allow only a-z A-Z 0-9 - _</p>{% if form.name.errors %}{% for error in form.name.errors %}
+                                            <span class="help-inline">{{error|escape}}</span>
+                                        {% endfor %}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--end name-->
+                        {% if form.ip.errors %}<div class="control-group error">
+                        {% else %}             <div class="control-group">
+                        {% endif %}
+                            <label for="ip" class="control-label">IP Address {% if form.ip.field.required %}*{% endif %}</label>
+                            <div class="controls">
+                                {{form.ip}}{% if form.ip.errors %}{% for error in form.ip.errors %}
+                                    <span class="help-inline">{{error|escape}}</span>
+                                {% endfor %}{% endif %}
+                            </div>
+                        </div><!--end ip-->
+                        <div class="control-group">
+                            <label class="control-label"></label>
+                            <div class="controls">
+                                <button class="btn btn-primary" id="sendBtn" onclick="createStreamServer();"><i class="icon-ok icon-white"></i> Submit</button>
+                                <a id="cancelBtn" class="btn" href="{% url 'site_streamServer_list' %}"><i class="icon-remove"></i> Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div> 
+            </div>
+        </div><!--end container-->
+        {% include "showtimes/include/footer.html" %}
+    </body>
+</html>

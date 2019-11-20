@@ -1,0 +1,79 @@
+<html manifest="channel.appcache">
+	<head>
+	 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" type="text/css" href="custom.css">
+		<script type="text/javascript" src="jquery-1.10.1.min.js"></script>
+	</head>
+
+	<body>
+		<div class="channelHeader">
+			Channels
+		</div>
+
+		<div id="channelView" style="display:none;">
+			<table id="channelTable" class="channelTable" cellspacing="0">
+			</table>
+		</div>
+
+		<div id="failView" style="display:none;">
+			Cannot get channel.
+		</div>
+
+		<div id="loadingIndicator" class="loadingIndicator">
+			loading...
+		</div>
+
+	 	<script type="text/javascript">
+	 		var getChannelUrl = "http://showtime.penta-tv.com/curatorGetSupport/";
+
+		 	function fetchChannel() {
+		 		var request = $.getJSON(getChannelUrl, onGetChannelSuccess);
+		 		request.fail(onGetChannelFail);
+		 	}
+
+		 	function onGetChannelSuccess(channels) {
+		 		$("#channelView").show();
+		 		$("#failView").hide();
+		 		$("#loadingIndicator").hide();
+		 		renderChannel(channels);
+		 	}
+
+		 	function onGetChannelFail() {
+		 		$("#channelView").hide();
+		 		$("#failView").show();
+		 		$("#loadingIndicator").hide();
+		 	}
+
+		 	function renderChannel(channels) {
+		 		//render tr
+		 		var maxRow = Math.ceil(channels.length / 2);		 		
+		 		for(var row=0; row < maxRow; row++) {
+		 			var trId = "tr" + row;
+		 			$("#channelTable").append('<tr id=' + trId + '> </tr>');
+		 		}
+
+		 		//render td
+		 		$.each(channels, function(index, channel) {
+		 			var row = Math.floor(index/2);
+		 			$("#tr" + row).append('<td class="channelTd" data-channelUrl="' + channel.url + '"><img class="channelIcon" src="' + channel.icon + '"> </td>')
+		 		});
+
+		 		registerEventListener(); 		
+		 	}	 		
+
+	 		function registerEventListener() {
+	 			$(".channelTd").on("click", onChannelClick);
+	 		}
+
+	 		function onChannelClick() {
+	 			var channelUrl = this.getAttribute("data-channelUrl");
+	 			window.location = channelUrl;
+	 			return true;
+	 		}
+
+	 		fetchChannel();
+	 	</script>
+	</body>
+</html>

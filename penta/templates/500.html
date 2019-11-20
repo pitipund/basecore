@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>500 We've got a problem | Penta Channel</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="apple-touch-icon" href="{% static 'images/pentachannel-logo.png' %}">
+        <link href="{% static 'styles/libs/bootstrap.min.css' %}" rel="stylesheet"/>
+        <link href="{% static 'styles/custom_styles/mystyle.css' %}" rel="Stylesheet">
+        <link href="{% static 'styles/custom_styles/curatorStyle.css' %}" rel="Stylesheet">
+        <link rel="shortcut icon" href="{% static 'images/pentachannel-logo.png' %}">
+        <script src="{% static 'scripts/libs/bootstrap_js/jquery.js' %}"></script>
+        <script src="{% static 'scripts/libs/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+
+        <style>
+            body {
+                //background-image: url('{% static 'images/mochaGrunge2.png');
+                //background-repeat: repeat;
+            }
+            .container {
+                background-color: #ffffff;
+                word-wrap:break-word;
+            }
+            /*For Images in Index page*/
+            @media screen and (min-width: 200px) {
+                .image_index {
+                    height: 90px;
+                }
+            }
+            @media screen and (min-width: 400px) {
+                .image_index {
+                    height: 110px;
+                }
+            }
+            @media screen and (min-width: 700px) {
+                .image_index {
+                    height: 130px;
+                }
+            }
+            @media screen and (min-width: 900px) {
+                .image_index {
+                    height: 140px;
+                }
+            }
+            @media screen and (min-width: 1000px) {
+                .image_index {
+                    height: 150px;
+                }
+            }
+            @media screen and (min-width: 1280px) {
+                .image_index {
+                    height: 160px;
+                }
+            }
+            /*For avoid text flow*/
+            .avoid_overflow {
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            .instruction_text {
+                margin-top:15px;
+                margin-bottom:15px;
+                margin-left:10px;
+            }
+            .show_pointer {
+                cursor:pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class=' %}"container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <link rel="stylesheet" href="{% static 'styles/libs/jquery-ui.css' %}"/>
+                    <script src="{% static 'scripts/libs/jquery-ui.js' %}"></script>
+
+                    <div class="navbar navbar-default navbar-fixed-top" style="margin-bottom:0px;//margin-left:-15px;//margin-right:-15px; ">
+                        <div class="container" style="background-color: #16c1f3; padding-right:5px;">
+                            <div class="navbar-header">
+                                <a href="/" class="navbar-brand" title="Home"><img src="{% static 'images/pentachannel-logo_white.png' %}" alt="" style="max-width:189px; max-height:28px;"></a>
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+                            <div class="navbar-collapse bs-navbar-collapse collapse">
+                                <div class="col-lg-4 col-md-4 col-sm-5">
+                                    <script type="text/javascript" src="{% static 'scripts/curator/curator_header.js' %}"></script>
+                                    <form class="navbar-form navbar-left" id="searchNavForm" name="searchNavForm" method="get">
+                                        <div class="input-group">
+                                            <input id="searchKey_input" type="text" class="form-control col-lg-8" onkeypress="search(event);" value="">
+                                            <span class="input-group-btn">
+                                                <button onclick="click_search();" class="btn btn-info"><span class="glyphicon glyphicon-search"></span></button>
+                                                <input type="hidden" id="q" name="q">
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- end navbar -->
+                    <div style="height:40px;"></div>
+                    <div class="container" style="margin:0px -15px;">
+                        <div class="row" style="padding-bottom:20px;">
+                            <div class="visible-lg visible-md" style="height:150px;"></div>
+                            <div class="visible-sm" style="height:120px;"></div>
+                            <div class="visible-xs" style="height:40px;"></div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                                <img src="{% static 'images/errorlogo.png' %}" alt="Error 500">
+                                <div class="lead text-center"><span style="margin-top:20px; font-size:1.6em;">Oops! Something went wrong.</span><br><span style="margin-top:20px; font-size:0.6em; color:#bbb">Error 500</span></div>
+                            </div>
+                        </div>
+                    </div><!-- end container -->
+                </div><!-- end col-xs-12 col-sm-12 col-md-12 -->
+            </div><!-- end row -->
+        </div><!-- end container -->
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-11452091-9']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,29 @@
+services:
+  - redis:latest
+before_script:
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  - cd $CI_PROJECT_DIR/..
+  - rm -rf test_his
+  - git clone git@192.168.10.21:cnmi/his.git test_his
+  - rm -r test_his/his/framework
+  - git clone git@192.168.10.21:mor/framework.git test_his/his/framework
+  - rm -r test_his/his/users
+  - git clone git@192.168.10.21:mor/users.git test_his/his/users
+  - rm -r test_his/his/core
+  - ln -s $CI_PROJECT_DIR test_his/his/core
+  - MODULE=core bash ./test_his/utility/checkout_module_depend.sh
+
+unittest:
+  image: registry.thevcgroup.com/cnmi/his/uitest:20171213-00
+  tags:
+    - docker
+  script:
+    - cd $CI_PROJECT_DIR/../test_his
+    - pip3 install -r requirements/test.txt
+    - python3 manage.py compilemessages  --settings=config.settings.test
+    - py.test his/core his/framework his/users
+    - echo Checking for model changes without migration
+    - SKIP_MIGRATION=False python3 manage.py makemigrations --settings=config.settings.test --dry-run --noinput --check || ( echo -e "\033[1;31mModel changed, but no migration found (please makemigrations, and commit again)\033[0m" && exit 1 )

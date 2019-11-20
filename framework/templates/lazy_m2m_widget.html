@@ -1,0 +1,225 @@
+{% load static %}
+<div style="display: flex">
+    <link id="{{ widget.name }}_style" rel="stylesheet"/>
+    <script id="{{ widget.name }}_script"></script>
+    <script>
+        if (!String.prototype.format){
+            String.prototype.format = function(){
+                var args = arguments
+                return this.replace(/{(\w+)}/g, function(match, key) {
+                    var value;
+                    if (isNaN(parseInt(key))) {
+                        if (typeof args[0] === 'object') {
+                            value = args[0][key]
+                        } else {
+                            value = args[key]
+                        }
+                    } else {
+                        value = args[key]
+                    }
+                    return typeof value !== 'undefined' ? value : match
+                })
+            }
+        }
+
+        var style = [].find.call(document.querySelectorAll('link'), dom => {
+            return dom.href.includes('lib/dist/dgrid/css/dgrid.css')
+        });
+        var script = [].find.call(document.querySelectorAll('script'), dom => {
+            return dom.src.includes('lib/dist/dojo/dojo.js');
+        });
+        if (!style) {
+            var styleDom = document.querySelector('#{{ widget.name }}_style')
+            styleDom.setAttribute('href', '{% static 'lib/dist/dgrid/css/dgrid.css' %}')
+        }
+        if (!script) {
+            var scriptDom = document.querySelector('#{{ widget.name }}_script');
+            scriptDom.setAttribute('src', '{% static 'lib/dist/dojo/dojo.js' %}')
+            scriptDom.onload = onReady
+        }
+
+        function onReady() {
+            require(
+                [
+                    "dojo/_base/declare",
+                    "dgrid/OnDemandGrid",
+                    "dgrid/Selection",
+                    "dgrid/extensions/ColumnResizer",
+                    "dgrid/Keyboard",
+                    "dojo/aspect",
+                    "dstore/Request",
+                    "dstore/Memory",
+                ],
+                function(
+                    declare,
+                    OnDemandGrid,
+                    Selection,
+                    ColumnResizer,
+                    Keyboard,
+                    aspect,
+                    Request,
+                    Memory,
+                ) {
+                    let columns = {{ widget.columns }}
+                    let grid_setting = [OnDemandGrid, Selection, ColumnResizer,  Keyboard];
+                    let CustomGrid = declare(grid_setting);
+                    let gridDom1 = document.querySelector('#{{ widget.name }}_grid1')
+                    let gridDom2 = document.querySelector('#{{ widget.name }}_grid2')
+                    let fieldName = '__name'
+                    let grid1Store = new Request({
+                        target: '{{ widget.api }}',
+                        rangeStartParam: 'offset',
+                        rangeCountParam: 'limit',
+                        sortParam: 'sort',
+                    })
+
+                    let grid1 = new CustomGrid({
+                        collection: grid1Store,
+                        columns: columns,
+                        selectionMode: "single",
+                        cellNavigation: false,
+                        adjustLastColumn: false,
+                        keepScrollPosition: true,
+                        showHeader: true,
+                        loadingMessage: 'LOADING . . .',
+                        noDataMessage:'ไม่มีข้อมูล',
+                        minRowsPerPage: 10
+                    }, gridDom1);
+
+                    let grid2 = new CustomGrid({
+                        columns: [{field: fieldName, label: '', width: 10}],
+                        selectionMode: "single",
+                        cellNavigation: false,
+                        adjustLastColumn: false,
+                        keepScrollPosition: true,
+                        showHeader: false,
+                        loadingMessage: 'LOADING . . .',
+                        noDataMessage:'ไม่มีข้อมูล',
+                        minRowsPerPage: 10
+                    }, gridDom2);
+
+                    let selectDom = document.querySelector('select[name={{ widget.name }}]')
+                    let searchDom = document.querySelector('#{{ widget.name }}_search')
+                    let selectedStore = [].map.call(selectDom, option => {
+                        return {id: option.getAttribute('value'), [fieldName]: option.innerHTML }
+                    })
+
+                    grid2.set('collection', new Memory({
+                        data: { items: selectedStore, identifier: 'id' }
+                    }))
+
+                    grid1.on('.dgrid-row:dblclick', event => {
+                        select(grid1.row(event).data)
+                    })
+
+                    grid1.on('keypress', event => {
+                        if(event.keyCode === 13) {
+                            select(grid1.row(event).data)
+                        }
+                    })
+
+                    grid2.on('.dgrid-row:dblclick', event => {
+                        deselect(grid2.row(event).data)
+                    })
+
+                    grid2.on('keypress', event => {
+                        if(event.keyCode === 13) {
+                            deselect(grid2.row(event).data)
+                        }
+                    })
+
+                    searchDom.addEventListener('keyup', function(event) {
+                        search(this.value)
+                    })
+
+                    let search = debounce(function (query) {
+                        grid1.set('collection', grid1Store.filter({
+                            '{{ widget.search_param }}': query
+                        }))
+                    }, 350)
+
+                    function deselect(row) {
+                        if (!row) return
+                        let collection = grid2.get('collection')
+                        let model = collection.data
+                        model = model.filter(_row => { return _row.id !== row.id })
+                        grid2.set('collection', new Memory({
+                            data: { items: model, identifier: 'id' }
+                        }));
+
+                        // remove option from hidden select dom
+                        [].find.call(selectDom.options, option => {
+                            if (option && parseInt(option.value) === parseInt(row.id)) {
+                                option.remove()
+                            }
+                        })
+                    }
+
+                    function select(row) {
+                        if (!row) return
+                        let collection = grid2.get('collection')
+                        let model = collection.data
+                        let duplicate = model.find(_row => {
+                            return parseInt(_row.id) === parseInt(row.id)
+                        })
+                        if (!duplicate) {
+
+                            // display field should be the same format as backend
+                            row[fieldName] = '{{ widget.selected_format }}'.format(row)
+                            model.push(row)
+                            grid2.set('collection', collection)
+                            grid2.refresh()
+
+                            // add option to hidden select dom
+                            let option = document.createElement('option')
+                            option.setAttribute('selected', 'selected')
+                            option.value = row['id']
+                            option.innerHTML = row[fieldName]
+                            selectDom.appendChild(option)
+                        }
+                    }
+
+                    function debounce(func, wait, immediate) {
+                        var timeout
+                        return function () {
+                            var context = this, args = arguments
+                            var later = function () {
+                                timeout = null
+                                if (!immediate) func.apply(context, args)
+                            };
+                            var callNow = immediate && !timeout
+                            clearTimeout(timeout)
+                            timeout = setTimeout(later, wait)
+                            if (callNow) func.apply(context, args)
+                        }
+                    }
+                }
+            )
+        }
+    </script>
+
+    <div style="flex-basis: 48%">
+        <input id="{{ widget.name }}_search"
+               placeholder="Filter"
+               style="width: 98%; margin-bottom: 5px; border: 1px solid #ccc"
+               type="text">
+        <div id="{{ widget.name }}_grid1" style="width: 100%; height: 300px"></div>
+    </div>
+    <div style="flex-grow: 1; width: auto"></div>
+    <div id="{{ widget.name }}_grid2" style="flex-basis: 48%; height: 335px"></div>
+
+
+    <select style="display: none" name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
+    {% for group_name, group_choices, group_index in widget.optgroups %}
+        {% if group_name %}
+        <optgroup label="{{ group_name }}">
+        {% endif %}
+            {% for option in group_choices %}
+                {% include option.template_name with widget=option %}
+            {% endfor %}
+        {% if group_name %}
+        </optgroup>
+        {% endif %}
+    {% endfor %}
+    </select>
+</div>

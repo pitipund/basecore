@@ -1,0 +1,144 @@
+{% load i18n static %}
+<html>
+<head>
+  {% include "curator/include/config_style.html" %}
+  <style>
+  .ml-20 {
+    margin-left: 20px;
+  }
+  </style>
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+  <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'channel name');
+        data.addColumn('number', 'active(boxes)');
+        data.addColumn('string', 'latest active');
+
+        {% for item in most_actives %}
+	       data.addRows([
+	          ['<img src="{% get_media_prefix %}{{ item.icon }}" width=20 height=20>{{ item.name }}',{v: {{ item.count }}, f: '{{ item.count }}'}, '{{item.latest_log}}',]
+	       ]);
+        {% endfor %}
+
+        var table = new google.visualization.Table(document.getElementById('most_recent_table'));
+        table.draw(data, {showRowNumber: true, allowHtml: true});
+
+        ////////////////
+        var data2 = new google.visualization.DataTable();
+          data2.addColumn('string', 'channel name');
+          data2.addColumn('number', 'active(boxes)');
+
+          {% for item in most_10 %}
+        data2.addRows([
+              ['<img src="{% get_media_prefix %}{{ item.channel.icon }}" width=20 height=20>{{ item.channel }}',{v: {{ item.count }}, f: '{{ item.count }}'}]
+        ]);
+          {% endfor %}
+
+        var table2 = new google.visualization.Table(document.getElementById('most_ten_table'));
+        table2.draw(data2, {showRowNumber: true, allowHtml: true});
+
+        /////////////////
+        var data3 = new google.visualization.DataTable();
+          data3.addColumn('string', ' CPU id');
+          data3.addColumn('string', 'channel name');
+          data3.addColumn('string', 'Latest active');
+
+          {% for item in allcpus %}
+        data3.addRows([
+              ['<a href="{% url "rating_cpuid_stat" item.cpu_id %}">{{ item.cpu_id }}','<img src="{% get_media_prefix %}{{ item.channel.icon }}" width=20 height=20>{{ item.channel.name }}','{{ item.latest_log }}']
+        ]);
+          {% endfor %}
+
+        var table3 = new google.visualization.Table(document.getElementById('all_cpu_table'));
+        table3.draw(data3, {showRowNumber: true, allowHtml: true});
+
+
+        /////////////////
+        var data4 = new google.visualization.DataTable();
+        // COUNT(TA.id) as count, MAX(start_at) as latest_time, name, url,icon
+          data4.addColumn('string', 'channel name');
+          data4.addColumn('number', 'count');
+          data4.addColumn('string', 'latest active');
+
+          {% for item in all_time %}
+        data4.addRows([
+              ['<img src="{% get_media_prefix %}{{ item.icon }}" width=20 height=20>{{ item.name }}',{{ item.count }},'{{ item.latest_time }}']
+        ]);
+          {% endfor %}
+
+        var table4 = new google.visualization.Table(document.getElementById('all_time_table'));
+        table4.draw(data4, {showRowNumber: true, allowHtml: true});
+
+      }
+
+    $(document).ready(function(){
+        $("#all_time").fadeIn();
+        $("#most_div").fadeOut();
+        $("#most_ten_div").fadeOut();
+        $("#all_cpu_div").fadeOut();
+
+      $("#most_btn").click(function(){
+        $("#all_time").fadeOut();
+        $("#most_div").fadeIn();
+        $("#most_ten_div").fadeOut();
+        $("#all_cpu_div").fadeOut();
+      })
+
+      $("#most_ten_btn").click(function(){
+        $("#all_time").fadeOut();
+        $("#most_div").fadeOut();
+        $("#most_ten_div").fadeIn();
+        $("#all_cpu_div").fadeOut();
+      })
+
+      $("#all_cpu_btn").click(function(){
+        $("#all_time").fadeOut();
+        $("#most_div").fadeOut();
+        $("#most_ten_div").fadeOut();
+        $("#all_cpu_div").fadeIn();
+      })
+
+      $("#all_time_btn").click(function(){
+        $("#all_time").fadeIn();
+        $("#most_div").fadeOut();
+        $("#most_ten_div").fadeOut();
+        $("#all_cpu_div").fadeOut();
+      })
+
+    });
+  </script>
+</head>
+
+<body>
+  <div class="btn-group btn-group-lg ml-20">
+        <button type="button" class="btn btn-default" id="all_time_btn" >All the time</button>
+        <button type="button" class="btn btn-default" id="most_btn" >Most active</button>
+        <button type="button" class="btn btn-default" id="most_ten_btn">Most in 10 minutes</button>
+        <button type="button" class="btn btn-default" id="all_cpu_btn">All CPU</button>
+  </div>
+
+  <div id="all_time" class="ml-20">
+    <h1>All the time : {{ all_time|length }} channels</h1>
+    <div id='all_time_table'></div>
+  </div>
+
+  <div>
+  <div id="most_div" class="ml-20">
+  	<h1>Most latest active view : {{ most_actives|length }} channel(s)</h1>
+  	<div id='most_recent_table'></div>
+  </div>
+  <div id="most_ten_div" class="ml-20">
+    <h1>Most active 10 minutes ago: {{ most_10|length }} channel(s)</h1>
+    <div id='most_ten_table'></div>
+  </div>
+
+  <div id="all_cpu_div" class="ml-20">
+    <h1>Latest active box: {{ allcpus|length }} box(es)</h1>
+    <div id='all_cpu_table'></div>
+  </div>
+</body>
+
+</html>

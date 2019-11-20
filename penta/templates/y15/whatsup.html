@@ -1,0 +1,106 @@
+{% extends "y15/base.html" %}
+
+
+{% block mainpane %}
+
+<style>
+
+	img.bigincenter {
+		margin: 0 auto;
+		width: 800px;
+	}
+
+	.section {
+		margin-top: 30px;
+	}
+
+	.split-panel-image > img {
+		width: 100%;
+	}
+
+	.split-panel-text {
+
+	}
+
+</style>
+
+<div class="col-md-12">
+<!-- Contents go here -->
+
+<div class="jumbotron" style="background: transparent;">
+      <h1 id="hello,-world!">ไม่ต้องไล่หาการ์ตูนทีละคลิปแล้ว<a class="anchorjs-link" href="#hello,-world!"><span class="anchorjs-icon"></span></a></h1><br/>
+      <p>เว็บไซต์ <span style="font-weight:bold; color:#16c1f3;">PentaChannel.com</span> ทำให้คุณช่วยให้เจ้าตัวเล็กดูการ์ตูนและรายการเด็กดีๆกันแบบชิลๆ ไม่ต้องไล่เสิร์ชหาให้วุ่นวายอีกต่อไป เต็มอิ่มด้วยการ์ตูนและรายการเด็กกว่า 90 รายการ ให้คุณเพลิดเพลินและเสริมพัฒนาการลูกน้อยแบบง่ายๆ 
+      <p>สมัครสมาชิกวันนี้ <span style="font-weight:bold; color:red;">ฟรี!</span> ไม่มีค่าใช้จ่ายตลอดชีพ ทดลองดูรายการ<a href="/th/channelplay/142/">เจ้าแมวหุ่นยนต์มหัศจรรย์จากโลกอนาคต</a>ครบทุกตอนได้ง่ายๆกันเลย (ก่อนเข้าดูจะขอให้คลิก login ด้วย facebook เพื่อยืนยันตัวตนง่ายๆเพียงครั้งเดียว)</p>
+      <p>คุณพ่อคุณแม่ยุคใหม่เลือก <span style="font-weight:bold; color:#16c1f3;">PentaChannel.com</span>* </p>
+      <img src="http://www.penta-tv.com/site_media/images/channelicon/kid.png" class="img-responsive bigincenter" alt="Responsive image"/><br/>
+      <p>*เว็บไซต์ <span style="font-weight:bold; color:#16c1f3;">PentaChannel.com</span> เป็นเว็บไซต์สำหรับให้สมาชิกแชร์ลิงค์วิดีโอให้กันและกันโดยสามารถจัดเป็นแชนแนล (เรียกว่า Penta Channel ซึ่งคือที่มาของชื่อเว็บ <span style="font-weight:bold; color:#16c1f3;">PentaChannel.com</span>) เพื่อรวบรวมลิงค์วิดีโอรายการเดียวกัน หรือลิงค์วิดีโอตามความสนใจได้อย่างง่ายๆของสมาชิก ปัจจุบันมีจำนวนแชนแนล Penta ที่สมาชิกช่วยกันสร้างไว้ระบบมากกว่า 1,000 แชนแนล มีรายการต่างๆหลากหลายทั้งรายการบันเทิง การ์ตูน ข่าว สาระ ไลฟ์สไตล์ และอื่นๆอีกมากมาย</p>
+</div>
+
+<!--
+<div class="col col-md-10 col-md-offset-1 section">
+
+	<h4  style="text-indent: 50px;">
+		Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+	</h4>
+
+</div>
+
+<div class="col col-md-10 col-md-offset-1 section">
+	<div class="media">
+	      <div class="media-left">
+	        <a href="#">
+	          <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="//upload.wikimedia.org/wikipedia/commons/9/99/Opml-icon-128x128.png" data-holder-rendered="true" style="width: 64px; height: 64px;">
+	        </a>
+	      </div>
+	      <div class="media-body">
+	        <h4 class="media-heading" id="top-aligned-media">Top aligned media<a class="anchorjs-link" href="#top-aligned-media"><span class="anchorjs-icon"></span></a></h4>
+	        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+	        <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+	      </div>
+	</div>
+
+	<div class="media">
+	      <div class="media-left">
+	        <a href="#">
+	          <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="//upload.wikimedia.org/wikipedia/commons/9/99/Opml-icon-128x128.png" data-holder-rendered="true" style="width: 64px; height: 64px;">
+	        </a>
+	      </div>
+	      <div class="media-body">
+	        <h4 class="media-heading" id="top-aligned-media">Top aligned media<a class="anchorjs-link" href="#top-aligned-media"><span class="anchorjs-icon"></span></a></h4>
+	        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+	        <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+	      </div>
+	</div>
+</div>
+
+
+<div class="col col-md-10 col-md-offset-1 section">
+	<div class="col col-md-4 split-panel-image">
+		<img src="//penta.thevcgroup.com/en/site_media/images/product/penta.png"/>
+	</div>
+	<div class="col col-md-8">
+		<h4 class="media-heading" id="top-aligned-media">Split Panel's Title goes here</h4>
+		Split Panel's text goes here. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+	</div>
+</div>
+
+<div class="col col-md-10 col-md-offset-1 section">
+	<div class="col col-md-8">
+		<h4 class="media-heading" id="top-aligned-media">Split Panel's Title goes here</h4>
+		Split Panel's text goes here. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+	</div>
+	<div class="col col-md-4 split-panel-image">
+		<img src="http://penta.thevcgroup.com/en/site_media/images/product/penta.png"/>
+	</div>
+</div>
+-->
+
+<!-- Content end here-->
+</div> <!-- end of div.col-12 -->
+
+<!--
+<p><a class="btn btn-primary btn-lg pull-right" href="/th" role="button">เข้าใช้งานเลย</a></p>
+-->
+
+
+{% endblock %}

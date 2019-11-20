@@ -1,0 +1,38 @@
+
+#sidebar {
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: fixed;
+}
+
+@media (max-width: 767px) {
+    #sidebar {
+        min-height: 0;
+        position: relative;
+        float:none;
+        display: block;
+    }
+    #sidebar > .list-group {
+        margin-bottom: 0;
+    }
+}
+
+#manager {
+    background: #16c1f3;
+}
+
+.content {
+    background: #FFFFFF;
+    min-height: 100vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#sidebar > .list-group > .list-group-item {
+    border-radius: 0;
+}
+
+#playlist-input{
+    width: 300px;
+}

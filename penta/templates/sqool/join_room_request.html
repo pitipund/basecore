@@ -1,0 +1,17 @@
+{% csrf_token %}
+
+
+Hi {{request.user.username}},<br>
+
+You're {{groups}} admin!<br>
+You can invite any user to group<br><br>
+
+<form method="post" action="/sqool/join_request">
+Email (username):<input type="text" name="username"></input>
+Add to group:<select name="group">
+    {% for group in groups %}
+        <option name="{{group}}" value="{{group}}">{{group}}</option>
+    {% endfor %}
+</select>
+<input type="submit"></input>{{msg}}
+</form>

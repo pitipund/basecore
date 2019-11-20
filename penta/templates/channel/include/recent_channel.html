@@ -1,0 +1,14 @@
+{% load static %}
+
+<script src="{% static 'scripts/libs/mustache.min.js' %}"></script>
+<script src="{% static 'scripts/channel/recent_channel.js' %}"></script>
+
+<div style="overflow-y:scroll;">
+	<div id="recentChannel"></div>
+</div>
+
+<script type="text/javascript">
+    var RECENT_CHANNEL_URL = "{% url 'channel:channel_apis_index' %}";
+    var recentChannel = new RecentChannel(document.getElementById("recentChannel"),RECENT_CHANNEL_URL);
+    recentChannel.fetchChannel();
+</script>

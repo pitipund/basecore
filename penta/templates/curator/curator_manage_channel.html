@@ -1,0 +1,184 @@
+{% load static %}
+{% load static_withquery %}
+<html ng-app="plunker">
+<head>
+<title>Channel Manager</title>
+<link  href="{% static 'feed/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+<link  href="{% static 'feed/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+<link  href="{% static 'feed/css/angular-tooltips.min.css' %}" rel="stylesheet" type="text/css" />
+<link  href="{% static 'feed/css/feeditem.css' %}?v=1.1" rel="stylesheet" type="text/css" />
+<link  href="{% static 'feed/css/ngToast.min.css' %}?v=1.1" rel="stylesheet" type="text/css" />
+<link  href="{% static 'feed/css/ngToast-animations.min.css' %}?v=1.1" rel="stylesheet" type="text/css" />
+<link  href="{% static 'feed/css/bootstrap-datetimepicker.css' %}" rel="stylesheet" type="text/css" />
+<link  href="{% static 'player/css/ng-sortable.min.css' %}?v=1.1" rel="stylesheet" type="text/css" />
+<link  href="{% static 'player/css/ng-sortable.style.min.css' %}?v=1.1" rel="stylesheet" type="text/css" />
+<link href="{% static 'styles/custom_styles/mystyle.css' %}" rel="stylesheet">
+<link href="{% static 'styles/custom_styles/curatorStyle.css' %}" rel="stylesheet">
+
+{% if optimize %}
+<script src="{% static_withquery 'dist/js/app.min.js' %}"></script>
+{% else %}
+<script src="{% static 'feed/js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'feed/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'feed/js/angular.js' %}"></script>
+<script src="{% static 'feed/js/jquery.form.min.js' %}"></script>
+<script src="{% static 'feed/js/angular-cookies.min.js' %}"></script>
+<script src="{% static 'feed/js/angular-inview.js' %}"></script>
+<script src="{% static 'feed/js/angular-sanitize.min.js' %}"></script>
+<script src="{% static 'feed/js/angular-tooltips.min.js' %}"></script>
+<script src="{% static 'feed/js/ui-bootstrap-tpls-0.13.0.min.js' %}"></script>
+<script src="{% static 'feed/js/ng-file-upload.min.js' %}"></script>
+<script src="{% static 'feed/js/ngToast.min.js' %}"></script>
+<script src="{% static 'feed/js/moment.min.js' %}"></script>
+<script src="{% static 'feed/js/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'player/app/directives/ng-sortable.min.js' %}"></script>
+<script src="{% static 'feed/app/layout/layout.module.js' %}"></script>
+<script src="{% static 'feed/app/layout/services/post.service.js' %}"></script>
+<script src="{% static 'feed/app/layout/services/usersuggestion.service.js' %}"></script>
+<script src="{% static 'feed/app/layout/directives/lazysrc.directive.js' %}"></script>
+<script src="{% static 'feed/app/layout/directives/facebookbutton.directive.js' %}"></script>
+<script src="{% static 'feed/app/layout/directives/savebutton.directive.js' %}"></script>
+<script src="{% static 'feed/app/layout/controllers/facebookbutton.controller.js' %}"></script>
+<script src="{% static 'feed/app/layout/controllers/savebutton.controller.js' %}"></script>
+<script src="{% static 'feed/app/layout/modals/createchannel.modal.js' %}"></script>
+<script src="{% static 'feed/app/layout/modals/postbox.modal.js' %}"></script>
+<script src="{% static 'feed/app/layout/modals/suggestionbox.modal.js' %}"></script>
+<script src="{% static 'feed/app/browse/browse.module.js' %}"></script>
+<script src="{% static 'feed/app/browse/services/browse.service.js' %}"></script>
+<script src="{% static 'feed/app/account/account.module.js' %}"></script>
+<script src="{% static 'feed/app/account/services/account.service.js' %}"></script>
+<script src="{% static 'scripts/feed/fb_script.js' %}"></script>
+<script src="{% static 'scripts/libs/bootstrap3-typeahead-mod.js' %}"></script>
+<script src="{% static 'feed/app/layout/controllers/tageditor.controller.js' %}"></script>
+<script src="{% static 'feed/app/layout/directives/tageditor.directive.js' %}"></script>
+<script src="{% static 'feed/app/layout/services/tag.service.js' %}"></script>
+<script src="{% static 'scripts/feed/tag_editor.js' %}"></script>
+{% endif %}
+<script src="{% static 'scripts/curator/curator_manage_channel.js' %}"></script>
+
+<style>
+    /* Styles go here */
+
+    .as-sortable-item {
+        width: 300px;
+        margin: 2px 0;
+        border: 1px solid #444;
+        border-radius: 2px;
+        background-color: #16C1F3;
+        text-indent: 8px;
+    }
+
+    .as-sortable-item-channel {
+        width: 500px;
+        border-radius: 2px;
+        padding: 0;
+        background-color: #FFC70D;
+        text-indent: 4px;
+        font-size: 0.9em;
+        font-weight: normal;
+        cursor: auto;
+    }
+
+    .as-sortable-item-handle {
+        cursor: pointer;
+    }
+
+    .as-sortable-item-handle-channel {
+        cursor: auto;
+    }
+
+    .as-sortable-placeholder {
+        background-color: transparent;
+    }
+
+    #sortable-container {
+        display: inline-block;
+    }
+
+    .column {
+        border: 1px solid #000000;
+        border-radius: 5px;
+    }
+
+    .show.on {
+        background-color: lightgreen;
+    }
+
+    .boldborder {
+        border: 3px solid #FF300F;
+    }
+</style>
+
+</head>
+<body style="padding-top: 70px;" ng-controller="MainCtrl">
+    {% include "channel/include/header.html" %}
+    {% verbatim %}
+    <table>
+        <tr>
+            <td style="border-right: 1px dashed;width:380px;vertical-align: top;">
+                <div style="padding-left:40px;height:28px">
+                    <b>หมวดหมู่</b> <button class="pull-right" style="margin-right:40px;" ng-click="updateTag()"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                </div>
+                <ul as-sortable="sortableOptions" ng-model="allTags">
+                    <li ng-repeat="item in allTags" as-sortable-item class="as-sortable-item" ng-class="{boldborder:curTagId==item.id}">
+                        <div as-sortable-item-handle class="as-sortable-item-handle">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" ng-model="item.show">
+                                    </td>
+                                    <td style="width:100%" ng-click="selectTag(item.id, item.name);">
+                                        <span style="" data-ng-bind="item.name"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+                <ul ng-click="selectTag(-1, 'ยังไม่ระบุหมวดหมู่');" is-disabled="true">
+                    <li class="as-sortable-item">
+                        <div class="as-sortable-item-handle">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" style="visibility:hidden">
+                                    </td>
+                                    <td style="width:100%">
+                                        <span>ยังไม่ระบุหมวดหมู่</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+            </td>
+            <td style="vertical-align: top;width:580px;position:fixed;top:64px;">
+                <div style="padding-left:40px;height:30px;">
+                    <div style="vertical-align: bottom;">
+                        <b>{{ curTagName }}</b><span ng-show="curTagName"><b> {{(channels| filter:filterChannel).length}} แชนแนล</b></span>
+                        <button class="pull-right show" style="margin-right:40px;" ng-hide="curTagId==-1 || channels.length == 0" ng-class="{on:onlyShow}" ng-click="onlyShow=!onlyShow" ><span class="glyphicon glyphicon-filter"></button>
+                    </div>
+                </div>
+                <ul id="cc" as-sortable="sortableOptions" ng-model="channels" is-disabled="true" style="overflow-y:scroll;">
+                    <li ng-repeat="item in channels | filter:filterChannel" as-sortable-item class="as-sortable-item-channel">
+                        <div as-sortable-item-handle class="as-sortable-item-handle-channel">
+                            <span data-ng-bind="item.name"></span>
+                            <button class="pull-right show" ng-show="item.can_show" ng-click="toggleShow(item);" ng-class="{on:item.show}" ><span class="glyphicon glyphicon-eye-open"></button>
+                            <button style="margin-right:2px" class="pull-right" ng-click="openChannelWindow(item)"><span class="glyphicon glyphicon-new-window")></button>
+                            <button style="margin-right:2px" class="pull-right"><span class="glyphicon glyphicon-pencil" ng-click="editChannel(item)"></button>
+                        </div>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    {% endverbatim %}
+
+    <script>
+        $('#cc').height(window.innerHeight-110);
+        $( window ).resize(function() {
+            $('#cc').height(window.innerHeight-110);
+        });
+    </script>
+</body>
+</html>

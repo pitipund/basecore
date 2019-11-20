@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load static %}
+
+<link href="{% static 'styles/libs/bootstrap.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'styles/custom_styles/mystyle.css' %}" rel="Stylesheet">
+<link href="{% static 'styles/custom_styles/curatorStyle.css' %}" rel="Stylesheet">
+<link rel="shortcut icon" href="{% static 'images/pentachannel-logo.png' %}">
+<script src="{% static 'scripts/libs/bootstrap_js/jquery.js' %}"></script>
+<script src="{% static 'scripts/libs/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'scripts/custom_scripts/lib_custom.js' %}"></script>
+<script src="{% static 'scripts/libs/jquery-ui.js' %}"></script>
+<h2>
+    {% if result == 'success' %}
+        Successfully added/updated/deleted
+    {% else %}
+        Failed to add/update/delete
+    {% endif %}
+</h2><hr>
+{% if result != 'success' %}
+    {% for i in result %}
+        {{i}}<br>
+    {% endfor %}
+{% endif %}<br>
+<a href="{{backurl}}" class="btn btn-success">Back</a>
+
+

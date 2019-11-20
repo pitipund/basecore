@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Power-All Showtime</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        {% include "showtimes/include/config_style.html" %}         
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false&language=en"></script>
+        <script type="text/javascript" src="{% static 'scripts/libs/jquery-1.7.2.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/libs/bootstrap-dropdown.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/libs/spin.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/custom_scripts/contact.js' %}"></script>
+    </head>    
+    <body onload="LoadGmaps()" onunload="GUnload()">
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% include "showtimes/include/header.html" %}
+                        <div style="padding:0px 20px 0px 20px;">
+                            <div class="my_pagination pagination-right">
+                                <a href="https://maps.google.co.th/maps?f=q&amp;source=embed&amp;hl=th&amp;geocode=&amp;q=Sinn+Sathorn+Tower+Khlong+San&amp;aq=0&amp;oq=sinn&amp;sll=13.038936,101.490104&amp;sspn=30.231516,50.712891&amp;ie=UTF8&amp;hq=Sinn+Sathorn+Tower&amp;hnear=%E0%B9%80%E0%B8%82%E0%B8%95+%E0%B8%84%E0%B8%A5%E0%B8%AD%E0%B8%87%E0%B8%AA%E0%B8%B2%E0%B8%99+%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%99%E0%B8%84%E0%B8%A3&amp;t=m&amp;ll=13.721888,100.499429&amp;spn=0.00186,0.003095&amp;iwloc=A" class="btn btn-info" target="_blank"><i class="icon-resize-full icon-white"></i> Open large map</a>
+                            </div>
+                            <div style="padding-right:10px;">
+                                <div id="MyGmaps" style="width:100%;height:300px;border:1px solid #CECECE;"></div>
+                            </div>
+                            <br/>
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <my_legend>Contact form</my_legend>
+                                    <div id="spinnerbar" align="center"></div>
+                                    {% if fail_info %}     <div class="alert alert-error">{{fail_info}}</div>
+                                    {% elif success_info %}<div class="alert alert-success">{{success_info}}</div>
+                                    {% endif %}
+                                    <form class="form-horizontal" name="contactForm" method="post" action="{% url 'site_email' %}" enctype="multipart/form-data">{% csrf_token %}
+                                        {% if name_error == 'none' %}<div class="control-group error">
+                                        {% else %}                   <div class="control-group">
+                                        {% endif %}
+                                            <label class="control-label">Name *</label>
+                                            <div class="controls">
+                                                {% if name_error == 'none' %}
+                                                <input type="text" name="inputName" placeholder="Name" style="width:90%;">
+                                                {% else %}
+                                                <input type="text" name="inputName" placeholder="Name" style="width:90%;" value="{{name_error}}">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% if email_error == 'none' %}<div class="control-group error">
+                                        {% else %}                    <div class="control-group">
+                                        {% endif %}
+                                            <label class="control-label" for="inputEmail">Email *</label>
+                                            <div class="controls">
+                                                {% if email_error == 'none' %}
+                                                <input type="text" name="inputEmail" placeholder="example@mail.com" style="width:90%;">
+                                                {% else %}
+                                                <input type="text" name="inputEmail" placeholder="example@mail.com" style="width:90%;" value="{{email_error}}">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% if subj_error == 'none' %}<div class="control-group error">
+                                        {% else %}                   <div class="control-group">
+                                        {% endif %}
+                                            <label class="control-label">Subject *</label>
+                                            <div class="controls">
+                                                {% if subj_error == 'none' %}
+                                                <input type="text" name="inputSubj" placeholder="Subject" style="width:90%;">
+                                                {% else %}
+                                                <input type="text" name="inputSubj" placeholder="Subject" style="width:90%;" value="{{subj_error}}">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% if msg_error == 'none' %}<div class="control-group error">
+                                        {% else %}                  <div class="control-group">
+                                        {% endif %}
+                                            <label class="control-label">Your Message *</label>
+                                            <div class="controls">
+                                                {% if msg_error == 'none' %}
+                                                <textarea name="inputMsg" rows="10" style="width:90%;height:100px;"></textarea>
+                                                {% else %}
+                                                <textarea name="inputMsg" rows="10" style="width:90%;height:100px;">{{msg_error}}</textarea>
+                                                {% endif %}
+                                            </div>
+                                        </div> 
+                                        <div class="control-group">
+                                            <label class="control-label"></label>
+                                            <div class="controls">
+                                                <p><a href="#" id="sendBtn" class="btn btn-success" onClick="showSpinner();">Send</a></p>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="span4">
+                                    <br/><br/>
+                                    <h5>The VC Group</h5>
+                                    <p>77/128, Sinn Sathorn Tower, 30th floor, Krunthonburi Road, Klongtonsai, Klongsan, Bangkok 10600 THAILAND</p><br>
+                                    <p>Call : +66(0)-2862-3382</p>
+                                    <p>Fax : +66(0)-2862-3384</p>
+                                    <p>E-mail : contact@thevcgroup.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>      
+        </div> <!-- /container -->
+        {% include "showtimes/include/footer.html" %}
+    </body>
+</html>
